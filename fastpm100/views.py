@@ -22,5 +22,14 @@ class SingleNumber(QtGui.QMainWindow):
         self.lbl_info = QtGui.QLabel("FastPM100")
         self.vbox.addWidget(self.lbl_info)
 
+        self.button = QtGui.QPushButton("Change Text")
+        self.vbox.addWidget(self.button)
+
+        self.button.clicked.connect(self.change_text)
+
         self.setGeometry(30, 30, 640, 500)
         self.show()
+
+    def change_text(self):
+        print("change text")
+        self.lbl_info.setText("Button clicked")

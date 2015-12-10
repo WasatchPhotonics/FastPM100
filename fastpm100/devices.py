@@ -24,13 +24,15 @@ class QueueMPDevice(object):
 
     def worker(self, queue):
         while(True):
+            log.debug("In while loop")
+            print("print in while loop")
             # Remember this will hang on python 2.7 on windows - the
             # queue empty exception, that is
             result = None
             try:
                 result = queue.get_nowait()
             except Queue.Empty:
-                #log.debug("Queue is empty")
+                log.debug("Queue is empty")
                 pass
 
             if result == "DISCONNECT":
@@ -44,6 +46,7 @@ class QueueMPDevice(object):
     def create(self):
         log.debug("Start the multiprocessing object")
         self.process.start()
+        log.debug("post Start the multiprocessing object")
 
     def close(self):
         log.debug("Join the multiprocessing object")

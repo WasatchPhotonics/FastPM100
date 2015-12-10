@@ -13,6 +13,9 @@ strm.setFormatter(frmt)
 log.addHandler(strm)
 log.setLevel(logging.DEBUG)
 
+import multiprocessing
+multiprocessing.log_to_stderr(logging.DEBUG)
+
 
 class TestProcessLogs:
     def test_object_has_log_debug(self):

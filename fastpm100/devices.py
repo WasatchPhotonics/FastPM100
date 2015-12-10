@@ -1,6 +1,7 @@
 """ Classes for device control testing around pm100 and multiprocessing
 """
 
+import sys
 import time
 import Queue
 import multiprocessing
@@ -23,16 +24,24 @@ class QueueMPDevice(object):
         self.process.daemon = True
 
     def worker(self, queue):
+        self.my_log = logging.getLogger()
+        strm = logging.StreamHandler(sys.stderr)
+        frmt = logging.Formatter("%(name)s - %(levelname)s %(message)s")
+        strm.setFormatter(frmt)
+        self.my_log.addHandler(strm)
+        self.my_log.setLevel(logging.DEBUG)
+
         while(True):
-            log.debug("In while loop")
-            print("print in while loop")
+            #self.my_log.debug("In while loop")
+            #print("print in while loop")
+            #sys.stdout.flush()
             # Remember this will hang on python 2.7 on windows - the
             # queue empty exception, that is
             result = None
             try:
                 result = queue.get_nowait()
             except Queue.Empty:
-                log.debug("Queue is empty")
+                #log.debug("Queue is empty")
                 pass
 
             if result == "DISCONNECT":
@@ -40,7 +49,7 @@ class QueueMPDevice(object):
                 break
 
             current = multiprocessing.current_process()
-            log.debug("Worker process: %s", current.pid)
+            self.my_log.debug("Worker process: %s", current.pid)
             time.sleep(0.3)
 
     def create(self):

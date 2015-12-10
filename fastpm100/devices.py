@@ -7,7 +7,7 @@ import Queue
 import multiprocessing
 
 import logging
-log = logging.getLogger(__name__)
+#log = logging.getLogger(__name__)
 #multiprocessing.log_to_stderr(logging.DEBUG)
 
 
@@ -15,7 +15,7 @@ class QueueMPDevice(object):
     """ Use the poison pill pattern to exit the worker thread.
     """
     def __init__(self):
-        log.debug("Init of %s", self.__class__.__name__)
+        #log.debug("Init of %s", self.__class__.__name__)
         super(QueueMPDevice, self).__init__()
 
         self.queue = multiprocessing.Queue()
@@ -45,7 +45,7 @@ class QueueMPDevice(object):
                 pass
 
             if result == "DISCONNECT":
-                log.debug("Disonnect received, exiting loop")
+                self.my_log.debug("Disonnect received, exiting loop")
                 break
 
             current = multiprocessing.current_process()
@@ -53,11 +53,11 @@ class QueueMPDevice(object):
             time.sleep(0.3)
 
     def create(self):
-        log.debug("Start the multiprocessing object")
+        #self.my_log.debug("Start the multiprocessing object")
         self.process.start()
         log.debug("post Start the multiprocessing object")
 
     def close(self):
-        log.debug("Join the multiprocessing object")
+        #self.my_log.debug("Join the multiprocessing object")
         self.queue.put("DISCONNECT")
         self.process.join()

@@ -37,7 +37,8 @@ class QueueMPDevice(object):
                 log.debug("Disonnect received, exiting loop")
                 break
 
-            log.debug("Worker process")
+            current = multiprocessing.current_process()
+            log.debug("Worker process: %s", current.pid)
             time.sleep(0.3)
 
     def create(self):

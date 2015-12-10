@@ -6,10 +6,20 @@ from PySide import QtCore, QtTest
 
 from fastpm100 import views
 
+import sys
+import logging
+log = logging.getLogger()
+strm = logging.StreamHandler(sys.stderr)
+frmt = logging.Formatter("%(name)s - %(levelname)s %(message)s")
+strm.setFormatter(frmt)
+log.addHandler(strm)
+log.setLevel(logging.DEBUG)
+
 class TestSingleNumberLayout:
 
     @pytest.fixture
     def my_form(self, qtbot):
+        log.debug("Setup fixture")
         new_form = views.SingleNumber()
         return new_form
 

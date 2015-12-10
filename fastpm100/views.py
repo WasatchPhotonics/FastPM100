@@ -1,15 +1,18 @@
 """ GUI components for the FastPM100 application.
 """
 
-import sys
+import logging
 
 from PySide import QtGui, QtSvg, QtCore
 
+
+log = logging.getLogger(__name__)
 
 class SingleNumber(QtGui.QMainWindow):
     """ Provie a bare form layout with a single number.
     """
     def __init__(self, parent=None):
+        log.debug("Init of %s", self.__class__.__name__)
         super(SingleNumber, self).__init__(parent)
         self.central_widget = QtGui.QStackedWidget()
         self.setCentralWidget(self.central_widget)
@@ -31,5 +34,5 @@ class SingleNumber(QtGui.QMainWindow):
         self.show()
 
     def change_text(self):
-        print("change text")
+        log.debug("change text")
         self.lbl_info.setText("Button clicked")

@@ -22,4 +22,4 @@ class TestSingleNumberLayout:
 
         assert my_form.lbl_info.text() == "FastPM100"
         assert my_form.width() == 640
-        assert my_form.height() == 480
+        assert my_form.height() == 500

@@ -22,5 +22,5 @@ class SingleNumber(QtGui.QMainWindow):
         self.lbl_info = QtGui.QLabel("FastPM100")
         self.vbox.addWidget(self.lbl_info)
 
-        self.setGeometry(30, 30, 640, 480)
+        self.setGeometry(30, 30, 640, 500)
         self.show()

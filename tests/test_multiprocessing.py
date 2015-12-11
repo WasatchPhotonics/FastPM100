@@ -7,7 +7,7 @@ import multiprocessing
 import sys
 import logging
 log = logging.getLogger()
-strm = logging.StreamHandler(sys.stderr)
+strm = logging.StreamHandler(sys.stdout)
 frmt = logging.Formatter("%(name)s - %(levelname)s %(message)s")
 strm.setFormatter(frmt)
 log.addHandler(strm)
@@ -23,7 +23,7 @@ def worker():
 class TestProcessLogs:
     def test_print_log_at_debug(self):
 
-        multiprocessing.log_to_stderr(logging.DEBUG)
+        #multiprocessing.log_to_stderr(logging.DEBUG)
         mp_device = multiprocessing.Process(target=worker)
         mp_device.start()
         mp_device.join()

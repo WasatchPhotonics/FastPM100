@@ -7,14 +7,14 @@ import time
 
 import logging
 log = logging.getLogger()
-strm = logging.StreamHandler(sys.stderr)
+strm = logging.StreamHandler(sys.stdout)
 frmt = logging.Formatter("%(name)s - %(levelname)s %(message)s")
 strm.setFormatter(frmt)
 log.addHandler(strm)
 log.setLevel(logging.DEBUG)
 
-import multiprocessing
-multiprocessing.log_to_stderr(logging.DEBUG)
+#import multiprocessing
+#multiprocessing.log_to_stderr(logging.DEBUG)
 
 
 class TestProcessLogs:

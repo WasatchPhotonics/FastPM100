@@ -9,7 +9,7 @@ from fastpm100 import views
 import sys
 import logging
 log = logging.getLogger()
-strm = logging.StreamHandler(sys.stderr)
+strm = logging.StreamHandler(sys.stdout)
 frmt = logging.Formatter("%(name)s - %(levelname)s %(message)s")
 strm.setFormatter(frmt)
 log.addHandler(strm)

@@ -6,27 +6,34 @@ with py2exe and Innosetup.
 
 import sys
 import time
-import multiprocessing 
+import multiprocessing
 
 from PySide import QtGui, QtCore
 
 from fastpm100 import views
 from fastpm100 import devices
+from fastpm100 import log_helpers
 
 import logging
 log = logging.getLogger()
-strm = logging.StreamHandler(sys.stderr)
 frmt = logging.Formatter("%(asctime)s %(name)s - %(levelname)s %(message)s")
-strm.setFormatter(frmt)
-log.addHandler(strm)
 log.setLevel(logging.DEBUG)
 
+# Add a stderr output handler for the application
+#strm = logging.StreamHandler(sys.stderr)
+strm = logging.StreamHandler(sys.stdout)
+strm.setFormatter(frmt)
+log.addHandler(strm)
 
-import signal
-def signal_handler(signal, frame):
-    print("pressed Ctrl+C!")
-    sys.exit(0)
-signal.signal(signal.SIGINT, signal_handler)
+
+# Add a file handler for the application
+log_dir = log_helpers.get_location()
+log_dir += "/BasicApplication_log.txt"
+
+file_handler = logging.FileHandler(log_dir)
+file_handler.setFormatter(frmt)
+log.addHandler(file_handler)
+
 
 def main():
     # Required on ms windows

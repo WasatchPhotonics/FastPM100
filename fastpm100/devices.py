@@ -35,8 +35,8 @@ class QueueMPDevice(object):
 
     def create_new_log_on_windows_with_pytest(self, in_test):
         """ If operating on MS windows in a multiprocessing context
-        while using pytest, the log prints to stderr will not appear.
-        Create a new logger with a formatter to stderr if operating on
+        while using pytest, the log prints to stdout will not appear.
+        Create a new logger with a formatter to stdout if operating on
         windows only, and only if called within pytest. This is a non
         issue on Linux, apparently because of the presence of fork().
         """
@@ -44,7 +44,7 @@ class QueueMPDevice(object):
         if in_test is not None:
             if "Windows" in platform.platform():
                 self.my_log = logging.getLogger()
-                strm = logging.StreamHandler(sys.stderr)
+                strm = logging.StreamHandler(sys.stdout)
                 frmt = logging.Formatter("%(asctime)s %(name)s - %(levelname)s %(message)s")
                 strm.setFormatter(frmt)
                 self.my_log.addHandler(strm)
@@ -58,11 +58,9 @@ class QueueMPDevice(object):
         log = self.create_new_log_on_windows_with_pytest(in_test)
 
         while(True):
-            #self.my_log.debug("In while loop")
-            #print("print in while loop")
-            #sys.stdout.flush()
-            # Remember this will hang on python 2.7 on windows - the
-            # queue empty exception, that is
+            # Don't use if queue.empty() on python 2.7 on windows, it
+            # will hange. Use the catch of the queue empty exception as
+            # shown below.
             result = None
             try:
                 result = queue.get_nowait()

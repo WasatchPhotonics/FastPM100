@@ -8,7 +8,7 @@ import time
 import logging
 log = logging.getLogger()
 strm = logging.StreamHandler(sys.stderr)
-frmt = logging.Formatter("%(name)s - %(levelname)s %(message)s")
+frmt = logging.Formatter("%(asctime)s %(name)s - %(levelname)s %(message)s")
 strm.setFormatter(frmt)
 log.addHandler(strm)
 log.setLevel(logging.DEBUG)
@@ -16,9 +16,14 @@ log.setLevel(logging.DEBUG)
 #import multiprocessing
 #multiprocessing.log_to_stderr(logging.DEBUG)
 
+sys._called_from_test = True
+
+
 class TestLogWithPySideAndPyTestQt:
 
     def test_control_object_with_sub_logger(self, qtbot):
+        if hasattr(sys, "_called_from_test"):
+            log.debug("called within test")
         from fastpm100 import control
         control = control.AppExam()
 

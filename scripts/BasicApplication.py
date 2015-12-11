@@ -6,6 +6,7 @@ with py2exe and Innosetup.
 
 import sys
 import time
+import multiprocessing 
 
 from PySide import QtGui, QtCore
 
@@ -15,7 +16,7 @@ from fastpm100 import devices
 import logging
 log = logging.getLogger()
 strm = logging.StreamHandler(sys.stderr)
-frmt = logging.Formatter("%(name)s - %(levelname)s %(message)s")
+frmt = logging.Formatter("%(asctime)s %(name)s - %(levelname)s %(message)s")
 strm.setFormatter(frmt)
 log.addHandler(strm)
 log.setLevel(logging.DEBUG)
@@ -28,6 +29,7 @@ def signal_handler(signal, frame):
 signal.signal(signal.SIGINT, signal_handler)
 
 def main():
+    #multiprocessing.freeze_support()
 
     app = QtGui.QApplication(sys.argv)
     ex = views.SingleNumber()

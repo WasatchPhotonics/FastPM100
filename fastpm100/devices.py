@@ -4,10 +4,11 @@
 import sys
 import time
 import Queue
+import platform
 import multiprocessing
 
 import logging
-#log = logging.getLogger(__name__)
+log = logging.getLogger(__name__)
 #multiprocessing.log_to_stderr(logging.DEBUG)
 
 
@@ -15,7 +16,7 @@ class QueueMPDevice(object):
     """ Use the poison pill pattern to exit the worker thread.
     """
     def __init__(self):
-        #log.debug("Init of %s", self.__class__.__name__)
+        log.debug("Init of %s", self.__class__.__name__)
         super(QueueMPDevice, self).__init__()
 
         self.queue = multiprocessing.Queue()
@@ -23,13 +24,26 @@ class QueueMPDevice(object):
         self.process = mpp(target=self.worker, args=(self.queue,))
         self.process.daemon = True
 
+    def create_new_log_on_windows(self):
+        """ If operating on MS windows in a multiprocessing context, the
+        log prints to stderr will not appear. Create a new logger with a
+        formatter to stderr if operating on windows only. Do not do this
+        on Linux as it will print dual log messages.
+        """
+        if "Windows" in platform.platform():
+            self.my_log = logging.getLogger()
+            strm = logging.StreamHandler(sys.stderr)
+            frmt = logging.Formatter("%(name)s - %(levelname)s %(message)s")
+            strm.setFormatter(frmt)
+            self.my_log.addHandler(strm)
+            self.my_log.setLevel(logging.DEBUG)
+            self.my_log.debug("Dual windows log setup")
+            return self.my_log
+
+        return log
+
     def worker(self, queue):
-        self.my_log = logging.getLogger()
-        strm = logging.StreamHandler(sys.stderr)
-        frmt = logging.Formatter("%(name)s - %(levelname)s %(message)s")
-        strm.setFormatter(frmt)
-        self.my_log.addHandler(strm)
-        self.my_log.setLevel(logging.DEBUG)
+        log = self.create_new_log_on_windows()
 
         while(True):
             #self.my_log.debug("In while loop")
@@ -45,7 +59,7 @@ class QueueMPDevice(object):
                 pass
 
             if result == "DISCONNECT":
-                self.my_log.debug("Disonnect received, exiting loop")
+                log.debug("Disonnect received, exiting loop")
                 break
 
             current = multiprocessing.current_process()
@@ -53,11 +67,11 @@ class QueueMPDevice(object):
             time.sleep(0.3)
 
     def create(self):
-        #self.my_log.debug("Start the multiprocessing object")
+        log.debug("Start the multiprocessing object")
         self.process.start()
         log.debug("post Start the multiprocessing object")
 
     def close(self):
-        #self.my_log.debug("Join the multiprocessing object")
+        log.debug("Join the multiprocessing object")
         self.queue.put("DISCONNECT")
         self.process.join()

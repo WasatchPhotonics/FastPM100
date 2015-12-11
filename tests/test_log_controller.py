@@ -13,6 +13,8 @@ strm.setFormatter(frmt)
 log.addHandler(strm)
 log.setLevel(logging.DEBUG)
 
+#import multiprocessing
+#multiprocessing.log_to_stderr(logging.DEBUG)
 
 class TestLogWithPySideAndPyTestQt:
 

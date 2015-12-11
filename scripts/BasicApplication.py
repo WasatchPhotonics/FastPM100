@@ -1,9 +1,16 @@
 #!/usr/bin/python
-
-from PySide import QtGui, QtCore
+""" Bare bones application designed to show multiprocessing,
+PySide, logging, windows and linux support. Also be distributable
+with py2exe and Innosetup.
+"""
 
 import sys
 import time
+
+from PySide import QtGui, QtCore
+
+from fastpm100 import views
+from fastpm100 import devices
 
 import logging
 log = logging.getLogger()
@@ -12,7 +19,6 @@ frmt = logging.Formatter("%(name)s - %(levelname)s %(message)s")
 strm.setFormatter(frmt)
 log.addHandler(strm)
 log.setLevel(logging.DEBUG)
-
 
 
 import signal
@@ -24,16 +30,12 @@ signal.signal(signal.SIGINT, signal_handler)
 def main():
 
     app = QtGui.QApplication(sys.argv)
-    from fastpm100 import views
     ex = views.SingleNumber()
 
-    from fastpm100 import devices
     mp_device = devices.QueueMPDevice()
     mp_device.create()
 
-
     sys.exit(app.exec_())
-
 
 if __name__ == '__main__':
     main()

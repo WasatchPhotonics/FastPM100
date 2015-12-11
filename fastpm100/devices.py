@@ -63,7 +63,7 @@ class QueueMPDevice(object):
                 break
 
             current = multiprocessing.current_process()
-            self.my_log.debug("Worker process: %s", current.pid)
+            log.debug("Worker process: %s", current.pid)
             time.sleep(0.3)
 
     def create(self):

@@ -29,7 +29,8 @@ def signal_handler(signal, frame):
 signal.signal(signal.SIGINT, signal_handler)
 
 def main():
-    #multiprocessing.freeze_support()
+    # Required on ms windows
+    multiprocessing.freeze_support()
 
     app = QtGui.QApplication(sys.argv)
     ex = views.SingleNumber()

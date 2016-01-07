@@ -113,13 +113,15 @@ class TestSimulatedPM100Device:
 
     @pytest.fixture(scope="function")
     def fast_device(self, request):
-        """ Auto-acquire enabled version of sub_device fixture.
+        """ Sub process device that reads repeatedly, without waiting for the
+        acquire command, as in sub_device.
         """
         assert applog.delete_log_file_if_exists() == True
 
         main_logger = applog.MainLogger()
         device = devices.LongPollingSimulatedPM100(main_logger.log_queue,
                                                    auto_acquire=True)
+        #device = devices.FastSimulatedPM100(main_logger.log_queue)
 
         def close_device():
             device.close()
@@ -139,11 +141,12 @@ class TestSimulatedPM100Device:
 
         good_reads = 0
         while time_diffe <= 1.1:
-            result = fast_device.read()
             # Sub-process in auto-acquire is still running despite this blocking
             # sleep
             time.sleep(0.05)
-            if result is not None:
+            result = fast_device.read()
+            while result is not None:
+                result = fast_device.read()
                 good_reads += 1
 
             cease_time = time.time()
@@ -151,5 +154,3 @@ class TestSimulatedPM100Device:
 
         print "Received %s reads in %s seconds" % (good_reads, time_diffe)
         assert good_reads >= 1000
-
-

@@ -75,9 +75,9 @@ class LongPollingSimulatedPM100(object):
                     log.debug("Exit command queue")
                     break
 
-                #time.sleep(0.3)
+                time.sleep(0.1)
                 data = self.device.read()
-                #log.debug("Collected data in continuous poll")
+                log.debug("Collected data in continuous poll")
                 response_queue.put(data)
             except (KeyboardInterrupt, SystemExit):
                 raise

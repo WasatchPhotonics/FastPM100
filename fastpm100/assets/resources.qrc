@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="ui">
+    <file>images/wp_logo.png</file>
+    <file>images/ApplicationIcon.ico</file>
+  </qresource>
+</RCC>

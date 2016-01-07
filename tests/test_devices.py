@@ -86,25 +86,70 @@ class TestSimulatedPM100Device:
 
         return device
 
-    def test_reports_speed_that_matches_explicit_acquire(self, sub_device, caplog):
+    def test_default_speed_that_matches_explicit_acquire(self, sub_device, caplog):
         """ In the default configuration, every call to read() sends an acquire,
         and gets the next entry off the queue at the next read. Ensure that the
         default behavior returns 10 reads in 1 second with the appropriate time
         interval in the parent process.  """
 
-        result = sub_device.read()
-        while result is None:
-            time.sleep(0.2)
-            print "Read: %s" % result
+        start_time = time.time()
+        cease_time = time.time()
+        time_diffe = cease_time - start_time
+
+        good_reads = 0
+        while time_diffe <= 1.1:
             result = sub_device.read()
+            time.sleep(0.05) # 100ms total, first to read, then get the next
+            if result is not None:
+                good_reads += 1
 
-        assert result != 0
-        assert result != None
+            cease_time = time.time()
+            time_diffe = cease_time - start_time
 
-        log_text = applog.get_text_from_log()
+        print "Received %s reads in %s seconds" % (good_reads, time_diffe)
+        assert good_reads >= 9
+        assert good_reads <= 11
 
-        assert "SimulatedPM100 setup" in log_text
-        assert "SimulatedPM100 setup" not in caplog.text()
-        assert "Collected data in continuous" in log_text
-        assert "Collected data in continuous" not in caplog.text()
+
+    @pytest.fixture(scope="function")
+    def fast_device(self, request):
+        """ Auto-acquire enabled version of sub_device fixture.
+        """
+        assert applog.delete_log_file_if_exists() == True
+
+        main_logger = applog.MainLogger()
+        device = devices.LongPollingSimulatedPM100(main_logger.log_queue,
+                                                   auto_acquire=True)
+
+        def close_device():
+            device.close()
+            main_logger.close()
+            applog.explicit_log_close()
+        request.addfinalizer(close_device)
+
+        return device
+
+    def test_auto_acquire_speed_is_faster(self, fast_device, caplog):
+        """ With the auto_acquire flag on, verify that the device reports
+        significantly higher acquisition rates.
+        """
+        start_time = time.time()
+        cease_time = time.time()
+        time_diffe = cease_time - start_time
+
+        good_reads = 0
+        while time_diffe <= 1.1:
+            result = fast_device.read()
+            # Sub-process in auto-acquire is still running despite this blocking
+            # sleep
+            time.sleep(0.05)
+            if result is not None:
+                good_reads += 1
+
+            cease_time = time.time()
+            time_diffe = cease_time - start_time
+
+        print "Received %s reads in %s seconds" % (good_reads, time_diffe)
+        assert good_reads >= 1000
+
 

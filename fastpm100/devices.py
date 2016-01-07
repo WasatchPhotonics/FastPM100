@@ -36,15 +36,18 @@ class LongPollingSimulatedPM100(object):
     """ Wrap simulate pm100 in a non-blocking interface run in a separate
     process.
     """
-    def __init__(self, log_queue=None):
+    def __init__(self, log_queue=None, auto_acquire=None):
         self.response_queue = multiprocessing.Queue()
         self.command_queue = multiprocessing.Queue()
 
+        self.auto_acquire = auto_acquire
         self.acquire_sent = False # Wait for an acquire to complete
         self.closing = False # Don't permit new requires during close
         self.send_acquire()
 
-        args = (log_queue, self.command_queue, self.response_queue)
+        args = (log_queue,
+                self.command_queue, self.response_queue,
+                self.auto_acquire)
         self.poller = multiprocessing.Process(target=self.continuous_poll,
                                               args=args)
         self.poller.start()
@@ -56,7 +59,9 @@ class LongPollingSimulatedPM100(object):
         self.poller.join()
         self.closing = True
 
-    def continuous_poll(self, log_queue, command_queue, response_queue):
+    def continuous_poll(self, log_queue,
+                        command_queue, response_queue,
+                        auto_acquire):
         """ Auto-acquire new readings from the simulated device. First setup the
         log queue handler. While waiting forever for the None poison pill on the
         command queue, continuously add 'acquire' commands and post the results
@@ -75,10 +80,12 @@ class LongPollingSimulatedPM100(object):
                     log.debug("Exit command queue")
                     break
 
-                time.sleep(0.1)
+                time.sleep(0.001)
                 data = self.device.read()
                 log.debug("Collected data in continuous poll")
                 response_queue.put(data)
+
+
             except (KeyboardInterrupt, SystemExit):
                 raise
             except:
@@ -113,6 +120,7 @@ class LongPollingSimulatedPM100(object):
         parameter. This is done after a succesful de-queuing in the read
         function.
         """
+
         if self.acquire_sent:
             return
 

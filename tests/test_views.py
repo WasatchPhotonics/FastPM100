@@ -13,6 +13,23 @@ from fastpm100 import views
 class TestBasicWindow:
 
     @pytest.fixture(scope="function")
+    def strip_form(self, qtbot, request):
+        """ Create the view at every setup, close it on final.
+        """
+        new_form = views.StripWindow()
+
+        def form_close():
+            new_form.close()
+        request.addfinalizer(form_close)
+
+        return new_form
+
+    def test_form_has_default_setup(self, strip_form, qtbot):
+        assert strip_form.ui.labelMinimum.text() == "0.0"
+        assert strip_form.width() == 1080
+        assert strip_form.height() == 600
+
+    @pytest.fixture(scope="function")
     def my_form(self, qtbot, request):
         """ Create the new QMainWindow from the view at every test
         setup.

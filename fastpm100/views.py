@@ -7,8 +7,22 @@ from PySide import QtGui, QtCore
 
 from .assets import resources_rc
 
+from .assets import strip_layout
+
 import logging
 log = logging.getLogger(__name__)
+
+class StripWindow(QtGui.QMainWindow):
+    """ Provide a standard gui control window with pyqtgraph for 3k per second
+    visualizations.
+    """
+    def __init__(self):
+        super(StripWindow, self).__init__()
+
+        self.ui = strip_layout.Ui_MainWindow()
+        self.ui.setupUi(self)
+        self.setGeometry(450, 350, 1080, 600)
+        self.show()
 
 class BasicWindow(QtGui.QMainWindow):
     """ Provie a bare form layout with basic interactivity.

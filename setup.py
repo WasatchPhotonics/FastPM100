@@ -10,7 +10,6 @@ requires = [
     "pytest-cov",
     "pytest-qt",
     "pytest-capturelog",
-    "pyside",
     "pyqtgraph",
     ]
 

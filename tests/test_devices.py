@@ -107,7 +107,7 @@ class TestSimulatedPM100Device:
             time_diffe = cease_time - start_time
 
         print "Received %s reads in %s seconds" % (good_reads, time_diffe)
-        assert good_reads >= 9
+        assert good_reads >= 8
         assert good_reads <= 11
 
 

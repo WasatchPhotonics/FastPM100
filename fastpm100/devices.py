@@ -76,7 +76,10 @@ class LongPollingSimulatedPM100(object):
         # Read forever until the None poison pill is received
         while True:
             try:
-                record = command_queue.get_nowait()
+                if auto_acquire:
+                    record = command_queue.get_nowait()
+                else:
+                    record = command_queue.get()
                 if record is None:
                     log.debug("Exit command queue")
                     break
@@ -86,9 +89,6 @@ class LongPollingSimulatedPM100(object):
                 total_reads += 1
                 log.debug("Collected data in continuous poll %s" % total_reads)
                 response_queue.put(data)
-
-                #if auto_acquire:
-                    #command_queue.put("auto acquire")
 
             except Queue.Empty:
                 #log.debug("Queue empty")

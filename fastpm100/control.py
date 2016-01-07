@@ -14,7 +14,8 @@ class Controller(object):
         log.debug("Control startup")
 
         # Create a separate process for the qt gui event loop
-        self.form = views.BasicWindow()
+        #self.form = views.BasicWindow()
+        self.form = views.StripWindow()
 
         self.create_signals()
 
@@ -54,8 +55,8 @@ class Controller(object):
         result = self.device.read()
         if result is not None:
             self.total_spectra += 1
-            self.form.txt_box.append("%s spectra read" \
-                                     % self.total_spectra)
+            #self.form.txt_box.append("%s spectra read" \
+                                     #% self.total_spectra)
 
         if self.continue_loop:
             self.main_timer.start(0)

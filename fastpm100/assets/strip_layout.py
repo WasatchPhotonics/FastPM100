@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'fastpm100/assets/strip_layout.ui'
 #
-# Created: Thu Jan  7 10:44:56 2016
+# Created: Thu Jan  7 10:59:32 2016
 #      by: pyside-uic 0.2.15 running on PySide 1.2.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -19,11 +19,18 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         self.horizontalLayout = QtGui.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.frameGraph = QtGui.QFrame(self.centralwidget)
-        self.frameGraph.setFrameShape(QtGui.QFrame.StyledPanel)
-        self.frameGraph.setFrameShadow(QtGui.QFrame.Raised)
-        self.frameGraph.setObjectName("frameGraph")
-        self.horizontalLayout.addWidget(self.frameGraph)
+        self.stackedWidget = QtGui.QStackedWidget(self.centralwidget)
+        self.stackedWidget.setObjectName("stackedWidget")
+        self.page = QtGui.QWidget()
+        self.page.setObjectName("page")
+        self.label = QtGui.QLabel(self.page)
+        self.label.setGeometry(QtCore.QRect(150, 200, 341, 16))
+        self.label.setObjectName("label")
+        self.stackedWidget.addWidget(self.page)
+        self.page_2 = QtGui.QWidget()
+        self.page_2.setObjectName("page_2")
+        self.stackedWidget.addWidget(self.page_2)
+        self.horizontalLayout.addWidget(self.stackedWidget)
         self.frameRight = QtGui.QFrame(self.centralwidget)
         self.frameRight.setMinimumSize(QtCore.QSize(200, 400))
         self.frameRight.setMaximumSize(QtCore.QSize(200, 400))
@@ -77,6 +84,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "MainWindow", None, QtGui.QApplication.UnicodeUTF8))
+        self.label.setText(QtGui.QApplication.translate("MainWindow", "Primary Stacked widget", None, QtGui.QApplication.UnicodeUTF8))
         self.label_5.setText(QtGui.QApplication.translate("MainWindow", "Current", None, QtGui.QApplication.UnicodeUTF8))
         self.labelCurrent.setText(QtGui.QApplication.translate("MainWindow", "0.0", None, QtGui.QApplication.UnicodeUTF8))
         self.label_2.setText(QtGui.QApplication.translate("MainWindow", "Min", None, QtGui.QApplication.UnicodeUTF8))

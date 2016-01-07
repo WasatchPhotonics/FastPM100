@@ -11,6 +11,7 @@ requires = [
     "pytest-qt",
     "pytest-capturelog",
     "pyside",
+    "pyqtgraph",
     ]
 
 setup(name="fastpm100",

@@ -6,6 +6,7 @@ controller create the top level logger
 """
 
 import time
+import pytest
 
 from PySide import QtTest
 
@@ -41,7 +42,7 @@ class TestControl:
 
         main_logger.close()
         time.sleep(1)
-        assert "Init of BasicWindow" in caplog.text()
+        assert "Init of StripWindow" in caplog.text()
         applog.explicit_log_close()
 
     def test_device_logs_in_file_only(self, caplog, qtbot):
@@ -62,8 +63,8 @@ class TestControl:
         time.sleep(1)
 
         log_text = applog.get_text_from_log()
-        assert "SimulateSpectra setup" in log_text
-        assert "SimulateSpectra setup" not in caplog.text()
+        assert "SimulatedPM100 setup" in log_text
+        assert "SimulatedPM100 setup" not in caplog.text()
         applog.explicit_log_close()
 
 
@@ -85,3 +86,53 @@ class TestControl:
         time.sleep(1)
         assert "Control level close" in caplog.text()
         applog.explicit_log_close()
+
+    def test_simulated_device_updates_current_value(self, caplog, qtbot):
+        main_logger = applog.MainLogger()
+        app_control = control.Controller(main_logger.log_queue)
+
+        QtTest.QTest.qWaitForWindowShown(app_control.form)
+
+        signal = app_control.control_exit_signal.exit
+        qtbot.wait(1000)
+        first_val = app_control.form.ui.labelCurrent.text()
+
+        qtbot.wait(1000)
+        second_val = app_control.form.ui.labelCurrent.text()
+        assert first_val != second_val
+
+        app_control.close()
+        main_logger.close()
+        applog.explicit_log_close()
+
+    @pytest.fixture(scope="function")
+    def simulate_main(self, qtbot, request):
+        """ Setup the controller the same way the scripts/Application does at
+        every setup. Ensure that the teardown is in place regardless of test
+        result.
+        """
+        main_logger = applog.MainLogger()
+        app_control = control.Controller(main_logger.log_queue)
+
+        def control_close():
+            app_control.close()
+            main_logger.close()
+            applog.explicit_log_close()
+
+        request.addfinalizer(control_close)
+
+        return app_control
+
+    def test_simulated_device_updates_graph(self, simulate_main, qtbot):
+
+        qtbot.wait(1000)
+
+        points = simulate_main.form.curve.getData()
+        first_point = points[1][-1]
+
+        qtbot.wait(1000)
+
+        points = simulate_main.form.curve.getData()
+        second_point = points[1][-1]
+
+        assert first_point != second_point

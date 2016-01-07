@@ -19,6 +19,7 @@ class StripWindow(QtGui.QMainWindow):
     visualizations.
     """
     def __init__(self):
+        log.debug("Init of %s" % self.__class__.__name__)
         super(StripWindow, self).__init__()
 
         self.ui = strip_layout.Ui_MainWindow()

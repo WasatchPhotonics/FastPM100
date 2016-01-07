@@ -5,6 +5,7 @@ multiprocessing wrappers.
 
 import time
 import Queue
+import numpy
 import logging
 import multiprocessing
 
@@ -12,22 +13,27 @@ from . import applog
 
 log = logging.getLogger(__name__)
 
-class SimulateSpectra(object):
-    """ Provide a bare bones interface for reading simulated spectra from a
-    simulated device.
+
+class SimulatedPM100(object):
+    """ Create a simulated laser power output meter.
     """
-    def __init__(self):
-        super(SimulateSpectra, self).__init__()
+    def __init__(self, noise_factor=1.0):
+        super(SimulatedPM100, self).__init__()
         log.debug("%s setup", self.__class__.__name__)
 
+        self.noise_factor = noise_factor
+
     def read(self):
-        """ Return a test pattern of 0-1023 values across an 1024 length list.
+        """ Return a single value with noise applied.
         """
-        return range(0, 1024)
+        value = 123.0
+        value = value + numpy.random.uniform(0, self.noise_factor, 1)
+        value = value[0]
+        #log.debug("Return: %s" % value)
+        return value
 
-
-class LongPollingSimulateSpectra(object):
-    """ Wrap simulate spectra in a non-blocking interface run in a separate
+class LongPollingSimulatedPM100(object):
+    """ Wrap simulate pm100 in a non-blocking interface run in a separate
     process.
     """
     def __init__(self, log_queue=None):
@@ -59,7 +65,7 @@ class LongPollingSimulateSpectra(object):
 
         applog.process_log_configure(log_queue)
 
-        self.device = SimulateSpectra()
+        self.device = SimulatedPM100()
 
         # Read forever until the None poison pill is received
         while True:
@@ -69,9 +75,9 @@ class LongPollingSimulateSpectra(object):
                     log.debug("Exit command queue")
                     break
 
-                time.sleep(0.1)
+                #time.sleep(0.3)
                 data = self.device.read()
-                log.debug("Collected data in continuous poll")
+                #log.debug("Collected data in continuous poll")
                 response_queue.put(data)
             except (KeyboardInterrupt, SystemExit):
                 raise
@@ -94,7 +100,6 @@ class LongPollingSimulateSpectra(object):
         result = None
         try:
             result = self.response_queue.get_nowait()
-            #log.debug("Successful read: %s", result)
             self.acquire_sent = False
         except Queue.Empty:
             pass
@@ -111,6 +116,6 @@ class LongPollingSimulateSpectra(object):
         if self.acquire_sent:
             return
 
-        log.debug("Send acquire")
+        #log.debug("Send acquire")
         self.command_queue.put("ACQUIRE")
         self.acquire_sent = True

@@ -27,8 +27,9 @@ class SimulatedPM100(object):
         """ Return a single value with noise applied.
         """
         value = 123.0
-        value = value + numpy.random.uniform(0, self.noise_factor, 1)
-        value = value[0]
+        time.sleep(0.0003)
+        #value = value + numpy.random.uniform(0, self.noise_factor, 1)
+        #value = value[0]
         #log.debug("Return: %s" % value)
         return value
 

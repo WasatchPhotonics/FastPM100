@@ -38,18 +38,18 @@ class TestControl:
         return app_control
 
     def test_control_logs_visible_to_caplog(self, simulate_main, caplog, qtbot):
-        qtbot.wait(3000)
+        QtTest.QTest.qWaitForWindowShown(simulate_main.form)
         assert "Control startup" in caplog.text()
 
     def test_view_logs_visible_to_caplog(self, simulate_main, caplog, qtbot):
-        qtbot.wait(3000)
+        QtTest.QTest.qWaitForWindowShown(simulate_main.form)
         assert "Init of StripWindow" in caplog.text()
 
     def test_device_logs_in_file_only(self, simulate_main, caplog, qtbot):
         """ Shows the expected behavior. Demonstrates that the capturelog
         fixture on py.test does not see sub process entries.
         """
-        qtbot.wait(3000)
+        QtTest.QTest.qWaitForWindowShown(simulate_main.form)
 
         log_text = applog.get_text_from_log()
         assert "SimulatedPM100 setup" in log_text
@@ -85,12 +85,13 @@ class TestControl:
 
     def test_simulated_device_updates_graph(self, simulate_main, qtbot):
 
-        qtbot.wait(3000)
+        QtTest.QTest.qWaitForWindowShown(simulate_main.form)
+        qtbot.wait(6000)
 
         points = simulate_main.form.curve.getData()
         first_point = points[1][-1]
 
-        qtbot.wait(3000)
+        qtbot.wait(6000)
 
         points = simulate_main.form.curve.getData()
         second_point = points[1][-1]

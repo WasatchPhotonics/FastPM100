@@ -1,7 +1,7 @@
 """ Application level controller for demonstration program. Handles data model
 and UI updates with MVC style architecture.
 """
-
+import time
 import numpy
 from PySide import QtCore
 
@@ -35,8 +35,13 @@ class Controller(object):
         """
         self.history = deque()
         self.size = 3000
+        self.current = numpy.empty(0)
         #for item in range(self.size):
         #    self.history.append(0)
+
+        self.start_time = time.time()
+        self.cease_time = time.time()
+        self.total_frames = 0
 
     def create_signals(self):
         """ Create signals for access by parent process.
@@ -65,16 +70,26 @@ class Controller(object):
         """ Process queue events, interface events, then update views.
         """
         result = self.device.read()
-        current = numpy.empty(0)
         while result is not None:
-            current = numpy.append(current, result[1])
+            self.current = numpy.append(self.current, result[1])
             result = self.device.read()
 
             #self.form.ui.labelCurrent.setText("%s" % result[1])
         #if len(self.history) > self.size:
             #self.history = self.history[-1:-3000]
         #log.debug("cur: %s" % current)
-        self.form.curve.setData(current)
+        if len(self.current) >= self.size:
+            self.form.curve.setData(self.current)
+            self.current = numpy.empty(0)
+
+            self.total_frames += 1
+            self.cease_time = time.time()
+            time_diff = self.cease_time - self.start_time
+
+            display_str = "%s, %s" % (self.total_frames, time_diff)
+            self.form.ui.labelCurrent.setText("%s" % display_str)
+
+            self.start_time = time.time()
 
         if self.continue_loop:
             self.main_timer.start(0)

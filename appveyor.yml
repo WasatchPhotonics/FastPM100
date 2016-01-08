@@ -33,7 +33,8 @@ build: off
 test_script:
   # Run the project tests
      - "python setup.py develop"
-     - "%MINICONDA%\\Scripts\\py.test.exe tests"
+       #- "%MINICONDA%\\Scripts\\py.test.exe tests"
+     - "py.test tests"
 
 after_test:
    - "python scripts\\py2exe_application.py py2exe"

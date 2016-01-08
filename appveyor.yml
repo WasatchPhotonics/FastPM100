@@ -21,8 +21,8 @@ install:
   - "conda create -q -n test-environment python=%PYTHON_VERSION% numpy scipy nose"
   - activate test-environment
 
-  - "%CMD_IN_ENV% pip install pyside pytest pytest-qt pytest-capturelog"
-  - "%CMD_IN_ENV% pip install http://sourceforge.net/projects/py2exe/files/latest/download?source=files"
+  - "pip install pyside pytest pytest-qt pytest-capturelog"
+  - "pip install http://sourceforge.net/projects/py2exe/files/latest/download?source=files"
 
   - choco install -y InnoSetup
   - set PATH="C:\Program Files (x86)\Inno Setup 5";%PATH%
@@ -32,11 +32,11 @@ build: off
 
 test_script:
   # Run the project tests
-     - "%CMD_IN_ENV% python setup.py develop"
-     - "%PYTHON%\\Scripts\\py.test.exe tests"
+     - "python setup.py develop"
+     - "%MINICONDA%\\Scripts\\py.test.exe tests"
 
 after_test:
-   - "%CMD_IN_ENV% python scripts\\py2exe_application.py py2exe"
+   - "python scripts\\py2exe_application.py py2exe"
    - "iscc scripts\\Application_InnoSetup.iss"
    - ps: "ls scripts\\built-dist\\*.exe"
    - ps: "ls scripts\\windows_installer\\*.exe"

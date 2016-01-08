@@ -44,3 +44,55 @@ class TestControl:
     def test_view_logs_visible_to_caplog(self, simulate_main, caplog, qtbot):
         qtbot.wait(1000)
         assert "Init of StripWindow" in caplog.text()
+
+    def test_device_logs_in_file_only(self, simulate_main, caplog, qtbot):
+        """ Shows the expected behavior. Demonstrates that the capturelog
+        fixture on py.test does not see sub process entries.
+        """
+        qtbot.wait(1000)
+
+        log_text = applog.get_text_from_log()
+        assert "SimulatedPM100 setup" in log_text
+        assert "SimulatedPM100 setup" not in caplog.text()
+
+    def test_close_view_emits_control_signal(self, simulate_main, caplog, qtbot):
+        """ Control script emits an event on a close condition to be processsed
+        by the parent qt application, in this case qtbot. In the scripts file,
+        it's the Qapplication.
+        """
+
+        QtTest.QTest.qWaitForWindowShown(simulate_main.form)
+
+        close_signal = simulate_main.control_exit_signal.exit
+        with qtbot.wait_signal(close_signal, timeout=1):
+            simulate_main.form.close()
+
+        time.sleep(1)
+        assert "Control level close" in caplog.text()
+
+    def test_simulated_device_updates_current_value(self, simulate_main, caplog, qtbot):
+
+        QtTest.QTest.qWaitForWindowShown(simulate_main.form)
+
+        qtbot.wait(1000)
+        first_val = simulate_main.form.ui.labelCurrent.text()
+
+        qtbot.wait(1000)
+        second_val = simulate_main.form.ui.labelCurrent.text()
+
+        assert first_val != second_val
+
+
+    def test_simulated_device_updates_graph(self, simulate_main, qtbot):
+
+        qtbot.wait(1000)
+
+        points = simulate_main.form.curve.getData()
+        first_point = points[1][-1]
+
+        qtbot.wait(1000)
+
+        points = simulate_main.form.curve.getData()
+        second_point = points[1][-1]
+
+        assert first_point != second_point

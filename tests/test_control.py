@@ -39,10 +39,12 @@ class TestControl:
 
     def test_control_logs_visible_to_caplog(self, simulate_main, caplog, qtbot):
         QtTest.QTest.qWaitForWindowShown(simulate_main.form)
+        qtbot.wait(6000)
         assert "Control startup" in caplog.text()
 
     def test_view_logs_visible_to_caplog(self, simulate_main, caplog, qtbot):
         QtTest.QTest.qWaitForWindowShown(simulate_main.form)
+        qtbot.wait(6000)
         assert "Init of StripWindow" in caplog.text()
 
     def test_device_logs_in_file_only(self, simulate_main, caplog, qtbot):
@@ -50,6 +52,7 @@ class TestControl:
         fixture on py.test does not see sub process entries.
         """
         QtTest.QTest.qWaitForWindowShown(simulate_main.form)
+        qtbot.wait(6000)
 
         log_text = applog.get_text_from_log()
         assert "SimulatedPM100 setup" in log_text
@@ -62,6 +65,7 @@ class TestControl:
         """
 
         QtTest.QTest.qWaitForWindowShown(simulate_main.form)
+        qtbot.wait(6000)
 
         close_signal = simulate_main.control_exit_signal.exit
         with qtbot.wait_signal(close_signal, timeout=1):
@@ -74,10 +78,10 @@ class TestControl:
 
         QtTest.QTest.qWaitForWindowShown(simulate_main.form)
 
-        qtbot.wait(3000)
+        qtbot.wait(6000)
         first_val = simulate_main.form.ui.labelCurrent.text()
 
-        qtbot.wait(3000)
+        qtbot.wait(6000)
         second_val = simulate_main.form.ui.labelCurrent.text()
 
         assert first_val != second_val

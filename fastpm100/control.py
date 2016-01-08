@@ -24,7 +24,7 @@ class Controller(object):
 
         self.bind_view_signals()
 
-        self.device = devices.LongPollingSimulatedPM100(log_queue)
+        self.device = devices.SubProcessSimulatedPM100(log_queue)
         self.total_spectra = 0
 
         self.setup_main_event_loop()
@@ -65,12 +65,12 @@ class Controller(object):
         """
         result = self.device.read()
         if result is not None:
-            self.history.append(result)
+            self.history.append(result[1])
             if len(self.history) > self.size:
                 self.history.popleft()
 
 
-            self.form.ui.labelCurrent.setText("%s" % result)
+            self.form.ui.labelCurrent.setText("%s" % result[1])
             self.form.curve.setData(self.history)
 
         if self.continue_loop:

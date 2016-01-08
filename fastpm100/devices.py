@@ -51,6 +51,7 @@ class SubProcessSimulatedPM100(object):
         self.command_queue.put(None)
         self.poller.join(1)     # Required on Windows
         self.poller.terminate() # Required on windows
+        log.debug("Post poller terminate")
 
     def continuous_poll(self, log_queue, command_queue, response_queue):
 

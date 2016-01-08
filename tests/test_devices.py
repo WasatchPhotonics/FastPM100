@@ -97,5 +97,5 @@ class TestSimulatedPM100Device:
 
         full_size = last_result[0]
         assert good_reads == full_size
-        assert good_reads >= 100
+        assert good_reads >= 10
 

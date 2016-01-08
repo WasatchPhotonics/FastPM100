@@ -74,8 +74,9 @@ class SubProcessSimulatedPM100(object):
                     break
 
             except Queue.Empty:
-                log.debug("Queue empty")
-                time.sleep(0.1001)
+                #log.debug("Queue empty")
+                #time.sleep(0.1001)
+                pass
 
             except (KeyboardInterrupt, SystemExit):
                 raise

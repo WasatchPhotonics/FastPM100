@@ -75,3 +75,20 @@ class TestSimulatedPM100Device:
         assert "Collected data in continuous" in log_text
         assert "Collected data in continuous" not in caplog.text()
 
+
+    def test_subprocess_good_reads_matches_metric(self, sub_device, caplog):
+        return
+        time.sleep(0.2)
+        good_reads = 1
+
+        result = sub_device.read()
+        last_result = result
+        while result is not None:
+            result = sub_device.read()
+            last_result = result
+            good_reads += 1
+
+        full_size = last_result[0]
+        assert good_reads == full_size
+        assert last_result[0] >= 100
+

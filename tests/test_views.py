@@ -26,12 +26,12 @@ class TestBasicWindow:
 
     def test_form_has_default_setup(self, strip_form, qtbot):
         assert strip_form.ui.labelMinimum.text() == "0.0"
-        assert strip_form.width() == 1080
-        assert strip_form.height() == 418
+        assert strip_form.width() >= 980
+        assert strip_form.height() >= 318
 
     def test_form_has_pyqtgraph_widget(self, strip_form, qtbot):
-        assert strip_form.ui.plot.width() == 856
-        assert strip_form.ui.plot.height() == 400
+        assert strip_form.ui.plot.width() >= 756
+        assert strip_form.ui.plot.height() >= 300
 
     @pytest.fixture(scope="function")
     def my_form(self, qtbot, request):

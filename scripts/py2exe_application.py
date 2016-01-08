@@ -10,6 +10,10 @@ Run:
 from distutils.core import setup
 import py2exe
 
+import numpy
+# possibly required for py2exe build on miniconda on appveyor. Addresses the
+# error message: error: [Errno 2] No such file or directory: 'libiomp5md.dll'
+
 project_name = "FastPM100"
 module_name = "fastpm100"
 

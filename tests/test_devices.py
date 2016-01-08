@@ -88,6 +88,7 @@ class TestSimulatedPM100Device:
         # There should now be a huge list of entries, read them all off, and
         # make sure the total count read off matches the total count of reads
         # reported by the sub process
+        last_result = result
         while result is not None:
             result = sub_device.read()
             if result is not None:
@@ -97,24 +98,4 @@ class TestSimulatedPM100Device:
         full_size = last_result[0]
         assert good_reads == full_size
         assert good_reads >= 100
-
-    def test_device_subprocess_rate_is_at_max(self, sub_device, caplog):
-
-        start_time = time.time()
-        cease_time = time.time()
-
-        good_reads = 0
-        max_reads = 3000 * 10
-        while good_reads < max_reads:
-            result = sub_device.read()
-            if result is not None:
-                good_reads += 1
-
-        assert good_reads == max_reads
-
-        cease_time = time.time()
-        discr_time = cease_time - start_time
-
-        assert discr_time >= 12.9
-        assert discr_time <= 13.1
 

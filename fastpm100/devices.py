@@ -22,14 +22,13 @@ class SimulatedPM100(object):
         log.debug("%s setup", self.__class__.__name__)
 
         self.noise_factor = noise_factor
+        self.counter = 0.1234567
 
     def read(self):
         """ Return a single value with noise applied.
         """
-        value = 123.0
-        time.sleep(0.0003)
-        #value = value + numpy.random.uniform(0, self.noise_factor, 1)
-        #value = value[0]
+        value = 123.0 + numpy.random.uniform(0, self.noise_factor, 1)
+        value = value[0]
         #log.debug("Return: %s" % value)
         return value
 

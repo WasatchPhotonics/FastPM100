@@ -49,7 +49,7 @@ setup(windows=[
        #["C:\Python27.10\Lib\site-packages\PySide\plugins\imageformats\qico4.dll"]
        data_files = [
                         ("imageformats",
-                         ["C:\Miniconda\envs\test-environment\lib\site-packages\PySide\plugins\imageformats\qico4.dll"]
+                         ["C:/Miniconda/envs/test-environment/lib/site-packages/PySide/plugins/imageformats/qico4.dll"]
                         ),
                     ],
        zipfile=None

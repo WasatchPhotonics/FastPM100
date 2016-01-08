@@ -2,6 +2,7 @@
 and UI updates with MVC style architecture.
 """
 
+import numpy
 from PySide import QtCore
 
 from collections import deque
@@ -64,14 +65,16 @@ class Controller(object):
         """ Process queue events, interface events, then update views.
         """
         result = self.device.read()
-        if result is not None:
-            self.history.append(result[1])
-            if len(self.history) > self.size:
-                self.history.popleft()
+        current = numpy.empty(0)
+        while result is not None:
+            current = numpy.append(current, result[1])
+            result = self.device.read()
 
-
-            self.form.ui.labelCurrent.setText("%s" % result[1])
-            self.form.curve.setData(self.history)
+            #self.form.ui.labelCurrent.setText("%s" % result[1])
+        #if len(self.history) > self.size:
+            #self.history = self.history[-1:-3000]
+        #log.debug("cur: %s" % current)
+        self.form.curve.setData(current)
 
         if self.continue_loop:
             self.main_timer.start(0)

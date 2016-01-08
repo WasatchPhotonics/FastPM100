@@ -65,7 +65,7 @@ class SubProcessSimulatedPM100(object):
             data = self.device.read()
             total_reads += 1
             response_queue.put_nowait((total_reads, data))
-            log.debug("Collected data in continuous poll %s" % total_reads)
+            #log.debug("Collected data in continuous poll %s" % total_reads)
 
             try:
                 record = command_queue.get_nowait()

@@ -45,9 +45,11 @@ setup(windows=[
        # inside of it.  This is required to read the application icon at
        # runtime.
        #data_files = [],
+       # Appveyor 'default' python location
+       #["C:\Python27.10\Lib\site-packages\PySide\plugins\imageformats\qico4.dll"]
        data_files = [
                         ("imageformats",
-                         ["C:\Python27.10\Lib\site-packages\PySide\plugins\imageformats\qico4.dll"]
+                         ["C:\Miniconda\envs\test-environment\lib\site-packages\PySide\plugins\imageformats\qico4.dll"]
                         ),
                     ],
        zipfile=None

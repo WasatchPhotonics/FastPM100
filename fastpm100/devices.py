@@ -73,14 +73,14 @@ class SubProcessSimulatedPM100(object):
         self.device = SimulatedPM100()
 
         total_reads = 0
-        
+
         # Read forever until the None poison pill is received
         while True:
 
             data = self.device.read()
             total_reads += 1
             response_queue.put((total_reads, data))
-            #time.sleep(0.0001)
+            time.sleep(0.0001)
             #log.debug("Collected data in continuous poll %s" % total_reads)
 
             try:
@@ -88,12 +88,12 @@ class SubProcessSimulatedPM100(object):
                 if record is None:
                     log.debug("Exit command queue")
                     break
-   
+
             except Queue.Empty:
                 #log.debug("Queue empty")
                 #time.sleep(0.1001)
                 pass
-  
+
             except (KeyboardInterrupt, SystemExit):
                 raise
             except:

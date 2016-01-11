@@ -71,34 +71,20 @@ class Controller(object):
         """ Process queue events, interface events, then update views.
         """
         result = self.device.read()
-        good_reads = 0
-        while result is not None:
-            #if self.array_full:
-            #    self.current[-1] = result[1]
-            #else:
-            #    self.current = numpy.append(self.current, result[1])
 
+        if result is not None:
             self.current = numpy.append(self.current, result[1])
-            good_reads += 1
-            result = self.device.read()
 
-        if len(self.current) >= self.size:
-            #self.array_full = True
-            #self.current = numpy.roll(self.current, -1)
-            #self.current = self.current[-1:-3000]
-            #self.current = self.current[0:2000]
-            self.current = numpy.roll(self.current, -1 * good_reads)
-            self.current = self.current[0:self.size]
-            self.form.curve.setData(self.current)
+        self.form.curve.setData(self.current)
 
-            self.total_frames += 1
-            self.cease_time = time.time()
-            time_diff = self.cease_time - self.start_time
+        self.total_frames += 1
+        self.cease_time = time.time()
+        time_diff = self.cease_time - self.start_time
 
-            display_str = "%s, %s" % (self.total_frames, time_diff)
-            self.form.ui.labelCurrent.setText("%s" % display_str)
+        display_str = "%s, %s" % (self.total_frames, time_diff)
+        self.form.ui.labelCurrent.setText("%s" % display_str)
 
-            self.start_time = time.time()
+        self.start_time = time.time()
 
         if self.continue_loop:
             self.main_timer.start(0)

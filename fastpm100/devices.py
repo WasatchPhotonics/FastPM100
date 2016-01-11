@@ -70,6 +70,8 @@ class SubProcessSimulatedPM100(object):
     """ Wrap simulate pm100 in a non-blocking interface run in a separate
     process.
     """
+    device_class = SimulatedPM100
+
     def __init__(self, log_queue=None):
         self.response_queue = multiprocessing.Queue()
         self.command_queue = multiprocessing.Queue()
@@ -91,7 +93,7 @@ class SubProcessSimulatedPM100(object):
 
         applog.process_log_configure(log_queue)
 
-        self.device = SimulatedPM100()
+        self.device = self.device_class()
 
         total_reads = 0
 
@@ -135,3 +137,8 @@ class SubProcessSimulatedPM100(object):
 
         return result
 
+class SubProcessThorlabsMeter(SubProcessSimulatedPM100):
+    """ Wrap an actual thorlabs pm100 in a non-blocking interface run in a
+    separate process.
+    """
+    device_class = ThorlabsMeter

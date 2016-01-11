@@ -44,15 +44,18 @@ class TestControl:
         QtTest.QTest.qWaitForWindowShown(simulate_main.form)
         #qtbot.wait(6000)
         with qtbot.waitSignal(signal=None, timeout=3000):
-            points = simulate_main.form.curve.getData()
-            print "points: %s" % points
-            first_point = points[1][-1]
+            print "wait instead of qtbot wait"
+
+        points = simulate_main.form.curve.getData()
+        print "points: ", points
+        first_point = points[1][-1]
 
         #qtbot.wait(6000)
 
         with qtbot.waitSignal(signal=None, timeout=3000):
-            points = simulate_main.form.curve.getData()
-            print "second points: %s" % points
-            second_point = points[1][-1]
+            print "wait instead of qtbot wait"
+        points = simulate_main.form.curve.getData()
+        print "second points: ", points
+        second_point = points[1][-1]
 
         assert first_point != second_point

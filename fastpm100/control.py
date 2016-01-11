@@ -37,12 +37,17 @@ class Controller(object):
         self.size = 3000
         self.current = numpy.empty(0)
         self.array_full = False
-        #for item in range(self.size):
-        #    self.history.append(0)
 
+        # Instantaneous performance counters
         self.start_time = time.time()
-        self.cease_time = time.time()
-        self.total_frames = 0
+        self.read_frames = 0
+        self.reported_frames = 0
+
+        # Per second performance counters
+        self.second_time = time.time()
+        self.total_rend = 0
+        self.last_reported = 0
+        self.last_rend = 0
 
     def create_signals(self):
         """ Create signals for access by parent process.
@@ -80,14 +85,18 @@ class Controller(object):
         result = self.device.read()
         good_reads = 0
         while result is not None:
+            self.read_frames += 1
             self.current = numpy.append(self.current, result[1])
+            self.reported_frames = result[0]
             good_reads += 1
             result = self.device.read()
 
-            # Read a maximum off the queue at a
-            #time to ensure the interface responds
+            # Read a maximum off the queue at a time to ensure the interface
+            # responds. This will probably alter the performance mertrics in
+            # ways not intended
             if good_reads >= 10:
                 result = None
+
 
         if len(self.current) >= self.size:
             self.current = numpy.roll(self.current, -1 * good_reads)
@@ -95,21 +104,47 @@ class Controller(object):
 
         self.form.curve.setData(self.current)
 
-        self.total_frames += 1
-        self.cease_time = time.time()
-        time_diff = self.cease_time - self.start_time
-
-        display_str = "%s, %s" % (self.total_frames, time_diff)
-        self.form.ui.labelCurrent.setText("%s" % display_str)
 
         if len(self.current) > 0:
             self.form.ui.labelMinimum.setText("%s" % numpy.min(self.current))
             self.form.ui.labelMaximum.setText("%s" % numpy.max(self.current))
 
-        self.start_time = time.time()
+        self.update_performance_metrics()
+
+        self.total_rend += 1
 
         if self.continue_loop:
             self.main_timer.start(0)
+
+    def update_performance_metrics(self):
+        """ Compute the data frames per second and render frames per second,
+        update the main interface.  """
+
+        # Total number of frames read, ms per frame instantaneous performance
+        # display
+        time_diff = time.time() - self.start_time
+        display_str = "%s, %0.3fms" % (self.read_frames, time_diff)
+        self.form.ui.labelCurrent.setText("%s" % display_str)
+
+
+        # Show the total number of data frames collected per second, as well as
+        # the number of rend events per second
+        second_diff = time.time() - self.second_time
+        if second_diff >= 1.0:
+
+            data_per_second = self.reported_frames - self.last_reported
+            rend_per_second = self.total_rend - self.last_rend
+
+            sfu = self.form.ui
+            sfu.labelDFPS.setText("%s" % data_per_second)
+            sfu.labelRFPS.setText("%s" % rend_per_second)
+
+            self.second_time = time.time()
+            self.last_reported = self.reported_frames
+            self.last_rend = self.total_rend
+
+
+        self.start_time = time.time()
 
     def close(self):
         self.continue_loop = False

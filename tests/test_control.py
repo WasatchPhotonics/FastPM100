@@ -100,7 +100,7 @@ class TestControl:
 
     def test_min_max_update(self, simulate_main, qtbot):
 
-        qtbot.wait(1000)
+        qtbot.wait(2000)
         min_val = simulate_main.form.ui.labelMinimum.text()
         assert min_val != "0.0"
 
@@ -108,7 +108,7 @@ class TestControl:
         assert max_val != "0.0"
 
     def test_dfps_rfps_update(self, simulate_main, qtbot):
-        qtbot.wait(1000)
+        qtbot.wait(2000)
         dfps_val = simulate_main.form.ui.labelDFPS.text()
         assert dfps_val != "0.0"
 

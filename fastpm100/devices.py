@@ -16,6 +16,11 @@ from . import applog
 log = logging.getLogger(__name__)
 
 
+# USBTMC instruments
+
+# Agilent MSO7104
+#SUBSYSTEMS=="usb", ACTION=="add", ATTRS{idVendor}=="0957", ATTRS{idProduct}=="1755", GROUP="usbtmc", MODE="0660"
+
 class ThorlabsMeter(object):
     """ Create a simulated laser power output meter.
     """
@@ -28,7 +33,7 @@ class ThorlabsMeter(object):
         self.power_meter.sense.correction.wavelength = 785.0
 
     def read(self):
-        return self.power_meter.read()
+        return self.power_meter.read
 
 class SimulatedPM100(object):
     """ Create a simulated laser power output meter.

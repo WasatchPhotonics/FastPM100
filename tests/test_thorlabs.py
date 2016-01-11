@@ -24,7 +24,7 @@ class TestThorlabsPM100:
 
         assert result != 0
         assert result != None
-        assert result >= 0.001
+        assert result >= 0.0
 
         applog.explicit_log_close()
 

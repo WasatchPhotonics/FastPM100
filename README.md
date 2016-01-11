@@ -31,11 +31,18 @@ Running tests:
     All Tests, with coverage report showing missing lines:
         py.test tests/ --cov=fastpm100 --cov-report term-missing
 
+    Certain tests are marked xfail to pass without access to the
+    physical hardware. After the setup is performed below, run these
+    with:
+
+    py.test tests/test_thorlabs.py --runxfail
+
 Setup access to physical hardware:
 
-    sudo -e /etc/udev/rules.d/usbtmc.rules
+    sudo -e /etc/udev/rules.d/99-thorlabs.rules
 
 Add the following text:
 
     # Thorlabs PM100 USB
-    SUBSYSTEMS=="usb", ACTION=="add", ATTRS{idVendor}=="1313", ATTRS{idProduct}=="8072", GROUP="usbtmc", MODE="0660"
+    SUBSYSTEMS=="usb", ACTION=="add", ATTRS{idVendor}=="1313", ATTRS{idProduct}=="8072", MODE="0666"
+

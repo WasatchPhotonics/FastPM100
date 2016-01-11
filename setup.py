@@ -11,6 +11,7 @@ requires = [
     "pytest-qt",
     "pytest-capturelog",
     "pyqtgraph",
+    "ThorlabsPM100",
     ]
 
 setup(name="fastpm100",

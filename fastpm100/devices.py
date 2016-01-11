@@ -9,10 +9,26 @@ import numpy
 import logging
 import multiprocessing
 
+from ThorlabsPM100 import ThorlabsPM100, USBTMC
+
 from . import applog
 
 log = logging.getLogger(__name__)
 
+
+class ThorlabsMeter(object):
+    """ Create a simulated laser power output meter.
+    """
+    def __init__(self, noise_factor=1.0):
+        super(ThorlabsMeter, self).__init__()
+        log.debug("%s setup", self.__class__.__name__)
+
+        self.inst = USBTMC(device="/dev/usbtmc0")
+        self.power_meter = ThorlabsPM100(inst=self.inst)
+        self.power_meter.sense.correction.wavelength = 785.0
+
+    def read(self):
+        return self.power_meter.read()
 
 class SimulatedPM100(object):
     """ Create a simulated laser power output meter.

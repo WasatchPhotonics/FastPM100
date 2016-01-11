@@ -24,7 +24,7 @@ install:
   - "conda create -q -n test-environment python=%PYTHON_VERSION% numpy scipy nose"
   - activate test-environment
 
-  - "pip install pyside pytest pytest-qt pytest-capturelog"
+  - "pip install pyside pytest pytest-qt pytest-capturelog ThorlabsPM100"
   - "pip install http://sourceforge.net/projects/py2exe/files/latest/download?source=files"
 
   - choco install -y InnoSetup

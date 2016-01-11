@@ -34,7 +34,7 @@ class Controller(object):
         """ Create data structures for application specific storage of reads.
         """
         self.history = deque()
-        self.size = 3000
+        self.size = 300
         self.current = numpy.empty(0)
         self.array_full = False
         #for item in range(self.size):
@@ -88,7 +88,7 @@ class Controller(object):
             #self.current = self.current[-1:-3000]
             #self.current = self.current[0:2000]
             self.current = numpy.roll(self.current, -1 * good_reads)
-            self.current = self.current[0:3000]
+            self.current = self.current[0:self.size]
             self.form.curve.setData(self.current)
 
             self.total_frames += 1

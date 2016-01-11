@@ -97,3 +97,12 @@ class TestControl:
         second_point = points[1][-1]
 
         assert first_point != second_point
+
+    def test_min_max_update(self, simulate_main, qtbot):
+
+        qtbot.wait(1000)
+        min_val = simulate_main.form.ui.labelMinimum.text()
+        assert min_val != "0.0"
+
+        max_val = simulate_main.form.ui.labelMaximum.text()
+        assert max_val != "0.0"

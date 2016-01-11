@@ -86,7 +86,7 @@ class Controller(object):
 
             # Read a maximum off the queue at a
             #time to ensure the interface responds
-            if good_reads >= 10: 
+            if good_reads >= 10:
                 result = None
 
         if len(self.current) >= self.size:
@@ -101,6 +101,8 @@ class Controller(object):
 
         display_str = "%s, %s" % (self.total_frames, time_diff)
         self.form.ui.labelCurrent.setText("%s" % display_str)
+        self.form.ui.labelMinimum.setText("%s" % numpy.min(self.current))
+        self.form.ui.labelMaximum.setText("%s" % numpy.max(self.current))
 
         self.start_time = time.time()
 

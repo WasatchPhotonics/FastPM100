@@ -41,13 +41,13 @@
        <widget class="QFrame" name="frameRight">
         <property name="minimumSize">
          <size>
-          <width>200</width>
+          <width>150</width>
           <height>400</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>200</width>
+          <width>150</width>
           <height>400</height>
          </size>
         </property>
@@ -77,7 +77,7 @@
           </layout>
          </item>
          <item>
-          <layout class="QVBoxLayout" name="verticalLayout">
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
            <item>
             <widget class="QLabel" name="label_2">
              <property name="text">
@@ -95,7 +95,7 @@
           </layout>
          </item>
          <item>
-          <layout class="QVBoxLayout" name="verticalLayout_2">
+          <layout class="QHBoxLayout" name="horizontalLayout_4">
            <item>
             <widget class="QLabel" name="label_3">
              <property name="text">
@@ -113,7 +113,7 @@
           </layout>
          </item>
          <item>
-          <layout class="QVBoxLayout" name="verticalLayout_4">
+          <layout class="QHBoxLayout" name="horizontalLayout_5">
            <item>
             <widget class="QLabel" name="label_7">
              <property name="text">
@@ -124,7 +124,7 @@
            <item>
             <widget class="QLabel" name="labelSpeed">
              <property name="text">
-              <string>DFPS 0.0, RFPS 0.0</string>
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;DFPS 0.0&lt;/p&gt;&lt;p&gt;RFPS 0.0&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
             </widget>
            </item>

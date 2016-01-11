@@ -70,10 +70,9 @@ def get_text_from_log():
     """
 
     log_text = ""
-    log_file = open(get_location())
-    for line_read in log_file:
-        log_text += line_read
-    log_file.close()
+    with open(get_location()) as log_file:
+        log_text = log_file.read()
+
     return log_text
 
 

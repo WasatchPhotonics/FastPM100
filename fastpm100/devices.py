@@ -49,7 +49,7 @@ class SubProcessSimulatedPM100(object):
         """ Add the poison pill to the command queue.
         """
         self.command_queue.put(None)
-        self.poller.join(1)     # Required on Windows
+        self.poller.join(0.1)     # Required on Windows
         self.poller.terminate() # Required on windows
         log.debug("Post poller terminate")
 

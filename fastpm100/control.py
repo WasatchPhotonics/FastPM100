@@ -34,7 +34,7 @@ class Controller(object):
         """ Create data structures for application specific storage of reads.
         """
         self.history = deque()
-        self.size = 300
+        self.size = 3000
         self.current = numpy.empty(0)
         self.array_full = False
         #for item in range(self.size):
@@ -70,10 +70,28 @@ class Controller(object):
     def event_loop(self):
         """ Process queue events, interface events, then update views.
         """
-        result = self.device.read()
 
-        if result is not None:
+        # For reference, this section causes appveyor hangs. Not on
+        # windows 7 desktop, not on linux. It's apparently some sort of
+        # unsupported mode of acquisition. Possibly because the appveyor
+        # machines are so slow that result is never none, and it never
+        # breaks out.
+
+        result = self.device.read()
+        good_reads = 0
+        while result is not None:
             self.current = numpy.append(self.current, result[1])
+            good_reads += 1
+            result = self.device.read()
+
+            # Read a maximum off the queue at a
+            #time to ensure the interface responds
+            if good_reads >= 10: 
+                result = None
+
+        if len(self.current) >= self.size:
+            self.current = numpy.roll(self.current, -1 * good_reads)
+            self.current = self.current[0:self.size]
 
         self.form.curve.setData(self.current)
 

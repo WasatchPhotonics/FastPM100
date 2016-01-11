@@ -24,9 +24,22 @@ class SimulatedPM100(object):
         self.noise_factor = noise_factor
         self.counter = 0.1234567
 
+    def increment_counter(self):
+        """ Add a value to return value.
+        """
+        self.counter += 0.000001
+        value = 123.0 + self.counter
+        return value
+
     def read(self):
+        """ Return the test-specific pattern.
+        """
+        return self.increment_counter()
+
+    def apply_noise(self):
         """ Return a single value with noise applied.
         """
+
         value = 123.0 + numpy.random.uniform(0, self.noise_factor, 1)
         value = value[0]
         #log.debug("Return: %s" % value)
@@ -60,12 +73,13 @@ class SubProcessSimulatedPM100(object):
         self.device = SimulatedPM100()
 
         total_reads = 0
+        
         # Read forever until the None poison pill is received
         while True:
 
             data = self.device.read()
             total_reads += 1
-            response_queue.put_nowait((total_reads, data))
+            response_queue.put((total_reads, data))
             #time.sleep(0.0001)
             #log.debug("Collected data in continuous poll %s" % total_reads)
 
@@ -74,12 +88,12 @@ class SubProcessSimulatedPM100(object):
                 if record is None:
                     log.debug("Exit command queue")
                     break
-
+   
             except Queue.Empty:
                 #log.debug("Queue empty")
                 #time.sleep(0.1001)
                 pass
-
+  
             except (KeyboardInterrupt, SystemExit):
                 raise
             except:

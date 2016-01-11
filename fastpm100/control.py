@@ -101,8 +101,10 @@ class Controller(object):
 
         display_str = "%s, %s" % (self.total_frames, time_diff)
         self.form.ui.labelCurrent.setText("%s" % display_str)
-        self.form.ui.labelMinimum.setText("%s" % numpy.min(self.current))
-        self.form.ui.labelMaximum.setText("%s" % numpy.max(self.current))
+
+        if len(self.current) > 0:
+            self.form.ui.labelMinimum.setText("%s" % numpy.min(self.current))
+            self.form.ui.labelMaximum.setText("%s" % numpy.max(self.current))
 
         self.start_time = time.time()
 

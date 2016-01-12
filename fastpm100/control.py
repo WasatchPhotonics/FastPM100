@@ -17,7 +17,6 @@ class Controller(object):
         log.debug("Control startup")
 
         # Create a separate process for the qt gui event loop
-        #self.form = views.BasicWindow()
         self.form = views.StripWindow()
 
         self.create_data_model()

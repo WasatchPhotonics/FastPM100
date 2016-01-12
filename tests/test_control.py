@@ -76,10 +76,10 @@ class TestControl:
 
         QtTest.QTest.qWaitForWindowShown(simulate_main.form)
 
-        qtbot.wait(1000)
+        qtbot.wait(3000)
         first_val = simulate_main.form.ui.labelCurrent.text()
 
-        qtbot.wait(1000)
+        qtbot.wait(3000)
         second_val = simulate_main.form.ui.labelCurrent.text()
 
         assert first_val != second_val
@@ -88,11 +88,11 @@ class TestControl:
     def test_simulated_device_updates_graph(self, simulate_main, qtbot):
         QtTest.QTest.qWaitForWindowShown(simulate_main.form)
 
-        qtbot.wait(1000)
+        qtbot.wait(3000)
         points = simulate_main.form.curve.getData()
         first_point = points[1][-1]
 
-        qtbot.wait(1000)
+        qtbot.wait(3000)
         points = simulate_main.form.curve.getData()
         second_point = points[1][-1]
 
@@ -100,7 +100,7 @@ class TestControl:
 
     def test_min_max_update(self, simulate_main, qtbot):
 
-        qtbot.wait(2000)
+        qtbot.wait(3000)
         min_val = simulate_main.form.ui.labelMinimum.text()
         assert min_val != "0.0"
 

@@ -9,7 +9,8 @@ from PySide import QtCore, QtTest
 
 from fastpm100 import applog, devices
 
-@pytest.mark.xfail
+@pytest.mark.skipif(not pytest.config.getoption("--hardware"),
+                    reason="need --hardware option to run")
 class TestThorlabsPM100:
 
     def test_direct_logging_is_available(self, caplog):
@@ -103,7 +104,7 @@ class TestThorlabsPM100:
         max_reads = 1000
         for count in range(max_reads):
             result = device.read()
-            #print "result %s, %s" % (count, result)
+            print "result %s, %s" % (count, result)
 
         cease_time = time.time()
         delta_time = cease_time - start_time

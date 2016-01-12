@@ -35,7 +35,7 @@ Running tests:
     physical hardware. After the setup is performed below, run these
     with:
 
-    py.test tests/test_thorlabs.py --runxfail
+    py.test tests/test_thorlabs.py --hardware
 
 Setup access to physical hardware:
 

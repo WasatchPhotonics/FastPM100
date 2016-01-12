@@ -56,6 +56,7 @@ class SubProcess(object):
                     log.critical("Total reads: %s", self.total_reads)
                     break
 
+
                 result = device.read()
                 self.total_reads += 1
                 queue.put(block=True, timeout=2.0)

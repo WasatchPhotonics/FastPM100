@@ -46,6 +46,10 @@ class SubProcess(object):
 
         self.device = devices.SimulatedPM100()
         self.total_reads = 0
+        self.total_clear_good = 0
+        self.total_clear_fail = 0
+        self.total_put_good = 0
+        self.total_put_fail = 0
 
         while True:
             if not self.clear_and_control(queue):
@@ -59,12 +63,17 @@ class SubProcess(object):
     def clear_and_control(self, queue):
         try:
             result = queue.get(block=False)
+            self.total_clear_good += 1
 
             if result is None:
                 log.debug("None detected on queue")
+                log.debug("Clear Good %s, Fail %s", self.total_clear_good, self.total_clear_fail)
+                log.debug("Put Good %s, Fail %s", self.total_put_good, self.total_put_fail)
                 return False
+
         except Queue.Empty:
             #log.debug("Queue is empty, on clear and control")
+            self.total_clear_fail += 1
             pass
 
         except (KeyboardInterrupt, SystemExit):
@@ -87,11 +96,13 @@ class SubProcess(object):
             #log.debug("Add to queue: %s, %s" % res_tuple)
             #queue.put(res_tuple, block=True, timeout=0.1)
             queue.put(res_tuple, block=False)
+            self.total_put_good += 1
             #log.debug("Succesfully added to queue, wait %s", sleep_wait)
             #time.sleep(sleep_wait)
 
         except Queue.Full:
             #log.debug("PUT queue full exception on put timeout")
+            self.total_put_fail += 1
             pass
 
         except (KeyboardInterrupt, SystemExit):

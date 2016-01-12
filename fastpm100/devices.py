@@ -82,19 +82,18 @@ class SimulatedPM100(object):
         value = 123.0 + self.counter
         return value
 
-    def read(self):
-        """ Return the test-specific pattern.
-        """
-        return self.increment_counter()
-
     def apply_noise(self):
         """ Return a single value with noise applied.
         """
-
         value = 123.0 + numpy.random.uniform(0, self.noise_factor, 1)
         value = value[0]
         #log.debug("Return: %s" % value)
         return value
+
+    def read(self):
+        """ Return the test-specific pattern.
+        """
+        return self.increment_counter()
 
 class SubProcessSimulatedPM100(object):
     """ Wrap simulate pm100 in a non-blocking interface run in a separate

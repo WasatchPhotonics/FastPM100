@@ -12,6 +12,7 @@ requires = [
     "pytest-capturelog",
     "pyqtgraph",
     "ThorlabsPM100",
+    "pyvisa",
     ]
 
 setup(name="fastpm100",

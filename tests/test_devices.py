@@ -6,10 +6,7 @@ devices.
 import time
 import pytest
 
-from PySide import QtCore, QtTest
-
-from fastpm100 import devices
-from fastpm100 import applog
+from fastpm100 import devices, applog
 
 class TestSimulatedPM100Device:
 

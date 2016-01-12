@@ -57,9 +57,10 @@ class SubProcess(object):
                     break
 
 
-                result = device.read()
+                result = self.device.read()
                 self.total_reads += 1
-                queue.put(block=True, timeout=2.0)
+                res_tuple = (self.total_reads, result)
+                queue.put(res_tuple, block=True, timeout=2.0)
 
             except Queue.Full:
                 log.critical("Should never happen - queue full")

@@ -6,6 +6,9 @@ import pytest
 
 from fastpm100 import singlequeue, applog
 
+import logging
+log = logging.getLogger(__name__)
+
 @pytest.mark.skipif(not pytest.config.getoption("--hardware"),
                     reason="need --hardware option to run")
 class TestSingleQueue:
@@ -46,7 +49,9 @@ class TestSingleQueue:
         """
         time.sleep(3.0)
         result = device.read()
-        print " Last result is ", result
+        while result is None:
+            result = device.read()
+        log.debug(" Last is %s", result[0])
         assert result[0] >= 100
         assert result[1] >= 123.0
 

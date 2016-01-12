@@ -17,6 +17,7 @@ class SubProcess(object):
     """
     def __init__(self, log_queue=None):
         self.queue = multiprocessing.Queue(maxsize=1)
+        self.queue.put("Startup", block=True, timeout=1.0)
 
         args = (log_queue, self.queue)
         self.proc = multiprocessing.Process(target=self.run, args=args)
@@ -62,7 +63,7 @@ class SubProcess(object):
 
     def clear_and_control(self, queue):
         try:
-            result = queue.get(block=False)
+            result = queue.get(block=True, timeout=0.1)
             self.total_clear_good += 1
 
             if result is None:
@@ -86,21 +87,19 @@ class SubProcess(object):
         return True
 
     def read_and_put(self, queue, device):
-        sleep_wait = 0.1
 
         try:
             result = device.read()
             self.total_reads += 1
 
             res_tuple = (self.total_reads, result)
-            #log.debug("Add to queue: %s, %s" % res_tuple)
-            #queue.put(res_tuple, block=True, timeout=0.1)
-            queue.put(res_tuple, block=False)
+            queue.put(res_tuple, block=True, timeout=1.5)
             self.total_put_good += 1
-            #log.debug("Succesfully added to queue, wait %s", sleep_wait)
-            #time.sleep(sleep_wait)
 
         except Queue.Full:
+            # This can happen if the close command puts the poison pill on the
+            # queue in the small window between clearing the queue and putting
+            # new data on.
             #log.debug("PUT queue full exception on put timeout")
             self.total_put_fail += 1
             pass
@@ -120,9 +119,8 @@ class SubProcess(object):
         result = None
         try:
             result = self.queue.get(block=True, timeout=1.5)
-            #log.debug("Successful read of %s", result)
         except Queue.Empty:
-            log.debug("queue empty exception on queue get in read")
+            log.critical("Queue empty exception on queue get in read")
             pass
 
         except (KeyboardInterrupt, SystemExit):

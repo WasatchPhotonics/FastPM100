@@ -50,7 +50,7 @@ class TestControl:
         fixture on py.test does not see sub process entries.
         """
         QtTest.QTest.qWaitForWindowShown(simulate_main.form)
-        qtbot.wait(1000)
+        qtbot.wait(3000)
 
         log_text = applog.get_text_from_log()
         assert "SimulatedPM100 setup" in log_text
@@ -63,7 +63,7 @@ class TestControl:
         """
 
         QtTest.QTest.qWaitForWindowShown(simulate_main.form)
-        qtbot.wait(1000)
+        qtbot.wait(3000)
 
         close_signal = simulate_main.control_exit_signal.exit
         with qtbot.wait_signal(close_signal, timeout=1):

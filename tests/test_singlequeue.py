@@ -47,10 +47,8 @@ class TestSingleQueue:
         running in the background. On z560 fedora, this shows >100k total reads
         over 3 seconds.
         """
-        time.sleep(3.0)
+        time.sleep(10.0)
         result = device.read()
-        while result is None:
-            result = device.read()
         log.debug(" Last is %s", result[0])
         assert result[0] >= 100
         assert result[1] >= 123.0

@@ -93,7 +93,11 @@ class SimulatedPM100(object):
     def read(self):
         """ Return the test-specific pattern.
         """
-        return self.increment_counter()
+        #return self.increment_counter()
+
+        for counter in range(10000):
+            result = self.apply_noise()
+        return result
 
 class SubProcessSimulatedPM100(object):
     """ Wrap simulate pm100 in a non-blocking interface run in a separate

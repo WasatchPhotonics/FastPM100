@@ -55,3 +55,12 @@ class TestSingleQueue:
 
     #def test_queue_speed_is_independent(self, device):
         #""" Verify that
+
+    def test_can_stress_system(self, device):
+        time.sleep(10.0)
+        log.debug("Look at system load -is at least one processor maxed out?")
+
+        result = device.read()
+        log.debug(" Last is %s", result[0])
+        assert result[0] >= 100
+        assert result[1] >= 123.0

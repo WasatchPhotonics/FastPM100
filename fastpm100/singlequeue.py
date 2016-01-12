@@ -17,6 +17,7 @@ class SubProcess(object):
     """
     def __init__(self, log_queue=None):
         self.queue = multiprocessing.Queue(maxsize=1)
+        self.queue.put("Startup", block=True, timeout=1.0)
 
         args = (log_queue, self.queue)
         self.proc = multiprocessing.Process(target=self.run, args=args)
@@ -46,71 +47,35 @@ class SubProcess(object):
 
         self.device = devices.SimulatedPM100()
         self.total_reads = 0
-        self.total_clear_good = 0
-        self.total_clear_fail = 0
-        self.total_put_good = 0
-        self.total_put_fail = 0
 
         while True:
-            if not self.clear_and_control(queue):
-                log.debug("Break on poison pill")
-                break
+            try:
+                result = queue.get(block=True, timeout=2.0)
+                if result is None:
+                    log.critical("Poison pill received, exit")
+                    log.critical("Total reads: %s", self.total_reads)
+                    break
 
-            self.read_and_put(queue, self.device)
+                result = device.read()
+                self.total_reads += 1
+                queue.put(block=True, timeout=2.0)
+
+            except Queue.Full:
+                log.critical("Should never happen - queue full")
+
+            except Queue.Empty:
+                log.critical("Should never get to this empty queue")
+
+            except (KeyboardInterrupt, SystemExit):
+                raise
+            except:
+                import sys, traceback
+                print >> sys.stderr, 'Whoops! Problem:'
+                traceback.print_exc(file=sys.stderr)
+
 
         log.debug("Outside main run, exiting")
 
-    def clear_and_control(self, queue):
-        try:
-            result = queue.get(block=False)
-            self.total_clear_good += 1
-
-            if result is None:
-                log.debug("None detected on queue")
-                log.debug("Clear Good %s, Fail %s", self.total_clear_good, self.total_clear_fail)
-                log.debug("Put Good %s, Fail %s", self.total_put_good, self.total_put_fail)
-                return False
-
-        except Queue.Empty:
-            #log.debug("Queue is empty, on clear and control")
-            self.total_clear_fail += 1
-            pass
-
-        except (KeyboardInterrupt, SystemExit):
-            raise
-        except:
-            import sys, traceback
-            print >> sys.stderr, 'Whoops! Problem:'
-            traceback.print_exc(file=sys.stderr)
-
-        return True
-
-    def read_and_put(self, queue, device):
-        sleep_wait = 0.1
-
-        try:
-            result = device.read()
-            self.total_reads += 1
-
-            res_tuple = (self.total_reads, result)
-            #log.debug("Add to queue: %s, %s" % res_tuple)
-            #queue.put(res_tuple, block=True, timeout=0.1)
-            queue.put(res_tuple, block=False)
-            self.total_put_good += 1
-            #log.debug("Succesfully added to queue, wait %s", sleep_wait)
-            #time.sleep(sleep_wait)
-
-        except Queue.Full:
-            #log.debug("PUT queue full exception on put timeout")
-            self.total_put_fail += 1
-            pass
-
-        except (KeyboardInterrupt, SystemExit):
-            raise
-        except:
-            import sys, traceback
-            print >> sys.stderr, 'Whoops! Problem:'
-            traceback.print_exc(file=sys.stderr)
 
     def read(self):
         """ Don't use if queue.empty() for flow control on python 2.7 on
@@ -121,6 +86,11 @@ class SubProcess(object):
         try:
             result = self.queue.get(block=True, timeout=1.5)
             #log.debug("Successful read of %s", result)
+
+            # Now put something back on the queue to make sure the main loop
+            # does not require a timeout
+            self.queue.put("from read", timeout=1.5)
+
         except Queue.Empty:
             log.debug("queue empty exception on queue get in read")
             pass

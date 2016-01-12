@@ -34,7 +34,7 @@ class Controller(object):
         """ Create data structures for application specific storage of reads.
         """
         self.history = deque()
-        self.size = 3000
+        self.size = 300
         self.current = numpy.empty(0)
         self.array_full = False
 

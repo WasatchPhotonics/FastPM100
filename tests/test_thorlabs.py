@@ -103,7 +103,7 @@ class TestThorlabsPM100:
         max_reads = 1000
         for count in range(max_reads):
             result = device.read()
-            print "result %s, %s" % (count, result)
+            #print "result %s, %s" % (count, result)
 
         cease_time = time.time()
         delta_time = cease_time - start_time
@@ -112,4 +112,8 @@ class TestThorlabsPM100:
         print "Time %s, max %s reads per %s" \
               % (delta_time, max_reads, reads_per_sec)
 
-        assert delta_time <= 1.0
+        # As of 2016-01-12 07:30 using USBTMC on fedora intel i5 and
+        # using VISA on windows 7 i7 both return aroudn 330 reads per
+        # second. 
+        assert delta_time <= 4.0
+        assert delta_time >= 2.0

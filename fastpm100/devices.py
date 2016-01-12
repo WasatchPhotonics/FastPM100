@@ -3,10 +3,12 @@ with simulated delays for simulated spectrometer readings. Long-polling
 multiprocessing wrappers.
 """
 
+import visa
 import time
 import Queue
 import numpy
 import logging
+import platform
 import multiprocessing
 
 from ThorlabsPM100 import ThorlabsPM100, USBTMC
@@ -16,11 +18,6 @@ from . import applog
 log = logging.getLogger(__name__)
 
 
-# USBTMC instruments
-
-# Agilent MSO7104
-#SUBSYSTEMS=="usb", ACTION=="add", ATTRS{idVendor}=="0957", ATTRS{idProduct}=="1755", GROUP="usbtmc", MODE="0660"
-
 class ThorlabsMeter(object):
     """ Create a simulated laser power output meter.
     """
@@ -28,12 +25,45 @@ class ThorlabsMeter(object):
         super(ThorlabsMeter, self).__init__()
         log.debug("%s setup", self.__class__.__name__)
 
+        if "Linux" in platform.platform():
+            self.linux = True
+            self.power_meter = self.create_usbtmc()
+        else:
+            self.linux = False
+            self.power_meter = self.create_visa()
+
+    def create_visa(self):
+        """ Use VISA to create a connection to the thorlabs pm100usb
+        power meter on windows. See FastPM100/Readme.md for details on
+        setup.
+        """
+        resource_man = visa.ResourceManager()
+        dev_list = resource_man.list_resources()
+        print "Dev list", dev_list
+        #if dev_list:
+            #log.debug("Device list: %r" % dev_list)
+
+        device = resource_man.open_resource(dev_list[0])
+        log.debug("Created visa device: %r" % device)
+        print("Created visa device: %r" % device)
+
+        return device
+
+    def create_usbtmc(self):
+        """ Use USBTMC to create a connection to the thorlabs pm100usb
+        on linux.
+        """
         self.inst = USBTMC(device="/dev/usbtmc0")
-        self.power_meter = ThorlabsPM100(inst=self.inst)
-        self.power_meter.sense.correction.wavelength = 785.0
+        power_meter = ThorlabsPM100(inst=self.inst)
+        power_meter.sense.correction.wavelength = 785.0
+        return power_meter
 
     def read(self):
-        return self.power_meter.read
+        if self.linux:
+            return self.power_meter.read
+        else:
+            result = self.power_meter.ask("MEAS:POW?\n")
+            return result
 
 class SimulatedPM100(object):
     """ Create a simulated laser power output meter.

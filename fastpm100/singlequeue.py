@@ -29,6 +29,13 @@ class SubProcess(object):
         except Queue.Full:
             log.critical("Can't put poison pill on queue")
 
+        except (KeyboardInterrupt, SystemExit):
+            raise
+        except:
+            import sys, traceback
+            print >> sys.stderr, 'Whoops! Problem:'
+            traceback.print_exc(file=sys.stderr)
+
 
         self.proc.join(0.1)
         self.proc.terminate()
@@ -45,19 +52,43 @@ class SubProcess(object):
                 log.debug("Break on poison pill")
                 break
 
-            self.read_and_put(queue, device)
+            self.read_and_put(queue, self.device)
 
         log.debug("Outside main run, exiting")
 
+    def clear_and_control(self, queue):
+        try:
+            result = queue.get(block=False)
+
+            if result is None:
+                log.debug("None detected on queue")
+                return False
+        except Queue.Empty:
+            log.debug("Queue is empty, on clear and control")
+            pass
+
+        except (KeyboardInterrupt, SystemExit):
+            raise
+        except:
+            import sys, traceback
+            print >> sys.stderr, 'Whoops! Problem:'
+            traceback.print_exc(file=sys.stderr)
+
+        return True
+
     def read_and_put(self, queue, device):
+        sleep_wait = 0.1
+
         try:
             result = device.read()
-            total_reads += 1
+            self.total_reads += 1
 
-            res_tuple = (total_reads, result)
-            log.debug("Add to queue: %s" % res_tuple)
-            queue.put(res_tuple, block=True, timeout=0.1)
-            log.debug("Succesfully added to queue")
+            res_tuple = (self.total_reads, result)
+            log.debug("Add to queue: %s, %s" % res_tuple)
+            #queue.put(res_tuple, block=True, timeout=0.1)
+            queue.put(res_tuple, block=False)
+            log.debug("Succesfully added to queue, wait %s", sleep_wait)
+            #time.sleep(sleep_wait)
 
         except Queue.Full:
             log.debug("PUT queue full exception on put timeout")
@@ -69,25 +100,6 @@ class SubProcess(object):
             print >> sys.stderr, 'Whoops! Problem:'
             traceback.print_exc(file=sys.stderr)
 
-    def clear_and_control(self, queue):
-        try:
-            result = queue.get(block=True, timeout=0.5)
-
-            if result is None:
-                log.debug("None detected on queue")
-                return False
-
-        except Queue.Empty:
-            log.debug("queue empty exception on get timeout")
-
-        except (KeyboardInterrupt, SystemExit):
-            raise
-        except:
-            import sys, traceback
-            print >> sys.stderr, 'Whoops! Problem:'
-            traceback.print_exc(file=sys.stderr)
-
-
     def read(self):
         """ Don't use if queue.empty() for flow control on python 2.7 on
         windows, as it will hang. Use the catch of the queue empty exception as
@@ -95,11 +107,18 @@ class SubProcess(object):
         """
         result = None
         try:
-            result = self.queue.get(block=True, timeout=1.1)
-            log.debug("Successful read of %s" % result)
+            result = self.queue.get(block=True, timeout=1.5)
+            log.debug("Successful read of %s", result)
         except Queue.Empty:
             log.debug("queue empty exception on queue get in read")
             pass
+
+        except (KeyboardInterrupt, SystemExit):
+            raise
+        except:
+            import sys, traceback
+            print >> sys.stderr, 'Whoops! Problem:'
+            traceback.print_exc(file=sys.stderr)
 
         return result
 

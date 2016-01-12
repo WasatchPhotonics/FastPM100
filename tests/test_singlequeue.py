@@ -18,19 +18,29 @@ class TestSingleQueue:
         main_logger.close()
         applog.explicit_log_close()
 
-    def test_queue_returns_data(self):
-
+    @pytest.fixture(scope="function")
+    def device(self, request):
+        """ Setup the sub process device in the single queue control section.
+        Ensure the logging is closed correctly on exit.
+        """
 
         assert applog.delete_log_file_if_exists() == True
 
         main_logger = applog.MainLogger()
         device = singlequeue.SubProcess(main_logger.log_queue)
 
+        def on_close():
+            device.close()
+            main_logger.close()
+            applog.explicit_log_close()
+        request.addfinalizer(on_close)
+
+        return device
+
+    def test_queue_returns_data(self, device):
+
         time.sleep(1.0)
         result = device.read()
-        assert result[0] == 1
+        assert result[0] >= 100
         assert result[1] >= 123.0
 
-        device.close()
-        main_logger.close()
-        applog.explicit_log_close()

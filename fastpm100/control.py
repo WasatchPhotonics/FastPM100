@@ -25,7 +25,8 @@ class Controller(object):
 
         self.bind_view_signals()
 
-        self.device = devices.SubProcessSimulatedPM100(log_queue)
+        #self.device = devices.SubProcessSimulatedPM100(log_queue)
+        self.device = devices.SubProcessThorlabsMeter(log_queue)
         self.total_spectra = 0
 
         self.setup_main_event_loop()

@@ -9,15 +9,14 @@ from PySide import QtCore, QtTest
 
 from fastpm100 import applog, devices
 
+@pytest.mark.xfail
 class TestThorlabsPM100:
 
-    @pytest.mark.xfail
     def test_direct_logging_is_available(self, caplog):
         device = devices.ThorlabsMeter()
         assert "ThorlabsMeter setup" in caplog.text()
         applog.explicit_log_close()
 
-    @pytest.mark.xfail
     def test_direct_device_is_available(self, caplog):
         device = devices.ThorlabsMeter()
         result = device.read()
@@ -28,7 +27,6 @@ class TestThorlabsPM100:
 
         applog.explicit_log_close()
 
-    @pytest.mark.xfail
     def test_direct_device_looks_real(self):
         device = devices.ThorlabsMeter()
         result = device.read()
@@ -58,7 +56,6 @@ class TestThorlabsPM100:
 
         return device
 
-    @pytest.mark.xfail
     def test_subprocess_data_collected_and_logged(self, sub_device, caplog):
 
         # Ensure at least one entry is available on the queue
@@ -75,7 +72,6 @@ class TestThorlabsPM100:
         assert "ThorlabsMeter setup" in log_text
         assert "ThorlabsMeter setup" not in caplog.text()
 
-    @pytest.mark.xfail
     def test_subprocess_good_reads_matches_metric(self, sub_device, caplog):
 
         # Block in the parent process, allow the sub process to add entries to
@@ -99,3 +95,21 @@ class TestThorlabsPM100:
         assert good_reads == full_size
         assert good_reads >= 10
 
+
+    def test_direct_device_read_is_fast(self, caplog):
+        device = devices.ThorlabsMeter()
+        start_time = time.time()
+
+        max_reads = 1000
+        for count in range(max_reads):
+            result = device.read()
+            print "result %s, %s" % (count, result)
+
+        cease_time = time.time()
+        delta_time = cease_time - start_time
+
+        reads_per_sec = max_reads / delta_time
+        print "Time %s, max %s reads per %s" \
+              % (delta_time, max_reads, reads_per_sec)
+
+        assert delta_time <= 1.0

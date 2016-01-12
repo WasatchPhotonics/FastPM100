@@ -6,6 +6,8 @@ import pytest
 
 from fastpm100 import singlequeue, applog
 
+@pytest.mark.skipif(not pytest.config.getoption("--hardware"),
+                    reason="need --hardware option to run")
 class TestSingleQueue:
     def test_queue_open_and_close(self):
 
@@ -38,10 +40,15 @@ class TestSingleQueue:
         return device
 
     def test_queue_returns_data(self, device):
-
+        """ This test demonstrates that the queue clearer and reloader is
+        running in the background. On z560 fedora, this shows >100k total reads
+        over 3 seconds.
+        """
         time.sleep(3.0)
         result = device.read()
         print " Last result is ", result
         assert result[0] >= 100
         assert result[1] >= 123.0
 
+    #def test_queue_speed_is_independent(self, device):
+        #""" Verify that

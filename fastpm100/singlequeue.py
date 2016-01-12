@@ -64,7 +64,7 @@ class SubProcess(object):
                 log.debug("None detected on queue")
                 return False
         except Queue.Empty:
-            log.debug("Queue is empty, on clear and control")
+            #log.debug("Queue is empty, on clear and control")
             pass
 
         except (KeyboardInterrupt, SystemExit):
@@ -84,14 +84,15 @@ class SubProcess(object):
             self.total_reads += 1
 
             res_tuple = (self.total_reads, result)
-            log.debug("Add to queue: %s, %s" % res_tuple)
+            #log.debug("Add to queue: %s, %s" % res_tuple)
             #queue.put(res_tuple, block=True, timeout=0.1)
             queue.put(res_tuple, block=False)
-            log.debug("Succesfully added to queue, wait %s", sleep_wait)
+            #log.debug("Succesfully added to queue, wait %s", sleep_wait)
             #time.sleep(sleep_wait)
 
         except Queue.Full:
-            log.debug("PUT queue full exception on put timeout")
+            #log.debug("PUT queue full exception on put timeout")
+            pass
 
         except (KeyboardInterrupt, SystemExit):
             raise
@@ -108,7 +109,7 @@ class SubProcess(object):
         result = None
         try:
             result = self.queue.get(block=True, timeout=1.5)
-            log.debug("Successful read of %s", result)
+            #log.debug("Successful read of %s", result)
         except Queue.Empty:
             log.debug("queue empty exception on queue get in read")
             pass

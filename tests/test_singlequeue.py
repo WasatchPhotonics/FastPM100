@@ -39,8 +39,9 @@ class TestSingleQueue:
 
     def test_queue_returns_data(self, device):
 
-        time.sleep(1.0)
+        time.sleep(10.0)
         result = device.read()
+        print " Last result ", result
         assert result[0] >= 100
         assert result[1] >= 123.0
 

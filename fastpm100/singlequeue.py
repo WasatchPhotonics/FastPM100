@@ -56,7 +56,6 @@ class SubProcess(object):
                     log.critical("Total reads: %s", self.total_reads)
                     break
 
-
                 result = self.device.read()
                 self.total_reads += 1
                 res_tuple = (self.total_reads, result)

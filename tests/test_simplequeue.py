@@ -34,7 +34,7 @@ class TestSimpleQueue:
     def test_setup_read_and_exit(self, sub_device):
 
         # post creation sleep
-        time.sleep(5.0)
+        time.sleep(2.0)
 
         result = sub_device.read()
         log.debug("Test read back %s", result)

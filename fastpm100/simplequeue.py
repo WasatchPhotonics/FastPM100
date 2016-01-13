@@ -30,6 +30,7 @@ class SubProcess(object):
 
         self.device = devices.SimulatedPM100()
 
+        log.debug("Start of while loop")
         while True:
 
             if control.full():
@@ -44,27 +45,22 @@ class SubProcess(object):
                 results.put(msg)
 
             # This is required to have py.test see the exit control
-            #time.sleep(0.01)
+            time.sleep(0.01)
 
         log.debug("End of run while")
 
     def print_exit_stats(self):
-        with open("exitstat.log", "w") as test_file:
-            test_file.write("Total reads: %s\n" % self.read_count)
-
         log.debug("Total reads: %s", self.read_count)
 
     def close(self):
         log.debug("Add none to control poison pill")
         self.control.put(None, block=True, timeout=1.0)
 
-        log.debug("Pre join")
-        time.sleep(1.0)
-        self.proc.join(0.1)
-
-        log.debug("pre terminate")
-        time.sleep(1.0)
+        self.proc.join(timeout=0.1)
         self.proc.terminate()
+
+        # Docs say join after terminate as well
+        self.proc.join(timeout=0.1)
 
         log.debug("Close completion post terminate")
 

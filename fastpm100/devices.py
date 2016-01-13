@@ -93,8 +93,10 @@ class SimulatedPM100(object):
     def read(self):
         """ Return the test-specific pattern.
         """
-        time.sleep(0.1000)
+        #time.sleep(0.1000)
         return self.increment_counter()
+
+        #return "MESSAGE"
 
         #for counter in range(10000):
         #    result = self.apply_noise()

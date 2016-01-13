@@ -57,7 +57,7 @@ class SubProcess(object):
             # This appears to be were windows and linux will converge their
             # performance. This reports 100 per second, if you go to 0.001 it
             # does 1k per second on linux and still 100 per second on windows
-            time.sleep(0.001001)
+            time.sleep(0.010001)
             self.read_count += 1
 
         log.debug("End of run while")

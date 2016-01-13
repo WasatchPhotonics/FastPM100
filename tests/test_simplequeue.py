@@ -25,6 +25,7 @@ class TestSimpleQueue:
 
         def close_device():
             device.close()
+            time.sleep(1.0)
             main_logger.close()
             applog.explicit_log_close()
         request.addfinalizer(close_device)

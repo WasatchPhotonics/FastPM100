@@ -9,8 +9,8 @@ from fastpm100 import simplequeue, applog
 import logging
 log = logging.getLogger(__name__)
 
-@pytest.mark.skipif(not pytest.config.getoption("--hardware"),
-                    reason="need --hardware option to run")
+#@pytest.mark.skipif(not pytest.config.getoption("--hardware"),
+                    #reason="need --hardware option to run")
 class TestSimpleQueue:
 
     @pytest.fixture(scope="function")

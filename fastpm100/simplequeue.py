@@ -53,7 +53,11 @@ class SubProcess(object):
             # print the control queue exit message and stats above when run in
             # pytest. Making it 0.000001 or  longer works fine
             #time.sleep(0.0000001)
-            time.sleep(0.000001)
+
+            # This appears to be were windows and linux will converge their
+            # performance. This reports 100 per second, if you go to 0.001 it
+            # does 1k per second on linux and still 100 per second on windows
+            time.sleep(0.001001)
             self.read_count += 1
 
         log.debug("End of run while")

@@ -24,11 +24,8 @@ class TestSimpleQueue:
         device = simplequeue.SubProcess(main_logger.log_queue)
 
         def close_device():
-            time.sleep(1.1)
             device.close()
-            time.sleep(1.1)
             main_logger.close()
-            time.sleep(1.1)
             applog.explicit_log_close()
         request.addfinalizer(close_device)
 

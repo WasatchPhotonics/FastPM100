@@ -25,7 +25,6 @@ class TestSimpleQueue:
 
         def close_device():
             device.close()
-            time.sleep(1.0)
             main_logger.close()
             applog.explicit_log_close()
         request.addfinalizer(close_device)
@@ -35,13 +34,12 @@ class TestSimpleQueue:
     def test_setup_read_and_exit(self, sub_device):
 
         # post creation sleep
-        time.sleep(0.1)
+        time.sleep(1.0)
 
         result = sub_device.read()
         log.debug("Test read back %s", result)
         assert result[0] == 0
         assert result[1] >= 123.0
-        time.sleep(0.1)
 
         log.debug("End test area, start cleanup")
 

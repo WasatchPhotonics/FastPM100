@@ -38,7 +38,7 @@ class TestSimpleQueue:
 
         result = sub_device.read()
         log.debug("Test read back %s", result)
-        assert result[0] == 0
+        assert result[0] == 1
         assert result[1] >= 123.0
 
         log.debug("End test area, start cleanup")

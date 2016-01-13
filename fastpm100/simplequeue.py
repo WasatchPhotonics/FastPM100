@@ -7,7 +7,7 @@ import time
 from multiprocessing import Queue as MPQueue
 from multiprocessing import Process
 
-from fastpm100 import applog
+from fastpm100 import applog, devices
 
 import logging
 log = logging.getLogger(__name__)
@@ -28,33 +28,44 @@ class SubProcess(object):
         applog.process_log_configure(log_queue)
         self.read_count = 0
 
+        self.device = devices.SimulatedPM100()
+
         while True:
 
             if control.full():
+                log.debug("Control queue full, exit poison pill")
                 self.print_exit_stats()
                 break
 
             self.read_count += 1
-            msg = (self.read_count, 123.0)
+            msg = (self.read_count, self.device.read())
 
             if results.empty():
                 results.put(msg)
 
-            time.sleep(0.01)
+            # This is required to have py.test see the exit control
+            #time.sleep(0.01)
 
         log.debug("End of run while")
 
     def print_exit_stats(self):
+        with open("exitstat.log", "w") as test_file:
+            test_file.write("Total reads: %s\n" % self.read_count)
+
         log.debug("Total reads: %s", self.read_count)
 
     def close(self):
-        log.debug("%s close", __name__)
-
         log.debug("Add none to control poison pill")
         self.control.put(None, block=True, timeout=1.0)
 
-        self.proc.join(1.1)
+        log.debug("Pre join")
+        time.sleep(1.0)
+        self.proc.join(0.1)
+
+        log.debug("pre terminate")
+        time.sleep(1.0)
         self.proc.terminate()
+
         log.debug("Close completion post terminate")
 
     def read(self):

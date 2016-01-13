@@ -56,7 +56,12 @@ class SubProcess(object):
 
     def read(self):
         log.debug("Get a read")
-        return None
+        result = self.get_or_none(self.queue)
+        if result is False:
+            log.debug("Empty read")
+            result = None
+
+        return result
 
     def get_or_none(self, queue):
         if queue.empty():

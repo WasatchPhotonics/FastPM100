@@ -35,7 +35,7 @@ class TestWindowsQueue:
     def test_queue_open_and_close(self, device):
 
         time.sleep(1.0)
-        #result = device.read()
-        #log.debug("One result is: %s", result[0])
+        result = device.read()
+        log.debug("One result is: %s", result[0])
         assert True == True
 

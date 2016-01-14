@@ -43,3 +43,5 @@ class TestSimpleQueue:
 
         log.debug("End test area, start cleanup")
 
+        result = sub_device.read()
+        log.debug("second Test read back %s", result)

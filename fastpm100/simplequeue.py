@@ -4,6 +4,7 @@ and hopefully faster communications on windows and linux.
 
 import time
 
+import Queue
 from multiprocessing import Queue as MPQueue
 from multiprocessing import Process
 
@@ -41,11 +42,16 @@ class SubProcess(object):
             self.read_count += 1
             msg = (self.read_count, self.device.read())
 
-            if results.empty():
-                results.put(msg)
+            #if results.empty():
+                #results.put(msg)
 
             # This is required to have py.test see the exit control
-            time.sleep(0.02)
+            #time.sleep(0.02)
+
+            try:
+                results.put(msg, block=False)
+            except Queue.Full:
+                pass
 
         log.debug("End of run while")
 

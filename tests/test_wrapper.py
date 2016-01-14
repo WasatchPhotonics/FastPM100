@@ -109,5 +109,5 @@ class TestWrapper:
         log.debug("second read: %s", result)
         dfps = result[0]
 
-        assert dfps >= 5
+        assert dfps >= 1
         assert dfps <= 15

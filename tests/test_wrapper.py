@@ -41,13 +41,6 @@ class TestWrapper:
         time.sleep(start_wait)
         return sub_proc
 
-    def test_setup_read_and_exit(self, wrapper):
-
-        result = wrapper.read()
-        log.debug("Test read back %s", result)
-        assert result[0] == 1
-        assert result[1] >= 123.0
-
     def read_while_none(self, wrap_interface, timeout=1.0):
         """ Read off the wrapper device until a result is available, or until a
         timeout has been reached. The wrapper will put an item back on the queue
@@ -69,6 +62,28 @@ class TestWrapper:
         log.critical("Failure to read off wrapper in %s", timeout)
         raise NameError
 
+    def test_setup_read_and_exit(self, wrapper):
+
+        result = wrapper.read()
+        log.debug("Test read back %s", result)
+        assert result[0] == 1
+        assert result[1] >= 123.0
+
+    def test_subprocess_data_collected_and_logged(self, wrapper, caplog):
+
+        # Ensure at least one entry is available on the queue
+        result = self.read_while_none(wrapper)
+
+        assert result[0] == 1
+        assert result[1] >= 123
+
+        time.sleep(0.5) # Give subprocess log entries time to propagate to file
+        log_text = applog.get_text_from_log()
+
+        assert "SimulatedPM100 setup" in log_text
+        assert "SimulatedPM100 setup" not in caplog.text()
+
+
     def test_controller_rate_and_data_rate_independent(self, wrapper):
         result = self.read_while_none(wrapper)
         time.sleep(1.0)
@@ -85,7 +100,7 @@ class TestWrapper:
         margins as CI servers may be under heavy load. You're not looking for
         precision in rate matching here. You're looking for 10k+ difference from
         the non regulated version.
-         """
+        """
 
         result = self.read_while_none(regulated_wrapper)
         time.sleep(1.0)

@@ -7,7 +7,7 @@ from PySide import QtCore
 
 from collections import deque
 
-from . import views, devices
+from . import views, wrapper
 
 import logging
 log = logging.getLogger(__name__)
@@ -24,7 +24,7 @@ class Controller(object):
 
         self.bind_view_signals()
 
-        self.device = devices.SubProcessSimulatedPM100(log_queue)
+        self.device = wrapper.SubProcess(log_queue, delay_time=None)
         #self.device = devices.SubProcessThorlabsMeter(log_queue)
         self.total_spectra = 0
 

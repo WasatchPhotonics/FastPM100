@@ -25,7 +25,6 @@ class Controller(object):
         self.bind_view_signals()
 
         self.device = wrapper.SubProcess(log_queue, delay_time=None)
-        #self.device = devices.SubProcessThorlabsMeter(log_queue)
         self.total_spectra = 0
 
         self.setup_main_event_loop()

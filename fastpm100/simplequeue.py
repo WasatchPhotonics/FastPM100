@@ -47,11 +47,16 @@ class SubProcess(object):
             # This is required to have py.test see the exit control
             #time.sleep(0.02)
 
-            if results.empty():
-                try:
-                    results.put(msg, block=True, timeout=0.1)
-                except Queue.Full:
-                    pass
+            #if results.empty():
+                #try:
+                    #results.put(msg, block=True, timeout=0.1)
+                #except Queue.Full:
+                    #pass
+            try:
+                results.put(msg, block=False)
+            except Queue.Full:
+                pass
+
 
         log.debug("End of run while")
 

@@ -3,8 +3,8 @@ and hopefully faster communications on windows and linux.
 """
 
 import time
-
 import Queue
+
 from multiprocessing import Queue as MPQueue
 from multiprocessing import Process
 
@@ -42,14 +42,11 @@ class SubProcess(object):
             self.read_count += 1
             msg = (self.read_count, self.device.read())
 
-                #results.put(msg)
-
-            # This is required to have py.test see the exit control
-            #time.sleep(0.02)
-
             if results.empty():
                 try:
                     results.put(msg, block=False)
+
+                # Silent failures on exit if you don't catch this exception
                 except Queue.Full:
                     pass
 
@@ -61,18 +58,24 @@ class SubProcess(object):
 
     def close(self):
         log.debug("Add none to control poison pill")
-        self.control.put(None, block=True, timeout=1.0)
+        try:
+            self.control.put(None, block=True, timeout=1.0)
+        except Queue.Full:
+            log.critical("Can't add poison pill")
 
         self.proc.join(timeout=0.1)
         self.proc.terminate()
 
-        # Docs say join after terminate as well
-        self.proc.join(timeout=0.1)
-
         log.debug("Close completion post terminate")
 
     def read(self):
-        log.debug("%s read", __name__)
-        get_result = self.results.get(block=True, timeout=1.0)
+        log.debug("read")
+
+        get_result = None
+        try:
+            get_result = self.results.get(block=True, timeout=1.0)
+        except Queue.Empty:
+            log.critical("Results queue is empty")
+
         return get_result
 

@@ -36,6 +36,22 @@ class TestSimulatedPM100Device:
         applog.explicit_log_close()
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     @pytest.fixture(scope="function")
     def sub_device(self, request):
         """ Setup the logger, the device inside the sub process, ensure the

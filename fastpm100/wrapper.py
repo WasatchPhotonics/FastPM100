@@ -14,24 +14,25 @@ import logging
 log = logging.getLogger(__name__)
 
 class SubProcess(object):
-    def __init__(self, log_queue):
+    def __init__(self, log_queue, delay_time=None):
         log.debug("%s startup", __name__)
 
         self.results = MPQueue(maxsize=1)
         self.control = MPQueue(maxsize=1)
 
-        args = (log_queue, self.results, self.control)
+        args = (log_queue, delay_time,
+                self.results, self.control)
         self.proc = Process(target=self.run, args=args)
         self.proc.start()
 
-    def run(self, log_queue, results, control):
+    def run(self, log_queue, delay_time, results, control):
 
         applog.process_log_configure(log_queue)
         self.read_count = 0
 
         self.device = devices.SimulatedPM100()
 
-        log.debug("Start of while loop")
+        log.debug("Start of while loop with delay [%s]", delay_time)
         while True:
 
             if control.full():
@@ -50,6 +51,8 @@ class SubProcess(object):
                 except Queue.Full:
                     pass
 
+            if delay_time is not None:
+                time.sleep(delay_time)
 
         log.debug("End of run while")
 
@@ -57,6 +60,9 @@ class SubProcess(object):
         log.debug("Total reads: %s", self.read_count)
 
     def close(self):
+        """ Add the poison pill to the control queue. Join, then terminate the
+        threads on timeout.
+        """
         log.debug("Add none to control poison pill")
         try:
             self.control.put(None, block=True, timeout=1.0)
@@ -69,8 +75,9 @@ class SubProcess(object):
         log.debug("Close completion post terminate")
 
     def read(self):
-        log.debug("read")
-
+        """ Return None from the queue if it's ever empty for a second.
+        Otherwise return the actual value from the queue.
+        """
         get_result = None
         try:
             get_result = self.results.get(block=True, timeout=1.0)

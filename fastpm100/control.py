@@ -76,38 +76,23 @@ class Controller(object):
         """ Process queue events, interface events, then update views.
         """
 
-        # For reference, this section causes appveyor hangs. Not on
-        # windows 7 desktop, not on linux. It's apparently some sort of
-        # unsupported mode of acquisition. Possibly because the appveyor
-        # machines are so slow that result is never none, and it never
-        # breaks out.
-
         result = self.device.read()
-        good_reads = 0
-        while result is not None:
+        if result is not None:
+
             self.read_frames += 1
             self.current = numpy.append(self.current, result[1])
             self.reported_frames = result[0]
-            good_reads += 1
-            result = self.device.read()
 
-            # Read a maximum off the queue at a time to ensure the interface
-            # responds. This will probably alter the performance mertrics in
-            # ways not intended
-            if good_reads >= 10:
-                result = None
+            if len(self.current) >= self.size:
+                self.current = numpy.roll(self.current, -1)
+                self.current = self.current[0:self.size]
+
+            self.form.curve.setData(self.current)
 
 
-        if len(self.current) >= self.size:
-            self.current = numpy.roll(self.current, -1 * good_reads)
-            self.current = self.current[0:self.size]
-
-        self.form.curve.setData(self.current)
-
-
-        if len(self.current) > 0:
-            self.form.ui.labelMinimum.setText("%s" % numpy.min(self.current))
-            self.form.ui.labelMaximum.setText("%s" % numpy.max(self.current))
+            if len(self.current) > 0:
+                self.form.ui.labelMinimum.setText("%s" % numpy.min(self.current))
+                self.form.ui.labelMaximum.setText("%s" % numpy.max(self.current))
 
         self.update_performance_metrics()
 

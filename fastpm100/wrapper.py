@@ -80,7 +80,7 @@ class SubProcess(object):
         """
         get_result = None
         try:
-            get_result = self.results.get(block=True, timeout=1.0)
+            get_result = self.results.get(block=False)
         except Queue.Empty:
             log.critical("Results queue is empty")
 

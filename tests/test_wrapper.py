@@ -81,6 +81,11 @@ class TestWrapper:
         assert dfps >= 1000
 
     def test_controller_rate_is_configurable(self, regulated_wrapper):
+        """ Actual data rate should be regulated to near 10 fps. Add huge
+        margins as CI servers may be under heavy load. You're not looking for
+        precision in rate matching here. You're looking for 10k+ difference from
+        the non regulated version.
+         """
 
         result = self.read_while_none(regulated_wrapper)
         time.sleep(1.0)
@@ -88,8 +93,6 @@ class TestWrapper:
         result = self.read_while_none(regulated_wrapper)
         log.debug("second read: %s", result)
         dfps = result[0]
-        # Controller rate here is 2 FPS
-        # Actual data rate should be regulated to near 10 fps. Add huge margins
-        # as CI servers may be under heavy load
-        assert dfps >= 8
-        assert dfps <= 12
+
+        assert dfps >= 5
+        assert dfps <= 15

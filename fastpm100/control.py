@@ -24,7 +24,7 @@ class Controller(object):
 
         self.bind_view_signals()
 
-        delay_time = 0.1
+        delay_time = None
         self.device = wrapper.SubProcess(log_queue,
                                          delay_time=delay_time)
         self.total_spectra = 0
@@ -92,8 +92,8 @@ class Controller(object):
 
 
             if len(self.current) > 0:
-                self.form.ui.labelMinimum.setText("%s" % numpy.min(self.current))
-                self.form.ui.labelMaximum.setText("%s" % numpy.max(self.current))
+                self.form.ui.labelMinimum.setText("%0.5f" % numpy.min(self.current))
+                self.form.ui.labelMaximum.setText("%0.5f" % numpy.max(self.current))
 
         self.update_performance_metrics()
 

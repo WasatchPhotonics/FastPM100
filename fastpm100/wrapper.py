@@ -31,6 +31,7 @@ class SubProcess(object):
         self.read_count = 0
 
         self.device = devices.SimulatedPM100()
+        #self.device = devices.ThorlabsMeter()
 
         log.debug("Start of while loop with delay [%s]", delay_time)
         while True:

@@ -61,7 +61,7 @@ class ThorlabsMeter(object):
             return self.power_meter.read
         else:
             result = self.power_meter.ask("MEAS:POW?\n")
-            return result
+            return float(result)
 
 class SimulatedPM100(object):
     """ Create a simulated laser power output meter.

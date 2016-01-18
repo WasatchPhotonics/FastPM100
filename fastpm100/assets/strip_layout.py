@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'fastpm100/assets/strip_layout.ui'
 #
-# Created: Mon Jan 11 09:09:49 2016
+# Created: Mon Jan 18 15:12:56 2016
 #      by: pyside-uic 0.2.15 running on PySide 1.2.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -12,7 +12,7 @@ from PySide import QtCore, QtGui
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(938, 420)
+        MainWindow.resize(905, 420)
         self.centralwidget = QtGui.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.horizontalLayout_2 = QtGui.QHBoxLayout(self.centralwidget)
@@ -68,22 +68,31 @@ class Ui_MainWindow(object):
         self.verticalLayout_5.addLayout(self.horizontalLayout_6)
         self.horizontalLayout_7 = QtGui.QHBoxLayout()
         self.horizontalLayout_7.setObjectName("horizontalLayout_7")
+        self.verticalLayout_2 = QtGui.QVBoxLayout()
+        self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.label_6 = QtGui.QLabel(self.frameRight)
         self.label_6.setObjectName("label_6")
-        self.horizontalLayout_7.addWidget(self.label_6)
-        self.labelRFPS = QtGui.QLabel(self.frameRight)
-        self.labelRFPS.setObjectName("labelRFPS")
-        self.horizontalLayout_7.addWidget(self.labelRFPS)
-        self.verticalLayout_5.addLayout(self.horizontalLayout_7)
-        self.horizontalLayout_4 = QtGui.QHBoxLayout()
-        self.horizontalLayout_4.setObjectName("horizontalLayout_4")
+        self.verticalLayout_2.addWidget(self.label_6)
+        self.label_7 = QtGui.QLabel(self.frameRight)
+        self.label_7.setObjectName("label_7")
+        self.verticalLayout_2.addWidget(self.label_7)
         self.label_3 = QtGui.QLabel(self.frameRight)
         self.label_3.setObjectName("label_3")
-        self.horizontalLayout_4.addWidget(self.label_3)
-        self.labelDFPS = QtGui.QLabel(self.frameRight)
-        self.labelDFPS.setObjectName("labelDFPS")
-        self.horizontalLayout_4.addWidget(self.labelDFPS)
-        self.verticalLayout_5.addLayout(self.horizontalLayout_4)
+        self.verticalLayout_2.addWidget(self.label_3)
+        self.horizontalLayout_7.addLayout(self.verticalLayout_2)
+        self.verticalLayout = QtGui.QVBoxLayout()
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.labelRenderFPS = QtGui.QLabel(self.frameRight)
+        self.labelRenderFPS.setObjectName("labelRenderFPS")
+        self.verticalLayout.addWidget(self.labelRenderFPS)
+        self.labelDataFPS = QtGui.QLabel(self.frameRight)
+        self.labelDataFPS.setObjectName("labelDataFPS")
+        self.verticalLayout.addWidget(self.labelDataFPS)
+        self.labelSkipFPS = QtGui.QLabel(self.frameRight)
+        self.labelSkipFPS.setObjectName("labelSkipFPS")
+        self.verticalLayout.addWidget(self.labelSkipFPS)
+        self.horizontalLayout_7.addLayout(self.verticalLayout)
+        self.verticalLayout_5.addLayout(self.horizontalLayout_7)
         self.horizontalLayout.addWidget(self.frameRight)
         self.horizontalLayout_2.addLayout(self.horizontalLayout)
         MainWindow.setCentralWidget(self.centralwidget)
@@ -100,8 +109,10 @@ class Ui_MainWindow(object):
         self.labelMinimum.setText(QtGui.QApplication.translate("MainWindow", "0.0", None, QtGui.QApplication.UnicodeUTF8))
         self.label_4.setText(QtGui.QApplication.translate("MainWindow", "Max", None, QtGui.QApplication.UnicodeUTF8))
         self.labelMaximum.setText(QtGui.QApplication.translate("MainWindow", "0.0", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_6.setText(QtGui.QApplication.translate("MainWindow", "RFPS", None, QtGui.QApplication.UnicodeUTF8))
-        self.labelRFPS.setText(QtGui.QApplication.translate("MainWindow", "0.0", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_3.setText(QtGui.QApplication.translate("MainWindow", "DFPS", None, QtGui.QApplication.UnicodeUTF8))
-        self.labelDFPS.setText(QtGui.QApplication.translate("MainWindow", "0.0", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_6.setText(QtGui.QApplication.translate("MainWindow", "Render/Sec", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_7.setText(QtGui.QApplication.translate("MainWindow", "Data/Sec", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_3.setText(QtGui.QApplication.translate("MainWindow", "Skip/Sec", None, QtGui.QApplication.UnicodeUTF8))
+        self.labelRenderFPS.setText(QtGui.QApplication.translate("MainWindow", "0.0", None, QtGui.QApplication.UnicodeUTF8))
+        self.labelDataFPS.setText(QtGui.QApplication.translate("MainWindow", "0.0", None, QtGui.QApplication.UnicodeUTF8))
+        self.labelSkipFPS.setText(QtGui.QApplication.translate("MainWindow", "0.0", None, QtGui.QApplication.UnicodeUTF8))
 

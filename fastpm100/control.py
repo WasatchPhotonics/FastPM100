@@ -24,7 +24,9 @@ class Controller(object):
 
         self.bind_view_signals()
 
-        self.device = wrapper.SubProcess(log_queue, delay_time=None)
+        delay_time = 0.1
+        self.device = wrapper.SubProcess(log_queue,
+                                         delay_time=delay_time)
         self.total_spectra = 0
 
         self.setup_main_event_loop()
@@ -118,10 +120,14 @@ class Controller(object):
 
             data_per_second = self.reported_frames - self.last_reported
             rend_per_second = self.total_rend - self.last_rend
+            skip_per_second = data_per_second - rend_per_second
+            if skip_per_second < 0:
+                skip_per_second = 0
 
             sfu = self.form.ui
-            sfu.labelDFPS.setText("%s" % data_per_second)
-            sfu.labelRFPS.setText("%s" % rend_per_second)
+            sfu.labelDataFPS.setText("%s" % data_per_second)
+            sfu.labelRenderFPS.setText("%s" % rend_per_second)
+            sfu.labelSkipFPS.setText("%s" % skip_per_second)
 
             self.second_time = time.time()
             self.last_reported = self.reported_frames

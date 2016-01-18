@@ -107,11 +107,13 @@ class TestControl:
         max_val = simulate_main.form.ui.labelMaximum.text()
         assert max_val != "0.0"
 
-    def test_dfps_rfps_update(self, simulate_main, qtbot):
+    def test_fps_metrics_update(self, simulate_main, qtbot):
         qtbot.wait(2000)
-        dfps_val = simulate_main.form.ui.labelDFPS.text()
+        dfps_val = simulate_main.form.ui.labelDataFPS.text()
         assert dfps_val != "0.0"
 
-        rfps_val = simulate_main.form.ui.labelRFPS.text()
+        rfps_val = simulate_main.form.ui.labelRenderFPS.text()
         assert rfps_val != "0.0"
 
+        sfps_val = simulate_main.form.ui.labelSkipFPS.text()
+        assert sfps_val != "0.0"

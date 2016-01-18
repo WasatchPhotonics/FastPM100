@@ -125,3 +125,17 @@ class TestWrapper:
 
         log.debug("Skip count: %s", skip_count)
         assert skip_count >= 1000
+
+    def test_computed_skip_rate_regulated_is_locked(self, regulated_wrapper):
+        """ The skip rate should not exceed the regulated rate of reads from the
+        device. Huge limits again to support heavy CI system loads.
+        """
+        first_result = self.read_while_none(regulated_wrapper)
+        time.sleep(1.0)
+
+        second_result = self.read_while_none(regulated_wrapper)
+        skip_count = second_result[0] - first_result[0]
+
+        log.debug("Skip count: %s", skip_count)
+        assert skip_count >= 5
+        assert skip_count <= 15

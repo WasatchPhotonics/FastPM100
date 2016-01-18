@@ -111,3 +111,17 @@ class TestWrapper:
 
         assert dfps >= 1
         assert dfps <= 15
+
+    def test_computed_skip_rate_is_huge(self, wrapper):
+        """ Prove that the number of skipped frames read from the device but not
+        read back in the controller is huge. That is, representative of the
+        blocking sleep in the main controller being ignored by the subprocess.
+        """
+        first_result = self.read_while_none(wrapper)
+        time.sleep(1.0)
+
+        second_result = self.read_while_none(wrapper)
+        skip_count = second_result[0] - first_result[0]
+
+        log.debug("Skip count: %s", skip_count)
+        assert skip_count >= 1000

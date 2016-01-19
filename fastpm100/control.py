@@ -41,8 +41,12 @@ class Controller(object):
 
         # Instantaneous performance counters
         self.start_time = time.time()
+        # total non-none acquisitions from data process
         self.read_frames = 0
+        # last acquisition number as reported from data process
         self.reported_frames = 0
+        self.min_render_delay = 0.050
+        self.last_render_time = time.time()
 
         # Per second performance counters
         self.second_time = time.time()
@@ -81,26 +85,30 @@ class Controller(object):
         if result is not None:
 
             self.read_frames += 1
-            self.current = numpy.append(self.current, result[1])
             self.reported_frames = result[0]
 
             if len(self.current) >= self.size:
                 self.current = numpy.roll(self.current, -1)
-                self.current = self.current[0:self.size]
+                self.current[-1] = result[1]
+            else:
+                self.current = numpy.append(self.current, result[1])
 
-            self.form.curve.setData(self.current)
-
-
-            if len(self.current) > 0:
-                self.form.ui.labelMinimum.setText("%0.5f" % numpy.min(self.current))
-                self.form.ui.labelMaximum.setText("%0.5f" % numpy.max(self.current))
+        self.render_regulated_by_time()
 
         self.update_performance_metrics()
 
-        self.total_rend += 1
-
         if self.continue_loop:
             self.main_timer.start(0)
+
+    def render_regulated_by_time(self):
+        time_diff = time.time() - self.last_render_time
+        if time_diff >= self.min_render_delay:
+            self.last_render_time = time.time()
+            self.form.curve.setData(self.current)
+
+            self.form.ui.labelMinimum.setText("%0.5f" % numpy.min(self.current))
+            self.form.ui.labelMaximum.setText("%0.5f" % numpy.max(self.current))
+            self.total_rend += 1
 
     def update_performance_metrics(self):
         """ Compute the data frames per second and render frames per second,

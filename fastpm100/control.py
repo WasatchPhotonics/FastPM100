@@ -102,13 +102,17 @@ class Controller(object):
 
     def render_regulated_by_time(self):
         time_diff = time.time() - self.last_render_time
-        if time_diff >= self.min_render_delay:
-            self.last_render_time = time.time()
-            self.form.curve.setData(self.current)
+        if time_diff < self.min_render_delay:
+            return
 
+        self.last_render_time = time.time()
+        self.form.curve.setData(self.current)
+
+        if len(self.current) > 0:
             self.form.ui.labelMinimum.setText("%0.5f" % numpy.min(self.current))
             self.form.ui.labelMaximum.setText("%0.5f" % numpy.max(self.current))
-            self.total_rend += 1
+
+        self.total_rend += 1
 
     def update_performance_metrics(self):
         """ Compute the data frames per second and render frames per second,

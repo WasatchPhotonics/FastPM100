@@ -101,9 +101,9 @@ class Controller(object):
             self.main_timer.start(0)
 
     def render_regulated_by_time(self):
-        time_diff = time.time() - self.last_render_time
-        if time_diff < self.min_render_delay:
-            return
+        #time_diff = time.time() - self.last_render_time
+        #if time_diff < self.min_render_delay:
+        #    return
 
         self.last_render_time = time.time()
         self.form.curve.setData(self.current)

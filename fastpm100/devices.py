@@ -72,12 +72,15 @@ class SimulatedPM100(object):
 
         self.noise_factor = noise_factor
         self.counter = 0.1234567
+        self.sleep_factor = 0.010
 
     def increment_counter(self):
         """ Add a value to return value.
         """
         self.counter += 0.000001
         value = 123.0 + self.counter
+        if self.sleep_factor is not None:
+            time.sleep(self.sleep_factor)
         return value
 
     def apply_noise(self):

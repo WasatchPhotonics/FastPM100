@@ -35,7 +35,7 @@ class Controller(object):
         """ Create data structures for application specific storage of reads.
         """
         self.history = deque()
-        self.size = 300
+        self.size = 3000
         self.current = numpy.empty(0)
         self.array_full = False
 
@@ -45,7 +45,7 @@ class Controller(object):
         self.read_frames = 0
         # last acquisition number as reported from data process
         self.reported_frames = 0
-        self.min_render_delay = 0.050
+        self.min_render_delay = 0.100
         self.last_render_time = time.time()
 
         # Per second performance counters

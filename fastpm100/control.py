@@ -45,8 +45,6 @@ class Controller(object):
         self.read_frames = 0
         # last acquisition number as reported from data process
         self.reported_frames = 0
-        self.min_render_delay = 0.100
-        self.last_render_time = time.time()
 
         # Per second performance counters
         self.second_time = time.time()
@@ -93,19 +91,16 @@ class Controller(object):
             else:
                 self.current = numpy.append(self.current, result[1])
 
-        self.render_regulated_by_time()
+        self.render_graph()
 
         self.update_performance_metrics()
 
         if self.continue_loop:
             self.main_timer.start(0)
 
-    def render_regulated_by_time(self):
-        #time_diff = time.time() - self.last_render_time
-        #if time_diff < self.min_render_delay:
-        #    return
-
-        self.last_render_time = time.time()
+    def render_graph(self):
+        """ Update the graph data, indicate minimum and maximum values.
+        """
         self.form.curve.setData(self.current)
 
         if len(self.current) > 0:

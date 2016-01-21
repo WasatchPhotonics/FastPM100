@@ -3,15 +3,13 @@ with simulated delays for simulated spectrometer readings. Long-polling
 multiprocessing wrappers.
 """
 
-import visa
 import time
-import numpy
 import logging
 import platform
 
-from ThorlabsPM100 import ThorlabsPM100, USBTMC
+import visa
 
-from . import applog
+from ThorlabsPM100 import ThorlabsPM100, USBTMC
 
 log = logging.getLogger(__name__)
 
@@ -37,13 +35,10 @@ class ThorlabsMeter(object):
         """
         resource_man = visa.ResourceManager()
         dev_list = resource_man.list_resources()
-        print "Dev list", dev_list
-        #if dev_list:
-            #log.debug("Device list: %r" % dev_list)
+        log.debug("Dev list %s", dev_list)
 
         device = resource_man.open_resource(dev_list[0])
-        log.debug("Created visa device: %r" % device)
-        print("Created visa device: %r" % device)
+        log.debug("Created visa device: %s", device)
 
         return device
 
@@ -57,6 +52,8 @@ class ThorlabsMeter(object):
         return power_meter
 
     def read(self):
+        """ Perform the expected USBTMC or visa acquisition from the device.
+        """
         if self.linux:
             return self.power_meter.read
         else:
@@ -66,11 +63,10 @@ class ThorlabsMeter(object):
 class SimulatedPM100(object):
     """ Create a simulated laser power output meter.
     """
-    def __init__(self, noise_factor=1.0, sleep_factor=None):
+    def __init__(self, sleep_factor=None):
         super(SimulatedPM100, self).__init__()
         log.debug("%s setup", self.__class__.__name__)
 
-        self.noise_factor = noise_factor
         self.counter = 0.1234567
         self.sleep_factor = sleep_factor
 

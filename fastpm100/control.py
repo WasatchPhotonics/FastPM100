@@ -13,6 +13,10 @@ import logging
 log = logging.getLogger(__name__)
 
 class Controller(object):
+    """ Control portion of the MVC design pattern. Creates a data mode, a view,
+    and links the required signals. This is designed to be run by both the main
+    user script as well as the test_control.
+    """
     def __init__(self, log_queue, device_name="SimulatedPM100",
                  history_size=30):
         log.debug("Control startup")
@@ -144,6 +148,8 @@ class Controller(object):
         self.start_time = time.time()
 
     def close(self):
+        """ Issue control commands to the sub process device, as well as the qt
+        view.  """
         self.continue_loop = False
         self.device.close()
         log.debug("Control level close")

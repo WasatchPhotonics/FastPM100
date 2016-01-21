@@ -13,11 +13,12 @@ import os
 import sys
 import logging
 import platform
+import traceback
 import multiprocessing
 
 def get_location():
     """ Determine the location to store the log file. Current directory
-    on Linux, or %PROGRAMDATA% on windows - usually c:\ProgramData\
+    on Linux, or %PROGRAMDATA% on windows - usually c:\\ProgramData\\
     """
     # For convenience, replace the dot with an underscore to help windows know
     # it is a text file.
@@ -34,18 +35,18 @@ def get_location():
         CSIDL_COMMON_APPDATA = 35
         _SHGetFolderPath = windll.shell32.SHGetFolderPathW
         _SHGetFolderPath.argtypes = [wintypes.HWND,
-                                    ctypes.c_int,
-                                    wintypes.HANDLE,
-                                    wintypes.DWORD, wintypes.LPCWSTR]
+                                     ctypes.c_int,
+                                     wintypes.HANDLE,
+                                     wintypes.DWORD, wintypes.LPCWSTR]
 
         path_buf = wintypes.create_unicode_buffer(wintypes.MAX_PATH)
         result = _SHGetFolderPath(0, CSIDL_COMMON_APPDATA, 0, 0, path_buf)
         log_dir = path_buf.value
-    except:
-        log.exception("Problem assigning log directory")
+    except Exception as exc:
+        print "Problem assigning log directory", exc
 
     windows_file = "%s/%s" % (log_dir, suffix)
-    return(windows_file)
+    return windows_file
 
 def process_log_configure(log_queue):
     """ Called at the beginning of every process, including the main process.
@@ -94,7 +95,7 @@ def delete_log_file_if_exists():
     try:
         os.remove(filename)
     except Exception as exc:
-        print("Problem removing file")
+        print "Problem removing file"
 
     result = False
     if not os.path.exists(filename):
@@ -155,8 +156,11 @@ class QueueHandler(logging.Handler):
 class MainLogger(object):
     def __init__(self):
         self.log_queue = multiprocessing.Queue(-1)
-        self.listener = multiprocessing.Process(target=self.listener_process,
-                                        args=(self.log_queue, self.listener_configurer))
+
+        args = (self.log_queue, self.listener_configurer)
+        target = self.listener_process
+        self.listener = multiprocessing.Process(target=target,
+                                                args=args)
         self.listener.start()
 
         # Remember you have to add a local log configurator for each
@@ -176,8 +180,10 @@ class MainLogger(object):
 
         root = logging.getLogger()
         h = logging.FileHandler(log_dir, 'w') # Overwrite previous run
-        #frmt = logging.Formatter('%(asctime)s %(processName)-10s %(name)s %(levelname)-8s %(message)s')
-        frmt = logging.Formatter('%(processName)-10s %(name)s %(levelname)-8s %(message)s')
+        # Original format string:
+        #frmt_str = "%(asctime)s %(processName)-10s ...
+        frmt_str = "%(processName)-10s %(name)s %(levelname)-8s %(message)s"
+        frmt = logging.Formatter(frmt_str)
         h.setFormatter(frmt)
         root.addHandler(h)
 
@@ -203,7 +209,6 @@ class MainLogger(object):
             except (KeyboardInterrupt, SystemExit):
                 raise
             except:
-                import sys, traceback
                 print >> sys.stderr, 'Whoops! Problem:'
                 traceback.print_exc(file=sys.stderr)
 

@@ -14,8 +14,11 @@ import logging
 log = logging.getLogger(__name__)
 
 class SubProcess(object):
-    def __init__(self, log_queue, delay_time=None):
+    def __init__(self, log_queue, delay_time=None,
+                 device_name="SimulatedPM100"):
         log.debug("%s startup", __name__)
+
+        self.device_name = device_name
 
         self.results = MPQueue(maxsize=1)
         self.control = MPQueue(maxsize=1)
@@ -30,7 +33,9 @@ class SubProcess(object):
         applog.process_log_configure(log_queue)
         self.read_count = 0
 
-        self.device = devices.SimulatedPM100()
+        import_str = "devices.{0}()".format(self.device_name)
+        log.debug("Import of %s", import_str)
+        self.device = eval(import_str)
         #self.device = devices.ThorlabsMeter()
 
         log.debug("Start of while loop with delay [%s]", delay_time)

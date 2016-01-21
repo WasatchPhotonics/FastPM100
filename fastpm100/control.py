@@ -13,7 +13,7 @@ import logging
 log = logging.getLogger(__name__)
 
 class Controller(object):
-    def __init__(self, log_queue):
+    def __init__(self, log_queue, device_name="SimulatedPM100"):
         log.debug("Control startup")
 
         # Create a separate process for the qt gui event loop
@@ -26,7 +26,8 @@ class Controller(object):
 
         delay_time = None
         self.device = wrapper.SubProcess(log_queue,
-                                         delay_time=delay_time)
+                                         delay_time=delay_time,
+                                         device_name=device_name)
         self.total_spectra = 0
 
         self.setup_main_event_loop()

@@ -58,7 +58,8 @@ class FastPM100Application(object):
         self.app = QtGui.QApplication([])
 
         self.main_logger = applog.MainLogger()
-        app_control = control.Controller(self.main_logger.log_queue)
+        app_control = control.Controller(self.main_logger.log_queue,
+                                         device_name="ThorlabsMeter")
 
         app_control.control_exit_signal.exit.connect(self.closeEvent)
 

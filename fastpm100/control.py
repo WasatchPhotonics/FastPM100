@@ -13,13 +13,14 @@ import logging
 log = logging.getLogger(__name__)
 
 class Controller(object):
-    def __init__(self, log_queue, device_name="SimulatedPM100"):
+    def __init__(self, log_queue, device_name="SimulatedPM100",
+                 history_size=30):
         log.debug("Control startup")
 
         # Create a separate process for the qt gui event loop
         self.form = views.StripWindow()
 
-        self.create_data_model()
+        self.create_data_model(history_size)
         self.create_signals()
 
         self.bind_view_signals()
@@ -32,11 +33,11 @@ class Controller(object):
 
         self.setup_main_event_loop()
 
-    def create_data_model(self):
+    def create_data_model(self, history_size):
         """ Create data structures for application specific storage of reads.
         """
         self.history = deque()
-        self.size = 3000
+        self.size = history_size
         self.current = numpy.empty(0)
         self.array_full = False
 
@@ -129,8 +130,6 @@ class Controller(object):
             data_per_second = self.reported_frames - self.last_reported
             rend_per_second = self.total_rend - self.last_rend
             skip_per_second = data_per_second - rend_per_second
-            if skip_per_second < 0:
-                skip_per_second = 0
 
             sfu = self.form.ui
             sfu.labelDataFPS.setText("%s" % data_per_second)

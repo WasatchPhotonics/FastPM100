@@ -117,3 +117,4 @@ class TestControl:
 
         sfps_val = simulate_main.form.ui.labelSkipFPS.text()
         assert sfps_val != "0.0"
+

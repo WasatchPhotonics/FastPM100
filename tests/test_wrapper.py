@@ -3,6 +3,7 @@ device objects. This includes long druation reads and performance metrics.
 """
 
 import time
+import Queue
 import pytest
 
 from fastpm100 import wrapper, applog, devices
@@ -139,3 +140,44 @@ class TestWrapper:
         log.debug("Skip count: %s", skip_count)
         assert skip_count >= 5
         assert skip_count <= 15
+
+    def test_queue_manual_empty_for_increased_coverage(self):
+        """ Manually setup the wrapper process, then change the queue state
+        manually to induce exception.
+        """
+
+        assert applog.delete_log_file_if_exists() == True
+
+        main_logger = applog.MainLogger()
+        sub_proc = wrapper.SubProcess(main_logger.log_queue,
+                                      delay_time=1.0)
+
+
+        start_wait = 1.0
+        log.debug("Manual Wait %s for sub process to start", start_wait)
+        time.sleep(start_wait)
+
+        # Put onto the control queue manually, then close the process to trigger
+        # the full queue exception.
+        try:
+            sub_proc.control.put(None, block=True, timeout=1.0)
+        except:
+            log.critical("Can't put poison pill before close")
+
+        sub_proc.close()
+
+
+        # Wait for the sub process to close, then attempt to read in order to
+        # trigger the queue empty exception
+        time.sleep(1)
+        empty_found = False
+        while not empty_found:
+            try:
+                get_result = sub_proc.results.get(block=True, timeout=0.1)
+            except Queue.Empty:
+                empty_found = True
+
+        result = sub_proc.read()
+
+        main_logger.close()
+        applog.explicit_log_close()

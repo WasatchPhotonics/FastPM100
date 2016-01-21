@@ -10,7 +10,7 @@ from PySide import QtCore, QtTest
 
 from fastpm100 import views
 
-class TestBasicWindow:
+class TestStripChart:
 
     @pytest.fixture(scope="function")
     def strip_form(self, qtbot, request):

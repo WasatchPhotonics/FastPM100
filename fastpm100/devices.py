@@ -66,13 +66,13 @@ class ThorlabsMeter(object):
 class SimulatedPM100(object):
     """ Create a simulated laser power output meter.
     """
-    def __init__(self, noise_factor=1.0):
+    def __init__(self, noise_factor=1.0, sleep_factor=None):
         super(SimulatedPM100, self).__init__()
         log.debug("%s setup", self.__class__.__name__)
 
         self.noise_factor = noise_factor
         self.counter = 0.1234567
-        self.sleep_factor = None
+        self.sleep_factor = sleep_factor
 
     def increment_counter(self):
         """ Add a value to return value.
@@ -83,22 +83,7 @@ class SimulatedPM100(object):
             time.sleep(self.sleep_factor)
         return value
 
-    def apply_noise(self):
-        """ Return a single value with noise applied.
-        """
-        value = 123.0 + numpy.random.uniform(0, self.noise_factor, 1)
-        value = value[0]
-        #log.debug("Return: %s" % value)
-        return value
-
     def read(self):
         """ Return the test-specific pattern.
         """
-        #time.sleep(0.1000)
         return self.increment_counter()
-
-        #return "MESSAGE"
-
-        #for counter in range(10000):
-        #    result = self.apply_noise()
-        #return result

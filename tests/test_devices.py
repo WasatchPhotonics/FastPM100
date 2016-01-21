@@ -35,3 +35,20 @@ class TestSimulatedPM100Device:
         assert result != new_result
         applog.explicit_log_close()
 
+    def test_sleep_factor_slows_down_reads(self):
+        device = devices.SimulatedPM100(sleep_factor=1.0)
+        result = device.read()
+
+        assert result != 0
+        assert result != None
+
+        start_time = time.time()
+        new_result = device.read()
+        cease_time = time.time()
+
+        time_diff = cease_time - start_time
+        assert time_diff >= 1.0
+
+        assert result != new_result
+        applog.explicit_log_close()
+

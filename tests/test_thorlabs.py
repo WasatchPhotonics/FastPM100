@@ -22,9 +22,8 @@ class TestThorlabsPM100:
         device = devices.ThorlabsMeter()
         result = device.read()
 
-        assert result != 0
+        assert result != 0 # negative is ok
         assert result != None
-        assert result >= 0.0
 
         applog.explicit_log_close()
 

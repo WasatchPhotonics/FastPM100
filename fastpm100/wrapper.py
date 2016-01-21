@@ -81,8 +81,8 @@ class SubProcess(object):
         log.debug("Close completion post terminate")
 
     def read(self):
-        """ Return None from the queue if it's ever empty for a second.
-        Otherwise return the actual value from the queue.
+        """ Return None from the queue if it's ever empty.  Otherwise return the
+        actual value from the queue.
         """
         get_result = None
         try:

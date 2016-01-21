@@ -80,23 +80,27 @@ def log_file_created():
     """ Helper function that returns True if file exists, false otherwise.
     """
     filename = get_location()
+    result = False
     if os.path.exists(filename):
-        return True
+        result = True
 
-    return False
+    return result
 
 def delete_log_file_if_exists():
     """ Remove the specified log file and return True if succesful.
     """
     filename = get_location()
 
-    if os.path.exists(filename):
+    try:
         os.remove(filename)
+    except Exception as exc:
+        print("Problem removing file")
 
-    if os.path.exists(filename):
-        print "Problem deleting: %s", filename
-        return False
-    return True
+    result = False
+    if not os.path.exists(filename):
+        result = True
+
+    return result
 
 def explicit_log_close():
     """ Apparently, tests run in py.test will not remove the existing

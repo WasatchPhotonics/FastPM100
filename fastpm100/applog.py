@@ -95,7 +95,7 @@ def delete_log_file_if_exists():
     try:
         os.remove(filename)
     except Exception as exc:
-        print "Problem removing file"
+        print "Problem removing file %s" % exc
 
     result = False
     if not os.path.exists(filename):
@@ -142,8 +142,8 @@ class QueueHandler(logging.Handler):
         Writes the LogRecord to the queue.
         """
         try:
-            ei = record.exc_info
-            if ei:
+            exc_info = record.exc_info
+            if exc_info:
                 dummy = self.format(record) # just to get traceback text into record.exc_text
                 record.exc_info = None  # not needed any more
             self.log_queue.put_nowait(record)
@@ -154,6 +154,9 @@ class QueueHandler(logging.Handler):
 
 
 class MainLogger(object):
+    """ Sub process that will read logging events off the queue, and handle them
+    appropriately.  This is so the main program will never block waiting for a
+    logging event to be handled."""
     def __init__(self):
         self.log_queue = multiprocessing.Queue(-1)
 
@@ -179,13 +182,13 @@ class MainLogger(object):
         log_dir = get_location()
 
         root = logging.getLogger()
-        h = logging.FileHandler(log_dir, 'w') # Overwrite previous run
+        file_handler  = logging.FileHandler(log_dir, 'w') # Overwrite previous run
         # Original format string:
         #frmt_str = "%(asctime)s %(processName)-10s ...
         frmt_str = "%(processName)-10s %(name)s %(levelname)-8s %(message)s"
         frmt = logging.Formatter(frmt_str)
-        h.setFormatter(frmt)
-        root.addHandler(h)
+        file_handler.setFormatter(frmt)
+        root.addHandler(file_handler)
 
         # Specifing stderr as the log output location will cause the creation of
         # a _module_name_.exe.log file when run as a post-freeze windows
@@ -194,10 +197,11 @@ class MainLogger(object):
         strm.setFormatter(frmt)
         root.addHandler(strm)
 
-    # This is the listener process top-level loop: wait for logging events
-    # (LogRecords)on the queue and handle them, quit when you get a None for a
-    # LogRecord.
     def listener_process(self, log_queue, configurer):
+        """ This is the listener process top-level loop: wait for logging events
+        (LogRecords)on the queue and handle them, quit when you get a None for a
+        LogRecord.
+        """
         configurer()
         while True:
             try:

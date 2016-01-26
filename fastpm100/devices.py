@@ -55,7 +55,8 @@ class ThorlabsMeter(object):
         """ Perform the expected USBTMC or visa acquisition from the device.
         """
         if self.linux:
-            return self.power_meter.read
+            result = float(self.power_meter.read) * 1000.0
+            return result
         else:
             result = self.power_meter.ask("MEAS:POW?\n")
             result = float(result) * 1000.0

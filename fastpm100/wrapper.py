@@ -14,11 +14,14 @@ import logging
 log = logging.getLogger(__name__)
 
 class SubProcess(object):
+    """ Create a multiprocessing device for non-blocking reads of the specified
+    hardware.  """
     def __init__(self, log_queue, delay_time=None,
                  device_name="SimulatedPM100"):
         log.debug("%s startup", __name__)
 
         self.device_name = device_name
+        self.read_count = 0
 
         self.results = MPQueue(maxsize=1)
         self.control = MPQueue(maxsize=1)
@@ -29,14 +32,17 @@ class SubProcess(object):
         self.proc.start()
 
     def run(self, log_queue, delay_time, results, control):
+        """ Main infinite loop for acquiring from hardware device. Searches for
+        any entry on the control queue to indicate a poison pill.  Read from the
+        hardware device at every pass, and if the current data queue is empty
+        (by reading from it in a different process), add it to the data queue.
+        """
 
         applog.process_log_configure(log_queue)
-        self.read_count = 0
 
         import_str = "devices.{0}()".format(self.device_name)
         log.debug("Import of %s", import_str)
-        self.device = eval(import_str)
-        #self.device = devices.ThorlabsMeter()
+        device = eval(import_str)
 
         log.debug("Start of while loop with delay [%s]", delay_time)
         while True:
@@ -47,7 +53,7 @@ class SubProcess(object):
                 break
 
             self.read_count += 1
-            msg = (self.read_count, self.device.read())
+            msg = (self.read_count, device.read())
 
             if results.empty():
                 try:
@@ -63,6 +69,8 @@ class SubProcess(object):
         log.debug("End of run while")
 
     def print_exit_stats(self):
+        """ Print summary statistics for this run.
+        """
         log.debug("Total reads: %s", self.read_count)
 
     def close(self):

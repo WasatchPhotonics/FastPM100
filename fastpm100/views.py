@@ -1,13 +1,10 @@
 """ GUI components for the demonstration program. Provides a bare bones
 interface with a single button that changes the text to the current timestamp.
 Used to demonstrate pytest-qt qtbot button clicking.  """
-import datetime
 
 import pyqtgraph
 
 from PySide import QtGui, QtCore
-
-from .assets import resources_rc
 
 from .assets import strip_layout
 
@@ -19,7 +16,7 @@ class StripWindow(QtGui.QMainWindow):
     visualizations.
     """
     def __init__(self):
-        log.debug("Init of %s" % self.__class__.__name__)
+        log.debug("Init")
         super(StripWindow, self).__init__()
 
         self.ui = strip_layout.Ui_MainWindow()
@@ -49,6 +46,8 @@ class StripWindow(QtGui.QMainWindow):
         events.
         """
         class ViewClose(QtCore.QObject):
+            """ Emit a signal for control upstream.
+            """
             exit = QtCore.Signal(str)
 
         self.exit_signal = ViewClose()

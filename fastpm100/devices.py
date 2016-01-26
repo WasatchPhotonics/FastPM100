@@ -17,7 +17,7 @@ log = logging.getLogger(__name__)
 class ThorlabsMeter(object):
     """ Create a simulated laser power output meter.
     """
-    def __init__(self, noise_factor=1.0):
+    def __init__(self):
         super(ThorlabsMeter, self).__init__()
         log.debug("%s setup", self.__class__.__name__)
 

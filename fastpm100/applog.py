@@ -182,7 +182,7 @@ class MainLogger(object):
         log_dir = get_location()
 
         root = logging.getLogger()
-        file_handler  = logging.FileHandler(log_dir, 'w') # Overwrite previous run
+        file_handler = logging.FileHandler(log_dir, 'w') # Overwrite previous run
         # Original format string:
         #frmt_str = "%(asctime)s %(processName)-10s ...
         frmt_str = "%(processName)-10s %(name)s %(levelname)-8s %(message)s"

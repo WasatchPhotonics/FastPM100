@@ -110,8 +110,10 @@ class Controller(object):
         self.form.curve.setData(self.current)
 
         if len(self.current) > 0:
-            self.form.ui.labelMinimum.setText("%0.5f" % numpy.min(self.current))
-            self.form.ui.labelMaximum.setText("%0.5f" % numpy.max(self.current))
+            min_text = "%0.3f mw" % numpy.min(self.current)
+            max_text = "%0.3f mw" % numpy.max(self.current)
+            self.form.ui.labelMinimum.setText(min_text)
+            self.form.ui.labelMaximum.setText(max_text)
 
         self.total_rend += 1
 

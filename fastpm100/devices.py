@@ -58,6 +58,7 @@ class ThorlabsMeter(object):
             return self.power_meter.read
         else:
             result = self.power_meter.ask("MEAS:POW?\n")
+            result = float(result) * 1000.0
             return float(result)
 
 class SimulatedPM100(object):

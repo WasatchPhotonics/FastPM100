@@ -31,7 +31,7 @@
 ; NOTE: The value of AppId uniquely identifies this application.
 ; Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
-AppId={{B9977C21-3BA0-4CCB-8398-0B78F34DC849}
+AppId={{ED4F7CF4-4804-4042-B5C3-5DB8F74D6148}
 
 ; See auto versioning section above
 ; Make the major version bumps manual here and have the command line

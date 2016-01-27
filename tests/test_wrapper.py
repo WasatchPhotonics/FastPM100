@@ -119,7 +119,7 @@ class TestWrapper:
         blocking sleep in the main controller being ignored by the subprocess.
         """
         first_result = self.read_while_none(wrapper)
-        time.sleep(1.0)
+        time.sleep(6.0)
 
         second_result = self.read_while_none(wrapper)
         skip_count = second_result[0] - first_result[0]
@@ -132,7 +132,7 @@ class TestWrapper:
         device. Huge limits again to support heavy CI system loads.
         """
         first_result = self.read_while_none(regulated_wrapper)
-        time.sleep(1.0)
+        time.sleep(6.0)
 
         second_result = self.read_while_none(regulated_wrapper)
         skip_count = second_result[0] - first_result[0]

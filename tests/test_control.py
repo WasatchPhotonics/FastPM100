@@ -43,7 +43,7 @@ class TestControl:
 
     def test_view_logs_visible_to_caplog(self, simulate_main, caplog, qtbot):
         QtTest.QTest.qWaitForWindowShown(simulate_main.form)
-        assert "Init of StripWindow" in caplog.text()
+        assert "Init" in caplog.text()
 
     def test_device_logs_in_file_only(self, simulate_main, caplog, qtbot):
         """ Shows the expected behavior. Demonstrates that the capturelog

@@ -24,8 +24,7 @@ install:
   - "conda create -q -n test-environment python=%PYTHON_VERSION% numpy scipy nose"
   - activate test-environment
 
-  - "pip install pyside pytest pytest-qt pytest-capturelog ThorlabsPM100 pyvisa pyinstaller"
-  - "pip install http://sourceforge.net/projects/py2exe/files/latest/download?source=files"
+  - "pip install pyside pytest pytest-qt pytest-capturelog ThorlabsPM100 pyvisa pyinstaller six"
 
   - choco install -y InnoSetup
   - set PATH="C:\Program Files (x86)\Inno Setup 5";%PATH%
@@ -39,8 +38,7 @@ test_script:
      - "py.test tests -s"
 
 after_test:
-    #- "python scripts\\py2exe_application.py py2exe"
-    #
+    
    - "pyinstaller \
       --distpath=scripts/built-dist \
       --workpath=scripts/work-path \
@@ -50,6 +48,19 @@ after_test:
       --icon fastpm100/assets/images/ApplicationIcon.ico \
       --specpath scripts \
       scripts/FastPM100.py"
+      
+
+
+    after_test:
+          # If tests are successful, create a whl package for the
+          # project.
+          #   #- "%WITH_COMPILER% %PYTHON%/python setup.py bdist_wheel"
+          #     #- ps: "ls dist"
+          #       # Run pyinstaller
+          #         # This will create the "win7_innosetup.iss" file
+          #           - "%WITH_COMPILER% pyinstaller -y --log-level=WARN
+          #           freeze_appveyor\\win_shapeout.spec"
+          #
    - "iscc scripts\\Application_InnoSetup.iss"
    - ps: "ls scripts\\built-dist\\*.exe"
    - ps: "ls scripts\\windows_installer\\*.exe"

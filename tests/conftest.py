@@ -7,3 +7,5 @@ import pytest
 def pytest_addoption(parser):
     parser.addoption("--hardware", action="store_true",
         help="run tests requiring physical hardware")
+    parser.addoption("--wrapper", action="store_true",
+        help="temporarily disable appveyor multi processing")

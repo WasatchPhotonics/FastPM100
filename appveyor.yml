@@ -51,10 +51,10 @@ after_test:
       
    - "iscc scripts\\Application_InnoSetup.iss"
    - ps: "ls scripts\\built-dist\\*.exe"
-   - ps: "ls scripts\\windows_installer\\*.exe"
+   #- ps: "ls scripts\\windows_installer\\*.exe"
 
 artifacts:
    - path: scripts\built-dist\*.exe
-   - path: scripts\windows_installer\*.exe
+   #- path: scripts\windows_installer\*.exe
 
 

@@ -53,7 +53,7 @@ after_test:
    - ps: "ls scripts\\windows_installer\\*.exe"
 
 artifacts:
-   - path: scripts\built-dist\*.exe
+   - path: scripts\built-dist\FastPM100\*.exe
    - path: scripts\windows_installer\*.exe
 
 

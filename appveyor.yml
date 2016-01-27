@@ -39,7 +39,17 @@ test_script:
      - "py.test tests -s"
 
 after_test:
-   - "python scripts\\py2exe_application.py py2exe"
+    #- "python scripts\\py2exe_application.py py2exe"
+    #
+   - "pyinstaller \
+      --distpath=scripts/built-dist \
+      --workpath=scripts/work-path \
+      --noconfirm \
+      --clean \
+      --windowed \
+      --icon fastpm100/assets/images/ApplicationIcon.ico \
+      --specpath scripts \
+      scripts/FastPM100.py"
    - "iscc scripts\\Application_InnoSetup.iss"
    - ps: "ls scripts\\built-dist\\*.exe"
    - ps: "ls scripts\\windows_installer\\*.exe"

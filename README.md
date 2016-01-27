@@ -3,7 +3,7 @@ High speed acquisition and visualization of ThorLabs PM100 power meter
 readings.
 
 [![Travis Build Status](https://travis-ci.org/WasatchPhotonics/FastPM100.svg?branch=master)](https://travis-ci.org/WasatchPhotonics/FastPM100?branch=master)
-[![Appveyor Build Status](https://ci.appveyor.com/api/projects/status/uq88jhfykrh6k940?svg=true)](https://ci.appveyor.com/project/NathanHarrington/FastPM100)
+[![Appveyor Build Status](https://ci.appveyor.com/api/projects/status/ruqnlbwuwl31lp6n/branch/master?svg=true)](https://ci.appveyor.com/project/NathanHarrington/FastPM100)
 [![Coverage Status](https://coveralls.io/repos/WasatchPhotonics/FastPM100/badge.svg?branch=master&service=github)](https://coveralls.io/github/WasatchPhotonics/FastPM100?branch=master)
 
 Specifications for the Thorlabs PM100 class laser power meters include

@@ -49,18 +49,6 @@ after_test:
       --specpath scripts \
       scripts/FastPM100.py"
       
-
-
-    after_test:
-          # If tests are successful, create a whl package for the
-          # project.
-          #   #- "%WITH_COMPILER% %PYTHON%/python setup.py bdist_wheel"
-          #     #- ps: "ls dist"
-          #       # Run pyinstaller
-          #         # This will create the "win7_innosetup.iss" file
-          #           - "%WITH_COMPILER% pyinstaller -y --log-level=WARN
-          #           freeze_appveyor\\win_shapeout.spec"
-          #
    - "iscc scripts\\Application_InnoSetup.iss"
    - ps: "ls scripts\\built-dist\\*.exe"
    - ps: "ls scripts\\windows_installer\\*.exe"

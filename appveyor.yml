@@ -31,7 +31,8 @@ install:
   - "pip install six"
 
   # no package named pkg_resources
-  - "wget https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py -O - | python"
+  #- "wget https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py -O - | python"
+  - "pip install setuptools"
 
   - choco install -y InnoSetup
   - set PATH="C:\Program Files (x86)\Inno Setup 5";%PATH%

@@ -16,6 +16,8 @@ import multiprocessing
 
 from fastpm100 import applog
 
+@pytest.mark.skipif(not pytest.config.getoption("--wrapper"),
+                    reason="need --wrapper option to run")
 class TestLogFile():
     def test_log_file_is_created(self):
         assert applog.delete_log_file_if_exists() == True

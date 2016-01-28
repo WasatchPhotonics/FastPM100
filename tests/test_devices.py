@@ -8,6 +8,8 @@ import pytest
 
 from fastpm100 import devices, applog
 
+@pytest.mark.skipif(not pytest.config.getoption("--wrapper"),
+                    reason="need --wrapper option to run")
 class TestSimulatedPM100Device:
 
     def test_direct_logging_is_available(self, caplog):

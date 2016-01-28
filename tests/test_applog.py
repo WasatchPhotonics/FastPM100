@@ -13,6 +13,7 @@ import os
 import time
 import logging
 import multiprocessing
+import pytest
 
 from fastpm100 import applog
 

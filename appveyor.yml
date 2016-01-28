@@ -55,5 +55,7 @@ after_test:
 artifacts:
    - path: scripts\built-dist\FastPM100\*.exe
    - path: scripts\windows_installer\*.exe
+   - path: FastPM100.zip
+     name: scripts\\built-dist
 
 

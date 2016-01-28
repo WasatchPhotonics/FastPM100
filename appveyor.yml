@@ -57,7 +57,7 @@ after_test:
       --specpath scripts \
       scripts/FastPM100.py"
       
-   - "iscc scripts\\Application_InnoSetup.iss"
+   #- "iscc scripts\\Application_InnoSetup.iss"
    - ps: "ls scripts\\built-dist\\*.exe"
    - ps: "ls scripts\\windows_installer\\*.exe"
 

@@ -32,9 +32,7 @@ install:
 
   # no package named pkg_resources
   #- "wget https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py -O - | python"
-  - "pip install easy_install"
-  - "pip install --upgrade setuptools"
-  - "pip install --upgrade distribute"
+  - "conda update setuptools"
 
   #- choco install -y InnoSetup
   #- set PATH="C:\Program Files (x86)\Inno Setup 5";%PATH%

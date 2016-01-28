@@ -52,10 +52,11 @@ after_test:
    - ps: "ls scripts\\built-dist\\*.exe"
    - ps: "ls scripts\\windows_installer\\*.exe"
 
+     7z a FastPM100.zip scripts\built-dist
+
 artifacts:
    - path: scripts\built-dist\FastPM100\*.exe
    - path: scripts\windows_installer\*.exe
    - path: FastPM100.zip
-     name: scripts\\built-dist
 
 

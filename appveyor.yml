@@ -25,7 +25,7 @@ install:
   - activate test-environment
 
   - "pip install pyside pytest pytest-qt pytest-capturelog ThorlabsPM100 pyvisa"
-  - "pip install pyinstaller==3.1"
+  - "pip install pyinstaller==3.0"
   - "pip install six"
 
   - choco install -y InnoSetup

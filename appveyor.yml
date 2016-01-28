@@ -41,7 +41,6 @@ test_script:
 
 after_test:
     
-   - "pyinstaller --version"
 
    - "pyinstaller \
       --distpath=scripts/built-dist \

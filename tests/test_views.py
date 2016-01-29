@@ -10,8 +10,8 @@ from PySide import QtCore, QtTest
 
 from fastpm100 import views
 
-@pytest.mark.skipif(not pytest.config.getoption("--appveyor"),
-                    reason="need --appveyor option to run")
+@pytest.mark.skipif(pytest.config.getoption("--appveyor"),
+                    reason="need --appveyor option to disable tests")
 class TestStripChart:
 
     @pytest.fixture(scope="function")

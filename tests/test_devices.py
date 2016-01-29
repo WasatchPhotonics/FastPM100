@@ -8,8 +8,8 @@ import pytest
 
 from fastpm100 import devices, applog
 
-@pytest.mark.skipif(not pytest.config.getoption("--appveyor"),
-                    reason="need --appveyor option to run")
+@pytest.mark.skipif(pytest.config.getoption("--appveyor"),
+                    reason="need --appveyor option to disable tests")
 class TestSimulatedPM100Device:
 
     def test_direct_logging_is_available(self, caplog):

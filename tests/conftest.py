@@ -8,4 +8,4 @@ def pytest_addoption(parser):
     parser.addoption("--hardware", action="store_true",
         help="run tests requiring physical hardware")
     parser.addoption("--appveyor", action="store_true",
-        help="enable tests that are known to break on appveyor")
+        help="disable tests that are known to break on appveyor")

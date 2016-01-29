@@ -17,8 +17,8 @@ import pytest
 
 from fastpm100 import applog
 
-@pytest.mark.skipif(not pytest.config.getoption("--appveyor"),
-                    reason="need --appveyor option to run")
+@pytest.mark.skipif(pytest.config.getoption("--appveyor"),
+                    reason="need --appveyor option to disable tests")
 class TestLogFile():
     def test_log_file_is_created(self):
         assert applog.delete_log_file_if_exists() == True

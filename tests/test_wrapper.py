@@ -11,8 +11,8 @@ from fastpm100 import wrapper, applog, devices
 import logging
 log = logging.getLogger(__name__)
 
-@pytest.mark.skipif(not pytest.config.getoption("--appveyor"),
-                    reason="need --appveyor option to run")
+@pytest.mark.skipif(pytest.config.getoption("--appveyor"),
+                    reason="need --appveyor option to disable tests")
 class TestWrapper:
 
     @pytest.fixture(scope="function")
@@ -121,7 +121,7 @@ class TestWrapper:
         blocking sleep in the main controller being ignored by the subprocess.
         """
         first_result = self.read_while_none(wrapper)
-        time.sleep(6.0)
+        time.sleep(1.0)
 
         second_result = self.read_while_none(wrapper)
         skip_count = second_result[0] - first_result[0]
@@ -134,7 +134,7 @@ class TestWrapper:
         device. Huge limits again to support heavy CI system loads.
         """
         first_result = self.read_while_none(regulated_wrapper)
-        time.sleep(6.0)
+        time.sleep(1.0)
 
         second_result = self.read_while_none(regulated_wrapper)
         skip_count = second_result[0] - first_result[0]

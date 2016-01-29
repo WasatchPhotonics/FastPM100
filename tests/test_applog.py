@@ -17,8 +17,8 @@ import pytest
 
 from fastpm100 import applog
 
-@pytest.mark.skipif(not pytest.config.getoption("--wrapper"),
-                    reason="need --wrapper option to run")
+@pytest.mark.skipif(not pytest.config.getoption("--appveyor"),
+                    reason="need --appveyor option to run")
 class TestLogFile():
     def test_log_file_is_created(self):
         assert applog.delete_log_file_if_exists() == True
@@ -26,7 +26,7 @@ class TestLogFile():
         main_logger = applog.MainLogger()
         main_logger.close()
 
-        time.sleep(3.5) # required to let file creation happen
+        time.sleep(0.5) # required to let file creation happen
 
         assert applog.log_file_created() == True
         applog.explicit_log_close()
@@ -38,7 +38,7 @@ class TestLogFile():
         main_logger = applog.MainLogger()
         main_logger.close()
 
-        time.sleep(3.5) # required to let file creation happen
+        time.sleep(0.5) # required to let file creation happen
 
         log_text = applog.get_text_from_log()
 
@@ -66,11 +66,11 @@ class TestLogFile():
                                            args=(log_queue,))
         sub_proc.start()
 
-        time.sleep(6.0) # make sure the process has enough time to emit
+        time.sleep(1.0) # make sure the process has enough time to emit
 
         main_logger.close()
 
-        time.sleep(3.5) # required to let file creation happen
+        time.sleep(0.5) # required to let file creation happen
 
         log_text = caplog.text()
 
@@ -92,11 +92,11 @@ class TestLogFile():
                                            args=(log_queue,))
         sub_proc.start()
 
-        time.sleep(6.0) # make sure the process has enough time to emit
+        time.sleep(1.0) # make sure the process has enough time to emit
 
         main_logger.close()
 
-        time.sleep(3.5) # required to let file creation happen
+        time.sleep(0.5) # required to let file creation happen
 
         log_text = applog.get_text_from_log()
 

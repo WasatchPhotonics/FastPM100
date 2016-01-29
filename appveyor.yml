@@ -34,8 +34,8 @@ install:
   #- "wget https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py -O - | python"
   - "conda update setuptools"
 
-  #- choco install -y InnoSetup
-  #- set PATH="C:\Program Files (x86)\Inno Setup 5";%PATH%
+  - choco install -y InnoSetup
+  - set PATH="C:\Program Files (x86)\Inno Setup 5";%PATH%
 
 # Build is off because it is not applicable to python
 build: off
@@ -46,7 +46,6 @@ test_script:
      - "py.test tests -s"
 
 after_test:
-    
 
    - "pyinstaller \
       --distpath=scripts/built-dist \
@@ -57,15 +56,14 @@ after_test:
       --specpath scripts \
       scripts/FastPM100.py"
       
-   #- "iscc scripts\\Application_InnoSetup.iss"
+   - "iscc scripts\\Application_InnoSetup.iss"
    - ps: "ls scripts\\built-dist\\*.exe"
    - ps: "ls scripts\\windows_installer\\*.exe"
 
    - ps: "7z a FastPM100.zip scripts\\built-dist"
 
 artifacts:
-   - path: scripts\built-dist\FastPM100\*.exe
-   - path: scripts\windows_installer\*.exe
    - path: FastPM100.zip
+   - path: scripts\windows_installer\*.exe
 
 

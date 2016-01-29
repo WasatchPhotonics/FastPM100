@@ -11,8 +11,8 @@ from fastpm100 import wrapper, applog, devices
 import logging
 log = logging.getLogger(__name__)
 
-@pytest.mark.skipif(not pytest.config.getoption("--wrapper"),
-                    reason="need --wrapper option to run")
+@pytest.mark.skipif(not pytest.config.getoption("--appveyor"),
+                    reason="need --appveyor option to run")
 class TestWrapper:
 
     @pytest.fixture(scope="function")

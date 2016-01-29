@@ -10,8 +10,8 @@ from PySide import QtCore, QtTest
 
 from fastpm100 import views
 
-@pytest.mark.skipif(not pytest.config.getoption("--wrapper"),
-                    reason="need --wrapper option to run")
+@pytest.mark.skipif(not pytest.config.getoption("--appveyor"),
+                    reason="need --appveyor option to run")
 class TestStripChart:
 
     @pytest.fixture(scope="function")

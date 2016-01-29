@@ -13,8 +13,8 @@ from PySide import QtTest
 from fastpm100 import control, applog
 
 
-@pytest.mark.skipif(not pytest.config.getoption("--wrapper"),
-                    reason="need --wrapper option to run")
+@pytest.mark.skipif(not pytest.config.getoption("--appveyor"),
+                    reason="need --appveyor option to run")
 class TestControl:
 
     @pytest.fixture(scope="function")

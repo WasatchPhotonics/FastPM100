@@ -45,4 +45,3 @@ Add the following text:
 
     # Thorlabs PM100 USB
     SUBSYSTEMS=="usb", ACTION=="add", ATTRS{idVendor}=="1313", ATTRS{idProduct}=="8072", MODE="0666"
-

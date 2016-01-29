@@ -4,7 +4,8 @@ sudo: false
 
 notifications:
     email:
-        false
+        on_success: change
+        on_failure: change
 
 virtualenv:
     system_site_packages: true

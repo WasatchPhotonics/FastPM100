@@ -74,19 +74,6 @@ class TestControl:
         time.sleep(1)
         assert "Control level close" in caplog.text()
 
-    def test_simulated_device_updates_current_value(self, simulate_main, caplog, qtbot):
-
-        QtTest.QTest.qWaitForWindowShown(simulate_main.form)
-
-        qtbot.wait(1000)
-        first_val = simulate_main.form.ui.labelCurrent.text()
-
-        qtbot.wait(1000)
-        second_val = simulate_main.form.ui.labelCurrent.text()
-
-        assert first_val != second_val
-
-
     def test_simulated_device_updates_graph(self, simulate_main, qtbot):
         QtTest.QTest.qWaitForWindowShown(simulate_main.form)
 

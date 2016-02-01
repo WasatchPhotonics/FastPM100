@@ -24,7 +24,7 @@ class StripWindow(QtGui.QMainWindow):
 
         self.add_graph()
         self.create_signals()
-        self.setGeometry(450, 250, 1080, 300)
+        self.setGeometry(450, 250, 900, 400)
 
         self.show()
 

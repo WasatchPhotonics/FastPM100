@@ -26,6 +26,8 @@ class StripWindow(QtGui.QMainWindow):
         self.create_signals()
         self.setGeometry(450, 250, 900, 400)
 
+        app_icon = QtGui.QIcon(":ui/images/ApplicationIcon.ico")
+        self.setWindowIcon(app_icon)
         self.show()
 
     def add_graph(self):

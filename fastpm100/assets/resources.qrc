@@ -1,5 +1,13 @@
 <RCC>
   <qresource prefix="ui">
+    <file>images/greys/fast_backward.svg</file>
+    <file>images/greys/forward.svg</file>
+    <file>images/greys/full_extent.svg</file>
+    <file>images/greys/pause.svg</file>
+    <file>images/greys/reset.svg</file>
+    <file>images/greys/save.svg</file>
+    <file>images/greys/select.svg</file>
+    <file>images/greys/zoom.svg</file>
     <file>images/wp_logo.png</file>
     <file>images/ApplicationIcon.ico</file>
   </qresource>

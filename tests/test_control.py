@@ -8,7 +8,7 @@ controller create the top level logger
 import time
 import pytest
 
-from PySide import QtTest
+from PySide import QtTest, QtCore
 
 from fastpm100 import control, applog
 
@@ -52,7 +52,7 @@ class TestControl:
         fixture on py.test does not see sub process entries.
         """
         QtTest.QTest.qWaitForWindowShown(simulate_main.form)
-        qtbot.wait(3000)
+        qtbot.wait(1000)
 
         log_text = applog.get_text_from_log()
         assert "SimulatedPM100 setup" in log_text
@@ -65,7 +65,7 @@ class TestControl:
         """
 
         QtTest.QTest.qWaitForWindowShown(simulate_main.form)
-        qtbot.wait(3000)
+        qtbot.wait(1000)
 
         close_signal = simulate_main.control_exit_signal.exit
         with qtbot.wait_signal(close_signal, timeout=1):
@@ -78,10 +78,10 @@ class TestControl:
 
         QtTest.QTest.qWaitForWindowShown(simulate_main.form)
 
-        qtbot.wait(3000)
+        qtbot.wait(1000)
         first_val = simulate_main.form.ui.labelCurrent.text()
 
-        qtbot.wait(3000)
+        qtbot.wait(1000)
         second_val = simulate_main.form.ui.labelCurrent.text()
 
         assert first_val != second_val
@@ -90,11 +90,11 @@ class TestControl:
     def test_simulated_device_updates_graph(self, simulate_main, qtbot):
         QtTest.QTest.qWaitForWindowShown(simulate_main.form)
 
-        qtbot.wait(3000)
+        qtbot.wait(1000)
         points = simulate_main.form.curve.getData()
         first_point = points[1][-1]
 
-        qtbot.wait(3000)
+        qtbot.wait(1000)
         points = simulate_main.form.curve.getData()
         second_point = points[1][-1]
 
@@ -102,7 +102,7 @@ class TestControl:
 
     def test_min_max_update(self, simulate_main, qtbot):
 
-        qtbot.wait(3000)
+        qtbot.wait(1000)
         min_val = simulate_main.form.ui.labelMinimum.text()
         assert min_val != "0.0"
 
@@ -110,7 +110,7 @@ class TestControl:
         assert max_val != "0.0"
 
     def test_fps_metrics_update(self, simulate_main, qtbot):
-        qtbot.wait(2000)
+        qtbot.wait(1000)
         dfps_val = simulate_main.form.ui.labelDataFPS.text()
         assert dfps_val != "0.0"
 
@@ -120,3 +120,67 @@ class TestControl:
         sfps_val = simulate_main.form.ui.labelSkipFPS.text()
         assert sfps_val != "0.0"
 
+    def test_toolbar_button_status_on_startup(self, simulate_main, qtbot):
+
+        QtTest.QTest.qWaitForWindowShown(simulate_main.form)
+
+        check_stat = simulate_main.form.ui.actionContinue.isChecked()
+        assert check_stat == True
+
+        pause_stat = simulate_main.form.ui.actionPause.isChecked()
+        assert pause_stat == False
+
+    def test_pause_action_stops_live_update_of_graph(self, simulate_main, qtbot):
+
+        QtTest.QTest.qWaitForWindowShown(simulate_main.form)
+        smfu_wfo = simulate_main.form.ui.toolBar.widgetForAction
+
+        act_pause = simulate_main.form.ui.actionPause
+        act_continue = simulate_main.form.ui.actionContinue
+
+        qtbot.wait(300)
+        act_pause_widget = smfu_wfo(act_pause)
+        qtbot.mouseClick(act_pause_widget, QtCore.Qt.LeftButton)
+
+        assert act_continue.isChecked() == False
+        assert act_pause.isChecked() == True
+
+        # Get some data, wait then get the same positional data from the graph
+        # and make sure it has not changed
+
+        points = simulate_main.form.curve.getData()
+        first_point = points[1][-1]
+        qtbot.wait(300)
+
+        points = simulate_main.form.curve.getData()
+        second_point = points[1][-1]
+
+        assert first_point == second_point
+
+    def test_continue_action_restarts_graph(self, simulate_main, qtbot):
+
+        QtTest.QTest.qWaitForWindowShown(simulate_main.form)
+        smfu_wfo = simulate_main.form.ui.toolBar.widgetForAction
+
+        act_pause = simulate_main.form.ui.actionPause
+        act_continue = simulate_main.form.ui.actionContinue
+
+        qtbot.wait(300)
+        act_pause_widget = smfu_wfo(act_pause)
+        qtbot.mouseClick(act_pause_widget, QtCore.Qt.LeftButton)
+        assert act_pause.isChecked() == True
+        assert act_continue.isChecked() == False
+
+        # Data is now paused,
+        points = simulate_main.form.curve.getData()
+        first_point = points[1][-1]
+        qtbot.wait(300)
+
+        act_continue_widget = smfu_wfo(act_continue)
+        qtbot.mouseClick(act_continue_widget, QtCore.Qt.LeftButton)
+        assert act_continue.isChecked() == True
+        qtbot.wait(300)
+
+        points = simulate_main.form.curve.getData()
+        second_point = points[1][-1]
+        assert first_point != second_point

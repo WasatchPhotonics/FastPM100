@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'fastpm100/assets/strip_layout.ui'
 #
-# Created: Mon Jan 18 15:12:56 2016
+# Created: Mon Feb  1 07:50:24 2016
 #      by: pyside-uic 0.2.15 running on PySide 1.2.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -12,7 +12,7 @@ from PySide import QtCore, QtGui
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(905, 420)
+        MainWindow.resize(905, 460)
         self.centralwidget = QtGui.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.horizontalLayout_2 = QtGui.QHBoxLayout(self.centralwidget)
@@ -96,6 +96,23 @@ class Ui_MainWindow(object):
         self.horizontalLayout.addWidget(self.frameRight)
         self.horizontalLayout_2.addLayout(self.horizontalLayout)
         MainWindow.setCentralWidget(self.centralwidget)
+        self.toolBar = QtGui.QToolBar(MainWindow)
+        self.toolBar.setObjectName("toolBar")
+        MainWindow.addToolBar(QtCore.Qt.TopToolBarArea, self.toolBar)
+        self.actionPause = QtGui.QAction(MainWindow)
+        self.actionPause.setCheckable(True)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(":/ui/images/greys/pause.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionPause.setIcon(icon)
+        self.actionPause.setObjectName("actionPause")
+        self.actionContinue = QtGui.QAction(MainWindow)
+        self.actionContinue.setCheckable(True)
+        icon1 = QtGui.QIcon()
+        icon1.addPixmap(QtGui.QPixmap(":/ui/images/greys/forward.svg"), QtGui.QIcon.Normal, QtGui.QIcon.On)
+        self.actionContinue.setIcon(icon1)
+        self.actionContinue.setObjectName("actionContinue")
+        self.toolBar.addAction(self.actionContinue)
+        self.toolBar.addAction(self.actionPause)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -115,4 +132,10 @@ class Ui_MainWindow(object):
         self.labelRenderFPS.setText(QtGui.QApplication.translate("MainWindow", "0.0", None, QtGui.QApplication.UnicodeUTF8))
         self.labelDataFPS.setText(QtGui.QApplication.translate("MainWindow", "0.0", None, QtGui.QApplication.UnicodeUTF8))
         self.labelSkipFPS.setText(QtGui.QApplication.translate("MainWindow", "0.0", None, QtGui.QApplication.UnicodeUTF8))
+        self.toolBar.setWindowTitle(QtGui.QApplication.translate("MainWindow", "toolBar", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionPause.setText(QtGui.QApplication.translate("MainWindow", "Pause", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionPause.setToolTip(QtGui.QApplication.translate("MainWindow", "Pause gray updates", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionContinue.setText(QtGui.QApplication.translate("MainWindow", "Continue", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionContinue.setToolTip(QtGui.QApplication.translate("MainWindow", "Continue live graph updates", None, QtGui.QApplication.UnicodeUTF8))
 
+import resources_rc

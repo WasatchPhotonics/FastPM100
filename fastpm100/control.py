@@ -35,6 +35,8 @@ class Controller(object):
                                          device_name=device_name)
         self.total_spectra = 0
 
+        self.form.ui.actionContinue.setChecked(True)
+
         self.setup_main_event_loop()
 
     def create_data_model(self, history_size):
@@ -58,6 +60,8 @@ class Controller(object):
         self.last_reported = 0
         self.last_rend = 0
 
+        self.live_updates = True
+
     def create_signals(self):
         """ Create signals for access by parent process.
         """
@@ -70,6 +74,9 @@ class Controller(object):
         """ Connect GUI form signals to control events.
         """
         self.form.exit_signal.exit.connect(self.close)
+
+        self.form.ui.actionPause.triggered[bool].connect(self.on_pause)
+        self.form.ui.actionContinue.triggered[bool].connect(self.on_continue)
 
     def setup_main_event_loop(self):
         """ Create a timer for a continuous event loop, trigger the start.
@@ -107,6 +114,9 @@ class Controller(object):
     def render_graph(self):
         """ Update the graph data, indicate minimum and maximum values.
         """
+        if not self.live_updates:
+            return
+
         self.form.curve.setData(self.current)
 
         if len(self.current) > 0:
@@ -156,3 +166,26 @@ class Controller(object):
         self.device.close()
         log.debug("Control level close")
         self.control_exit_signal.exit.emit("Control level close")
+
+    def on_continue(self, action):
+        """ Continue and pause buttons are the equivalent of toggle buttons.
+        Only one can be enabled at a time.
+        """
+        log.info("Continue live updates")
+        if action == False:
+            self.form.ui.actionContinue.setChecked(True)
+
+        self.form.ui.actionPause.setChecked(False)
+        self.live_updates = True
+
+    def on_pause(self, action):
+        """ Continue and pause buttons are the equivalent of toggle buttons.
+        Only one can be enabled at a time.
+        """
+        log.info("Pause live updates: %s", action)
+        if action == False:
+            self.form.ui.actionPause.setChecked(True)
+
+        self.form.ui.actionContinue.setChecked(False)
+        self.live_updates = False
+

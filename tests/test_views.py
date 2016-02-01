@@ -35,3 +35,13 @@ class TestStripChart:
         assert strip_form.ui.plot.width() >= 756
         assert strip_form.ui.plot.height() >= 300
 
+    def test_form_has_toolbar_action_buttons(self, strip_form, qtbot):
+        strip_wfo = strip_form.ui.toolBar.widgetForAction
+        widget = strip_wfo(strip_form.ui.actionPause)
+        assert widget.width() >= 24
+        assert widget.height() >= 24
+
+        widget = strip_wfo(strip_form.ui.actionContinue)
+        assert widget.width() >= 24
+        assert widget.height() >= 24
+

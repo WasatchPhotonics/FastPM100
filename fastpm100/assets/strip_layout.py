@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'fastpm100/assets/strip_layout.ui'
 #
-# Created: Mon Feb  1 09:51:57 2016
+# Created: Mon Feb  1 10:10:26 2016
 #      by: pyside-uic 0.2.15 running on PySide 1.2.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -35,7 +35,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_9 = QtGui.QVBoxLayout()
         self.verticalLayout_9.setObjectName("verticalLayout_9")
         self.frameRight = QtGui.QFrame(self.centralwidget)
-        self.frameRight.setMinimumSize(QtCore.QSize(150, 200))
+        self.frameRight.setMinimumSize(QtCore.QSize(175, 200))
         self.frameRight.setMaximumSize(QtCore.QSize(150, 200))
         self.frameRight.setFrameShape(QtGui.QFrame.StyledPanel)
         self.frameRight.setFrameShadow(QtGui.QFrame.Raised)

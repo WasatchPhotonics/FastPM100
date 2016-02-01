@@ -33,10 +33,6 @@
            <string>Primary Stacked widget</string>
           </property>
          </widget>
-         <zorder>label</zorder>
-         <zorder>frameRight</zorder>
-         <zorder>frameRight</zorder>
-         <zorder>verticalLayoutWidget</zorder>
         </widget>
         <widget class="QWidget" name="page_2"/>
        </widget>
@@ -49,7 +45,7 @@
        <widget class="QFrame" name="frameRight">
         <property name="minimumSize">
          <size>
-          <width>150</width>
+          <width>175</width>
           <height>200</height>
          </size>
         </property>

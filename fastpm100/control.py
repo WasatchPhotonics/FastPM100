@@ -134,7 +134,7 @@ class Controller(object):
         # Total number of frames read, ms per frame instantaneous performance
         # display
         time_diff = time.time() - self.start_time
-        display_str = "%s, %0.3fms" % (self.read_frames, time_diff)
+        display_str = "%0.3fms" % (time_diff)
         self.form.ui.labelCurrent.setText("%s" % display_str)
 
 

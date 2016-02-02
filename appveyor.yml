@@ -49,6 +49,7 @@ install:
   - "pip install pyinstaller"
   - "pip install six"
   - "pip install pyvisa"
+  - "pip install pytest"
 
 
   - choco install -y InnoSetup

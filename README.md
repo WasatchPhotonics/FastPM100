@@ -20,7 +20,14 @@ FastPM100 provides two different modes of visualization:
         Heatmaps, multi line plots and other techniques to help
         visualize short duration laser power measurements.
 
+Consider the imagery below, which shows the difference between ThorLabs
+Optical Power Meter software (v5.4) and FastPM100. This image was
+captured using a Wasatch Photonics spectrometer under laser test with
+two PM100 usb meters connected through a beamsplitter. The faster
+sampling can prove invaluable when diagnosing complicated thermal,
+electrical and reflective power interactions.
 
+![FastPM100 comparison screenshot](/fastpm100/assets/images/application_screenshot.png "Comparison screenshot")
 
 
 Running tests:

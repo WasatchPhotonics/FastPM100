@@ -21,18 +21,35 @@ install:
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
   - conda info -a
-  - "conda create -q -n test-environment python=%PYTHON_VERSION% numpy scipy nose"
-  - activate test-environment
 
-  - "pip install pyside pytest pytest-qt pytest-capturelog ThorlabsPM100 pyvisa"
-
-  # no package named packages in 3.1
-  - "pip install pyinstaller==3.0"
-  - "pip install six"
+  # First pass at appveyor focused conda
+  #- "conda create -q -n test-environment python=%PYTHON_VERSION% numpy scipy nose"
+  #- activate test-environment
+  #
+  #- "pip install pyside pytest pytest-qt pytest-capturelog ThorlabsPM100 pyvisa"
+  #
+  ## no package named packages in 3.1
+  #- "pip install pyinstaller==3.0"
+  #- "pip install six"
 
   # no package named pkg_resources
   #- "wget https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py -O - | python"
-  - "conda update setuptools"
+  #- "conda update setuptools"
+
+
+
+  # Mimic of development machine miniconda setup
+  - conda create --name test-environment python=%PYTHON_VERSION% numpy pyqtgraph pyside
+  - conda remove --name test-environment setuptools
+  - activate test-environment
+
+  # https://github.com/pyinstaller/pyinstaller/issues/1781
+  - "pip install setuptools==19.3"
+
+  - "pip install pyinstaller"
+  - "pip install six"
+  - "pip install pyvisa"
+
 
   - choco install -y InnoSetup
   - set PATH="C:\Program Files (x86)\Inno Setup 5";%PATH%
@@ -43,7 +60,7 @@ build: off
 test_script:
   # Run the project tests
      - "python setup.py develop"
-     - "py.test tests -s"
+     - "py.test tests -s --appveyor"
 
 after_test:
 

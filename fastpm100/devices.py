@@ -7,6 +7,7 @@ import time
 import logging
 import platform
 
+import zmq
 import visa
 
 from ThorlabsPM100 import ThorlabsPM100, USBTMC
@@ -85,3 +86,32 @@ class SimulatedPM100(object):
         """ Return the test-specific pattern.
         """
         return self.increment_counter()
+
+class TriValueZMQ(object):
+    """ Read three values off a zmq publisher queue with a subscriber
+    interface, wrap in the "read" nomenclature for use in the fastpm100
+    type visualization.
+    """
+    def __init__(self, ip_address="127.0.0.1", port="6545",
+                 topic="temperatures_and_power"):
+        super(TriValueZMQ, self).__init__()
+        log.debug("%s setup", self.__class__.__name__)
+
+        self.context = zmq.Context()
+        self.socket = self.context.socket(zmq.SUB)
+
+        connect_str = "tcp://%s:%s" % (ip_address, port)
+        log.debug("Connecting to: %s, topic: %s", connect_str, topic)
+        self.socket.connect(connect_str)
+        self.socket.setsockopt(zmq.SUBSCRIBE, topic)
+
+        socket_wait = 1.0
+        log.debug("Wait %s seconds for socket", socket_wait)
+        time.sleep(socket_wait)
+
+    def read(self):
+        """ Read off the publisher queue, return the result as a string.
+        """
+        string = self.socket.recv()
+        return string
+

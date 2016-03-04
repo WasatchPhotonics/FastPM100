@@ -113,5 +113,8 @@ class TriValueZMQ(object):
         """ Read off the publisher queue, return the result as a string.
         """
         string = self.socket.recv()
-        return string
+        values = string.split(" ")[1]
+        power_value = values.split(",")[-1]
+
+        return float(power_value)
 

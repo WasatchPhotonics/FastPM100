@@ -92,7 +92,7 @@ class TriValueZMQ(object):
     interface, wrap in the "read" nomenclature for use in the fastpm100
     type visualization.
     """
-    def __init__(self, ip_address="192.168.1.193", port="6545",
+    def __init__(self, ip_address="127.0.0.1", port="6545",
                  topic="temperatures_and_power"):
         super(TriValueZMQ, self).__init__()
         log.debug("%s setup", self.__class__.__name__)

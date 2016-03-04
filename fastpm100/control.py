@@ -18,11 +18,14 @@ class Controller(object):
     user script as well as the test_control.
     """
     def __init__(self, log_queue, device_name="SimulatedPM100",
-                 history_size=30):
+                 history_size=30, title="FastPM100"):
         log.debug("Control startup")
 
+        # A value of zero means update as fast as possible
+        self.update_time_interval = 0
+
         # Create a separate process for the qt gui event loop
-        self.form = views.StripWindow()
+        self.form = views.StripWindow(title=title)
 
         self.create_data_model(history_size)
         self.create_signals()
@@ -109,7 +112,7 @@ class Controller(object):
         self.update_performance_metrics()
 
         if self.continue_loop:
-            self.main_timer.start(0)
+            self.main_timer.start(self.update_time_interval)
 
     def render_graph(self):
         """ Update the graph data, indicate minimum and maximum values.
@@ -189,3 +192,18 @@ class Controller(object):
         self.form.ui.actionContinue.setChecked(False)
         self.live_updates = False
 
+
+class DayGroupController(Controller):
+    def __init__(self, *args, **kwargs):
+        super(DayGroupController, self).__init__(*args, **kwargs)
+
+        # ms to update the main interface to control the quantity of
+        # data displayed. Update once every 10 seconds for an entire 24
+        # hour period
+        self.update_time_interval = 10000
+
+class ForeverController(Controller):
+    def __init__(self, *args, **kwargs):
+        super(ForeverController, self).__init__(*args, **kwargs)
+
+        self.update_time_interval = 60000

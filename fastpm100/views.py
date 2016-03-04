@@ -15,7 +15,7 @@ class StripWindow(QtGui.QMainWindow):
     """ Provide a standard gui control window with pyqtgraph for 3k per second
     visualizations.
     """
-    def __init__(self):
+    def __init__(self, title="FastPM100"):
         log.debug("Init")
         super(StripWindow, self).__init__()
 
@@ -28,7 +28,7 @@ class StripWindow(QtGui.QMainWindow):
 
         app_icon = QtGui.QIcon(":ui/images/ApplicationIcon.ico")
         self.setWindowIcon(app_icon)
-        self.setWindowTitle("FastPM100")
+        self.setWindowTitle(title)
         self.show()
 
     def add_graph(self):

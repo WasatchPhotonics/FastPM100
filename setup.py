@@ -13,6 +13,7 @@ requires = [
     "pyqtgraph",
     "ThorlabsPM100",
     "pyvisa",
+    "zmq",
     ]
 
 setup(name="fastpm100",

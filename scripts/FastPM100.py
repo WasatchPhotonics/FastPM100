@@ -59,7 +59,7 @@ class FastPM100Application(object):
 
         self.main_logger = applog.MainLogger()
         app_control = control.Controller(self.main_logger.log_queue,
-                                         device_name="TriValueZMQ",
+                                         device_name="ThorlabsMeter",
                                          history_size=3000)
 
         app_control.control_exit_signal.exit.connect(self.closeEvent)

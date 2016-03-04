@@ -9,3 +9,5 @@ def pytest_addoption(parser):
         help="run tests requiring physical hardware")
     parser.addoption("--appveyor", action="store_true",
         help="disable tests that are known to break on appveyor")
+    parser.addoption("--network", action="store_true",
+        help="disable tests that require network setup")

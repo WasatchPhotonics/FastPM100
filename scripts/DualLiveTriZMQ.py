@@ -58,7 +58,7 @@ class FastPM100Application(object):
         self.app = QtGui.QApplication([])
 
         self.main_logger = applog.MainLogger()
-        app_control = control.Controller(self.main_logger.log_queue,
+        app_control = control.DualController(self.main_logger.log_queue,
                                          device_name="DualTriValueZMQ",
                                          history_size=3000,
                                          title="Live Readings")

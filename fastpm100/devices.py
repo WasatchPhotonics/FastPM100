@@ -92,7 +92,7 @@ class TriValueZMQ(object):
     interface, wrap in the "read" nomenclature for use in the fastpm100
     type visualization.
     """
-    def __init__(self, ip_address="127.0.0.1", port="6545",
+    def __init__(self, ip_address="192.168.1.233", port="6545",
                  topic="temperatures_and_power"):
         super(TriValueZMQ, self).__init__()
         log.debug("%s setup", self.__class__.__name__)
@@ -123,22 +123,10 @@ class DualTriValueZMQ(TriValueZMQ):
     interface, wrap in the "read" nomenclature for use in the fastpm100
     type visualization. Return laser temperature and pm100 laser power.
     """
-    def __init__(self, ip_address="127.0.0.1", port="6545",
-                 topic="temperatures_and_power"):
-        super(DualTriValueZMQ, self).__init__()
+    def __init__(self, *args, **kwargs):
+        super(DualTriValueZMQ, self).__init__(*args, **kwargs)
+
         log.debug("%s setup", self.__class__.__name__)
-
-        self.context = zmq.Context()
-        self.socket = self.context.socket(zmq.SUB)
-
-        connect_str = "tcp://%s:%s" % (ip_address, port)
-        log.debug("Connecting to: %s, topic: %s", connect_str, topic)
-        self.socket.connect(connect_str)
-        self.socket.setsockopt(zmq.SUBSCRIBE, topic)
-
-        socket_wait = 1.0
-        log.debug("Wait %s seconds for socket", socket_wait)
-        time.sleep(socket_wait)
 
     def read(self):
         """ Like read above, return a tuple in combined_log order of average

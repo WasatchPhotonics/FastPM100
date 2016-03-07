@@ -14,7 +14,7 @@ socket.bind("tcp://*:%s" % port)
 topic = "temperatures_and_power"
 
 power_simulate = 1
-ltemp_simulate = 10
+ltemp_simulate = 100
 max_iterations = 1000000
 sleep_interval = 0.1
 

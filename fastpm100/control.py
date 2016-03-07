@@ -21,13 +21,16 @@ class Controller(object):
                  history_size=30, title="FastPM100"):
         log.debug("Control startup")
 
+        self.history_size = history_size
+        self.title = title
+
         # A value of zero means update as fast as possible
         self.update_time_interval = 0
 
         # Create a separate process for the qt gui event loop
-        self.form = views.StripWindow(title=title)
+        self.form = views.StripWindow(title=self.title)
 
-        self.create_data_model(history_size)
+        self.create_data_model(self.history_size)
         self.create_signals()
 
         self.bind_view_signals()
@@ -217,42 +220,31 @@ class DualController(Controller):
         super(DualController, self).__init__(*args, **kwargs)
         log.debug("Dual Control startup")
 
-        # A value of zero means update as fast as possible
-        self.update_time_interval = 0
+        self.form = views.DualStripWindow(title=self.title)
 
-        # Create a separate process for the qt gui event loop
-        self.form = views.DualStripWindow(title=title)
-
-        self.create_data_model(history_size)
-        self.create_signals()
-
-        self.bind_view_signals()
-
-        delay_time = None
-        self.device = wrapper.SubProcess(log_queue,
-                                         delay_time=delay_time,
-                                         device_name=device_name)
-        self.total_spectra = 0
-
-        self.form.ui.actionContinue.setChecked(True)
-
-        self.setup_main_event_loop()
+        # Create numpy array for holding second set of data
+        self.second = numpy.empty(0)
 
     def event_loop(self):
         """ Process queue events, interface events, then update views.
         """
 
-        result = self.device.dual_read()
+        result = self.device.read()
+        #result = self.device.read()[0]
         if result is not None:
+            print "raw result: ", result
 
             self.read_frames += 1
             self.reported_frames = result[0]
 
             if len(self.current) >= self.size:
                 self.current = numpy.roll(self.current, -1)
-                self.current[-1] = result[1]
+                self.second = numpy.roll(self.second, -1)
+                self.current[-1] = result[1][0]
+                self.second[-1] = result[1][1]
             else:
-                self.current = numpy.append(self.current, result[1])
+                self.current = numpy.append(self.current, result[1][0])
+                self.second = numpy.append(self.second, result[1][1])
 
         self.render_graph()
 
@@ -268,6 +260,7 @@ class DualController(Controller):
             return
 
         self.form.curve.setData(self.current)
+        self.form.curve_two.setData(self.second)
 
         if len(self.current) > 0:
             min_text = "%0.3f mw" % numpy.min(self.current)

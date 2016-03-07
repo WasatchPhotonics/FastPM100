@@ -200,14 +200,16 @@ class TestDualControl:
         return app_control
 
     def test_simulated_dual_device_updates_graph(self, simulate_dual_main, qtbot):
-        QtTest.QTest.qWaitForWindowShown(simulate_main.form)
+        QtTest.QTest.qWaitForWindowShown(simulate_dual_main.form)
 
-        qtbot.wait(1000)
-        points = simulate_main.form.curve.getData()
+        qtbot.wait(2000)
+        points = simulate_dual_main.form.curve.getData()
+        first_point = points[1][-1]
+        points = simulate_dual_main.form.curve.getData()
         first_point = points[1][-1]
 
-        qtbot.wait(1000)
-        points = simulate_main.form.curve.getData()
+        qtbot.wait(2000)
+        points = simulate_dual_main.form.curve.getData()
         second_point = points[1][-1]
 
         assert first_point != second_point

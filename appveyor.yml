@@ -40,12 +40,15 @@ install:
 
   # Mimic of development machine miniconda setup
   - conda create --name test-environment python=%PYTHON_VERSION% numpy pyqtgraph pyside
-  - conda remove --name test-environment setuptools
-  - activate test-environment
+
+  # On 2016-03-04ish, a build now works with default setuptools
+  #- conda remove --name test-environment setuptools
+  #- activate test-environment
 
   # https://github.com/pyinstaller/pyinstaller/issues/1781
-  - "pip install setuptools==19.3"
+  #- "pip install setuptools==19.3"
 
+  - activate test-environment
   - "pip install pyinstaller"
   - "pip install six"
   - "pip install pyvisa"

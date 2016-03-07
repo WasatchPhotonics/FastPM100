@@ -177,7 +177,7 @@ class TestControl:
 class TestDualControl:
 
     @pytest.fixture(scope="function")
-    def simulate_main(self, qtbot, request):
+    def simulate_dual_main(self, qtbot, request):
         """ Setup the controller the same way the scripts/Application does at
         every setup. Ensure that the teardown is in place regardless of test
         result. Use the Dual controller to display two lines of data.
@@ -185,7 +185,7 @@ class TestDualControl:
         assert applog.delete_log_file_if_exists() == True
 
         main_logger = applog.MainLogger()
-        app_control = control.Controller(main_logger.log_queue)
+        app_control = control.DualController(main_logger.log_queue)
 
         qtbot.addWidget(app_control.form)
 
@@ -198,42 +198,7 @@ class TestDualControl:
 
         return app_control
 
-    def test_control_logs_visible_to_caplog(self, simulate_main, caplog, qtbot):
-        QtTest.QTest.qWaitForWindowShown(simulate_main.form)
-        assert "Control startup" in caplog.text()
-
-    def test_view_logs_visible_to_caplog(self, simulate_main, caplog, qtbot):
-        QtTest.QTest.qWaitForWindowShown(simulate_main.form)
-        assert "Init" in caplog.text()
-
-    def test_device_logs_in_file_only(self, simulate_main, caplog, qtbot):
-        """ Shows the expected behavior. Demonstrates that the capturelog
-        fixture on py.test does not see sub process entries.
-        """
-        QtTest.QTest.qWaitForWindowShown(simulate_main.form)
-        qtbot.wait(1000)
-
-        log_text = applog.get_text_from_log()
-        assert "SimulatedPM100 setup" in log_text
-        assert "SimulatedPM100 setup" not in caplog.text()
-
-    def test_close_view_emits_control_signal(self, simulate_main, caplog, qtbot):
-        """ Control script emits an event on a close condition to be processsed
-        by the parent qt application, in this case qtbot. In the scripts file,
-        it's the Qapplication.
-        """
-
-        QtTest.QTest.qWaitForWindowShown(simulate_main.form)
-        qtbot.wait(1000)
-
-        close_signal = simulate_main.control_exit_signal.exit
-        with qtbot.wait_signal(close_signal, timeout=1):
-            simulate_main.form.close()
-
-        time.sleep(1)
-        assert "Control level close" in caplog.text()
-
-    def test_simulated_device_updates_graph(self, simulate_main, qtbot):
+    def test_simulated_dual_device_updates_graph(self, simulate_dual_main, qtbot):
         QtTest.QTest.qWaitForWindowShown(simulate_main.form)
 
         qtbot.wait(1000)

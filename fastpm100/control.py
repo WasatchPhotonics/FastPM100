@@ -207,3 +207,73 @@ class ForeverController(Controller):
         super(ForeverController, self).__init__(*args, **kwargs)
 
         self.update_time_interval = 60000
+
+class DualController(Controller):
+    """ Like Controller above, but use the dual update view.
+    """
+    #def __init__(self, log_queue, device_name="SimulatedPM100",
+    #             history_size=30, title="FastPM100"):
+    def __init__(self, *args, **kwargs):
+        super(DualController, self).__init__(*args, **kwargs)
+        log.debug("Dual Control startup")
+
+        # A value of zero means update as fast as possible
+        self.update_time_interval = 0
+
+        # Create a separate process for the qt gui event loop
+        self.form = views.DualStripWindow(title=title)
+
+        self.create_data_model(history_size)
+        self.create_signals()
+
+        self.bind_view_signals()
+
+        delay_time = None
+        self.device = wrapper.SubProcess(log_queue,
+                                         delay_time=delay_time,
+                                         device_name=device_name)
+        self.total_spectra = 0
+
+        self.form.ui.actionContinue.setChecked(True)
+
+        self.setup_main_event_loop()
+
+    def event_loop(self):
+        """ Process queue events, interface events, then update views.
+        """
+
+        result = self.device.dual_read()
+        if result is not None:
+
+            self.read_frames += 1
+            self.reported_frames = result[0]
+
+            if len(self.current) >= self.size:
+                self.current = numpy.roll(self.current, -1)
+                self.current[-1] = result[1]
+            else:
+                self.current = numpy.append(self.current, result[1])
+
+        self.render_graph()
+
+        self.update_performance_metrics()
+
+        if self.continue_loop:
+            self.main_timer.start(self.update_time_interval)
+
+    def render_graph(self):
+        """ Update the graph data, indicate minimum and maximum values.
+        """
+        if not self.live_updates:
+            return
+
+        self.form.curve.setData(self.current)
+
+        if len(self.current) > 0:
+            min_text = "%0.3f mw" % numpy.min(self.current)
+            max_text = "%0.3f mw" % numpy.max(self.current)
+            self.form.ui.labelMinimum.setText(min_text)
+            self.form.ui.labelMaximum.setText(max_text)
+
+        self.total_rend += 1
+

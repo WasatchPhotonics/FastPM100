@@ -66,11 +66,15 @@ class TestZMQReads():
 
         applog.explicit_log_close()
 
+
+@pytest.mark.skipif(not pytest.config.getoption("--network"),
+                    reason="need --network option to run")
+class TestDualZMQReads():
     def test_zmq_dual_read_has_two_values(self, caplog):
         """ This requires the publisher exists in a separate process.
         """
-        device = devices.TriValueZMQ()
-        temperature, power = device.dual_read()
+        device = devices.DualTriValueZMQ()
+        temperature, power = device.read()
 
         assert temperature != 0
         assert power != 0

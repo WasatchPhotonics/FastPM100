@@ -82,4 +82,25 @@ class TestBlueGraphSkin:
         assert widget.width() >= 24
         assert widget.height() >= 24
 
+@pytest.mark.skipif(pytest.config.getoption("--appveyor"),
+                    reason="need --appveyor option to disable tests")
+class TestDualAxisStripChart:
 
+    @pytest.fixture(scope="function")
+    def strip_form(self, qtbot, request):
+        """ Create the view at every setup, close it on final.
+        """
+        new_form = views.DualStripWindow()
+
+        def form_close():
+            new_form.close()
+        request.addfinalizer(form_close)
+
+        return new_form
+
+    def test_form_has_default_setup(self, strip_form, qtbot):
+        assert strip_form.ui.labelMinimum.text() == "0.0"
+        assert strip_form.width() >= 900
+        assert strip_form.height() >= 318
+
+        qtbot.wait(5000)

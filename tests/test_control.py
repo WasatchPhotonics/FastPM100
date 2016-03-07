@@ -185,7 +185,8 @@ class TestDualControl:
         assert applog.delete_log_file_if_exists() == True
 
         main_logger = applog.MainLogger()
-        app_control = control.DualController(main_logger.log_queue)
+        app_control = control.DualController(main_logger.log_queue,
+                                             device_name="DualTriValueZMQ")
 
         qtbot.addWidget(app_control.form)
 

@@ -41,10 +41,12 @@ install:
   # Mimic of development machine miniconda setup
   - conda create --name test-environment python=%PYTHON_VERSION% numpy pyqtgraph pyside
 
-  # On 2016-03-04ish, a build now works with default setuptools
+  # On 2016-03-04ish, a build now works with default setuptools -
+  # unforutnately, this increase in compatibility manifests as a build
+  # error. Something about distribute being the wrong version and/or
+  # choco failures
   #- conda remove --name test-environment setuptools
   #- activate test-environment
-
   # https://github.com/pyinstaller/pyinstaller/issues/1781
   #- "pip install setuptools==19.3"
 

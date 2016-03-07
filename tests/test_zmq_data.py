@@ -57,7 +57,6 @@ class TestZMQReads():
         applog.explicit_log_close()
 
     def test_zmq_single_value_is_returned(self, caplog):
-
         """ This requires the publisher exists in a separate process.
         """
         device = devices.TriValueZMQ()
@@ -65,6 +64,15 @@ class TestZMQReads():
 
         assert result != 0
 
-        print "Result is: [%s]" % result
-        assert result == None
+        applog.explicit_log_close()
+
+    def test_zmq_dual_read_has_two_values(self, caplog):
+        """ This requires the publisher exists in a separate process.
+        """
+        device = devices.TriValueZMQ()
+        temperature, power = device.dual_read()
+
+        assert temperature != 0
+        assert power != 0
+
         applog.explicit_log_close()

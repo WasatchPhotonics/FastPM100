@@ -13,15 +13,19 @@ socket.bind("tcp://*:%s" % port)
 
 topic = "temperatures_and_power"
 
-count = 1
+power_simulate = 1
+ltemp_simulate = 10
 max_iterations = 1000000
 sleep_interval = 0.1
-while count < max_iterations:
 
-    str_mesg = ("%s 1,2,%s" % (topic, count))
+while power_simulate < max_iterations:
+
+    str_mesg = ("%s 1,%s,%s" % (topic, ltemp_simulate, power_simulate))
+
     print "Send %s" % str_mesg
     socket.send(str_mesg)
-    count += 1
+    power_simulate += 1
+    ltemp_simulate += 1
 
     time.sleep(sleep_interval)
 

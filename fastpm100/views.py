@@ -130,12 +130,10 @@ class DualStripWindow(StripWindow):
         """
         plot_widget = pyqtgraph.PlotWidget(name="dual")
         self.ui.plot = plot_widget
-        #self.ui.plot_widget.show()
 
         self.plot1 = plot_widget.plotItem
 
         self.plot1.setLabels(left="axis 1")
-
 
         green_pen = "#1fd11f" # semi light-green
         red_pen = "#ff0000" # bold red
@@ -152,15 +150,15 @@ class DualStripWindow(StripWindow):
 
         self.curve_two = pyqtgraph.PlotCurveItem(range(2000), pen=red_pen)
         self.plot2.addItem(self.curve_two)
-        #self.plot2.addItem(pyqtgraph.PlotCurveItem([10, 20, 30], pen='b'))
 
         self.ui.stackedWidget.addWidget(self.ui.plot)
         self.ui.stackedWidget.setCurrentIndex(2)
 
-    #p2.setGeometry(p1.vb.sceneBoundingRect())
-    #p3.setGeometry(p1.vb.sceneBoundingRect())
 
     def updateViews(self):
+        """ Update the various plot item geometry according the the
+        MultiplePlotAxes example to ensure the various axis line up.
+        """
         self.plot2.setGeometry(self.plot1.vb.sceneBoundingRect())
 
         ## need to re-update linked axes since this was called
@@ -169,23 +167,3 @@ class DualStripWindow(StripWindow):
         #p2.linkedViewChanged(p1.vb, p2.XAxis)
         self.plot2.linkedViewChanged(self.plot1.vb, self.plot2.XAxis)
 
-#updateViews()
-
-"""
-pw = pg.PlotWidget()
-pw.show()
-pw.setWindowTitle('pyqtgraph example: MultiplePlotAxes')
-p1 = pw.plotItem
-p1.setLabels(left='axis 1')
-
-## create a new ViewBox, link the right axis to its coordinate system
-p2 = pg.ViewBox()
-p1.showAxis('right')
-p1.scene().addItem(p2)
-p1.getAxis('right').linkToView(p2)
-p2.setXLink(p1)
-p1.getAxis('right').setLabel('axis2', color='#0000ff')
-...
-p1.plot([1,2,4,8,16,32])
-p2.addItem(pg.PlotCurveItem([10,20,40,80,40,20], pen='b'))
-"""

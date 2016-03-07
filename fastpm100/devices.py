@@ -118,3 +118,16 @@ class TriValueZMQ(object):
 
         return float(power_value)
 
+    def dual_read(self):
+        """ Like read above, return a tuple in combined_log order of average
+        laser temp, average laser power.
+        """
+
+        string = self.socket.recv()
+        values = string.split(" ")[1]
+
+        ltemp_value = values.split(",")[-2]
+        power_value = values.split(",")[-1]
+
+        return float(ltemp_value), float(power_value)
+

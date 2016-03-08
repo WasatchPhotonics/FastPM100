@@ -14,6 +14,7 @@ requires = [
     "ThorlabsPM100",
     "pyvisa",
     "zmq",
+    "pyserial",
     ]
 
 setup(name="fastpm100",

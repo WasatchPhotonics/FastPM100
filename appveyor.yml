@@ -55,6 +55,8 @@ install:
   - "pip install six"
   - "pip install pyvisa"
   - "pip install pytest"
+  - "pip install pyserial"
+  - "pip install zmq"
 
 
   - choco install -y InnoSetup

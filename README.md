@@ -51,3 +51,13 @@ Add the following text:
 
     # Thorlabs PM100 USB
     SUBSYSTEMS=="usb", ACTION=="add", ATTRS{idVendor}=="1313", ATTRS{idProduct}=="8072", MODE="0666"
+
+Configure the power meter:
+
+    For maximum reads per second, make sure to open the "Optical Power
+    Meter" application from Thorlabs. Configure the device with the
+    following settings:
+
+    Range: turn off auto
+    High gain
+    No averaging

@@ -178,7 +178,7 @@ class SlapChopDevice(object):
         temp_yellow = result.split(" ")[0]
         temp_blue = result.split(" ")[1]
         amps = result.split(" ")[2]
-        return float(temp_yellow)
+        return float(temp_yellow), float(temp_blue), float(amps)
 
 
     def write_command(self, command, read_bytes=24):

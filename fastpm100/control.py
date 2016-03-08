@@ -240,7 +240,7 @@ class DualController(Controller):
         result = self.device.read()
         # ltemp, power
         if result is not None:
-            print "raw result: ", result
+            #print "raw result: ", result
 
             self.read_frames += 1
             self.reported_frames = result[0]

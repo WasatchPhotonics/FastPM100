@@ -54,3 +54,34 @@ class TestSimulatedPM100Device:
         assert result != new_result
         applog.explicit_log_close()
 
+
+@pytest.mark.skipif(pytest.config.getoption("--appveyor"),
+                    reason="need --appveyor option to disable tests"
+                    "with physical hardware requirement")
+class TestSlapChopDevice:
+
+    def test_slapchop_direct_logging_is_available(self, caplog):
+        device = devices.SlapChopDevice()
+        assert "SlapChopDevice setup" in caplog.text()
+        applog.explicit_log_close()
+
+    def test_slapchop_direct_device_is_available(self, caplog):
+        device = devices.SlapChopDevice()
+        result = device.read()
+
+        assert result != 0
+        assert result != None
+
+        applog.explicit_log_close()
+
+    def test_slapchop_values_change(self, caplog):
+        device = devices.SlapChopDevice()
+        result = device.read()
+        print "result: %s" % result
+        assert result != 0
+        assert result != None
+        result = device.read()
+        print "result: %s" % result
+        assert result == None
+
+        applog.explicit_log_close()

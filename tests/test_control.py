@@ -214,3 +214,20 @@ class TestDualControl:
 
         assert first_point != second_point
 
+
+    def test_close_view_emits_control_signal(self, simulate_dual_main, caplog, qtbot):
+        """ Control script emits an event on a close condition to be processsed
+        by the parent qt application, in this case qtbot. In the scripts file,
+        it's the Qapplication.
+        """
+
+        QtTest.QTest.qWaitForWindowShown(simulate_dual_main.form)
+        qtbot.wait(1000)
+
+        close_signal = simulate_dual_main.control_exit_signal.exit
+        with qtbot.wait_signal(close_signal, timeout=1):
+            simulate_dual_main.form.close()
+
+        time.sleep(1)
+        assert "Control level close" in caplog.text()
+

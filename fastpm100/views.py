@@ -133,7 +133,7 @@ class DualStripWindow(StripWindow):
 
         self.plot1 = plot_widget.plotItem
 
-        self.plot1.setLabels(left="axis 1")
+        self.plot1.setLabels(left="Laser Power")
 
         green_pen = "#1fd11f" # semi light-green
         red_pen = "#ff0000" # bold red
@@ -146,7 +146,7 @@ class DualStripWindow(StripWindow):
         self.plot1.scene().addItem(self.plot2)
         self.plot1.getAxis("right").linkToView(self.plot2)
         self.plot2.setXLink(self.plot1)
-        self.plot1.getAxis("right").setLabel("axis 2", color=red_pen)
+        self.plot1.getAxis("right").setLabel("Laser Temperature", color=red_pen)
 
         self.curve_two = pyqtgraph.PlotCurveItem(range(2000), pen=red_pen)
         self.plot2.addItem(self.curve_two)

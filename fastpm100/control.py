@@ -225,12 +225,20 @@ class DualController(Controller):
         # Create numpy array for holding second set of data
         self.second = numpy.empty(0)
 
+        # The form was already created in Controller, after it has been
+        # recreated as a dual strip window above, re-bind all of the signals.
+        self.create_signals()
+
+        self.bind_view_signals()
+
+        self.form.ui.actionContinue.setChecked(True)
+
     def event_loop(self):
         """ Process queue events, interface events, then update views.
         """
 
         result = self.device.read()
-        #result = self.device.read()[0]
+        # ltemp, power
         if result is not None:
             print "raw result: ", result
 
@@ -240,11 +248,11 @@ class DualController(Controller):
             if len(self.current) >= self.size:
                 self.current = numpy.roll(self.current, -1)
                 self.second = numpy.roll(self.second, -1)
-                self.current[-1] = result[1][0]
-                self.second[-1] = result[1][1]
+                self.current[-1] = result[1][1]
+                self.second[-1] = result[1][0]
             else:
-                self.current = numpy.append(self.current, result[1][0])
-                self.second = numpy.append(self.second, result[1][1])
+                self.current = numpy.append(self.current, result[1][1])
+                self.second = numpy.append(self.second, result[1][0])
 
         self.render_graph()
 

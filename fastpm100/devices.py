@@ -94,6 +94,8 @@ class TriValueZMQ(object):
     """
     def __init__(self, ip_address="127.0.0.1", port="6545",
                  topic="temperatures_and_power"):
+    #def __init__(self, ip_address="192.168.1.233", port="6545",
+                 #topic="temperatures_and_power"):
         super(TriValueZMQ, self).__init__()
         log.debug("%s setup", self.__class__.__name__)
 

@@ -173,7 +173,12 @@ class SlapChopDevice(object):
 
     def read(self):
         result = self.write_command("s")
-        return result
+        result = result.replace('\r\n','')
+        result = result.replace(',','')
+        temp_yellow = result.split(" ")[0]
+        temp_blue = result.split(" ")[1]
+        amps = result.split(" ")[2]
+        return float(temp_yellow)
 
 
     def write_command(self, command, read_bytes=24):

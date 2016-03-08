@@ -76,12 +76,9 @@ class TestSlapChopDevice:
 
     def test_slapchop_values_change(self, caplog):
         device = devices.SlapChopDevice()
-        result = device.read()
-        print "result: %s" % result
-        assert result != 0
-        assert result != None
-        result = device.read()
-        print "result: %s" % result
-        assert result == None
+        first_result = device.read()
+        second_result = device.read()
+
+        assert first_result != second_result
 
         applog.explicit_log_close()

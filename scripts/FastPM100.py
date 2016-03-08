@@ -53,7 +53,7 @@ class FastPM100Application(object):
                             default="Controller", help=device_str)
 
         history_str = "Specify size of data history collected"
-        parser.add_argument("-s", "--size", action="store_true",
+        parser.add_argument("-s", "--size", type=int,
                             default=3000, help=history_str)
         return parser
 
@@ -69,7 +69,7 @@ class FastPM100Application(object):
 
         app_control = control.Controller(self.main_logger.log_queue,
                                          device_name="ThorlabsMeter",
-                                         history_size=3000)
+                                         history_size=self.args.size)
 
         app_control.control_exit_signal.exit.connect(self.closeEvent)
 

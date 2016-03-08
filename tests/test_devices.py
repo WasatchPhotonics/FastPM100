@@ -55,9 +55,8 @@ class TestSimulatedPM100Device:
         applog.explicit_log_close()
 
 
-@pytest.mark.skipif(pytest.config.getoption("--appveyor"),
-                    reason="need --appveyor option to disable tests"
-                    "with physical hardware requirement")
+@pytest.mark.skipif(not pytest.config.getoption("--hardware"),
+                    reason="need --hardware option to run")
 class TestSlapChopDevice:
 
     def test_slapchop_direct_logging_is_available(self, caplog):

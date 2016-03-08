@@ -47,6 +47,14 @@ class FastPM100Application(object):
         help_str = "Automatically terminate the program for testing"
         parser.add_argument("-t", "--testing", action="store_true",
                             help=help_str)
+
+        device_str = "Specify data source and implicit display type"
+        parser.add_argument("-d", "--device", action="store_true",
+                            default="Controller", help=device_str)
+
+        history_str = "Specify size of data history collected"
+        parser.add_argument("-s", "--size", action="store_true",
+                            default=3000, help=history_str)
         return parser
 
     def run(self):
@@ -58,6 +66,7 @@ class FastPM100Application(object):
         self.app = QtGui.QApplication([])
 
         self.main_logger = applog.MainLogger()
+
         app_control = control.Controller(self.main_logger.log_queue,
                                          device_name="ThorlabsMeter",
                                          history_size=3000)

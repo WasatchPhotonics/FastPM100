@@ -76,11 +76,16 @@ class FastPM100Application(object):
 
         self.main_logger = applog.MainLogger()
 
+
+        title = "%s updated every %s ms for %s reads" \
+                % (self.args.device, self.args.update, self.args.size)
+
         if self.args.controller == "DualController":
             cc = control.DualController
             app_control = cc(self.main_logger.log_queue,
                              device_name="DualTriValueZMQ",
                              history_size=self.args.size,
+                             title=title,
                              update_time_interval=self.args.update)
 
         else: 
@@ -88,6 +93,7 @@ class FastPM100Application(object):
             app_control = cc(self.main_logger.log_queue,
                              device_name=self.args.device,
                              history_size=self.args.size,
+                             title=title,
                              update_time_interval=self.args.update)
 
 

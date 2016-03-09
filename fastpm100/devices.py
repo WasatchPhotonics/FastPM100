@@ -169,7 +169,7 @@ class SlapChopDevice(object):
             result = self.serial_port.open()
         except Exception as exc:
             log.critical("Problem close/open: %s", exc)
-            sys.exit(1)
+            raise exc
 
     def read(self):
         result = self.write_command("s")

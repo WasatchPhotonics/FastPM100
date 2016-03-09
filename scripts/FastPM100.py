@@ -48,13 +48,22 @@ class FastPM100Application(object):
         parser.add_argument("-t", "--testing", action="store_true",
                             help=help_str)
 
-        device_str = "Specify data source and implicit display type"
-        parser.add_argument("-d", "--device", action="store_true",
-                            default="Controller", help=device_str)
+        control_str = "Specify data source and implicit display type"
+        parser.add_argument("-c", "--controller", type=str,
+                            default="Controller", help=control_str)
+
+        device_str = "Specify main controller data source"
+        parser.add_argument("-d", "--device", type=str,
+                            default="ThorlabsMeter", help=device_str)
 
         history_str = "Specify size of data history collected"
         parser.add_argument("-s", "--size", type=int,
                             default=3000, help=history_str)
+
+        update_str = "Update interval in ms (0) for as fast as possible"
+        parser.add_argument("-u", "--update", type=int,
+                            default=0, help=update_str)
+
         return parser
 
     def run(self):
@@ -67,9 +76,20 @@ class FastPM100Application(object):
 
         self.main_logger = applog.MainLogger()
 
-        app_control = control.Controller(self.main_logger.log_queue,
-                                         device_name="ThorlabsMeter",
-                                         history_size=self.args.size)
+        if self.args.controller == "DualController":
+            cc = control.DualController
+            app_control = cc(self.main_logger.log_queue,
+                             device_name="DualTriValueZMQ",
+                             history_size=self.args.size,
+                             update_time_interval=self.args.update)
+
+        else: 
+            cc = control.Controller
+            app_control = cc(self.main_logger.log_queue,
+                             device_name=self.args.device,
+                             history_size=self.args.size,
+                             update_time_interval=self.args.update)
+
 
         app_control.control_exit_signal.exit.connect(self.closeEvent)
 

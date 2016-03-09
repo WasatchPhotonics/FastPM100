@@ -18,14 +18,15 @@ class Controller(object):
     user script as well as the test_control.
     """
     def __init__(self, log_queue, device_name="SimulatedPM100",
-                 history_size=30, title="FastPM100"):
+                 history_size=30, title="FastPM100",
+                 update_time_interval=0):
         log.debug("Control startup")
 
         self.history_size = history_size
         self.title = title
 
         # A value of zero means update as fast as possible
-        self.update_time_interval = 0
+        self.update_time_interval = update_time_interval
 
         # Create a separate process for the qt gui event loop
         self.form = views.StripWindow(title=self.title)
@@ -195,21 +196,6 @@ class Controller(object):
         self.form.ui.actionContinue.setChecked(False)
         self.live_updates = False
 
-
-class DayGroupController(Controller):
-    def __init__(self, *args, **kwargs):
-        super(DayGroupController, self).__init__(*args, **kwargs)
-
-        # ms to update the main interface to control the quantity of
-        # data displayed. Update once every 10 seconds for an entire 24
-        # hour period
-        self.update_time_interval = 10000
-
-class ForeverController(Controller):
-    def __init__(self, *args, **kwargs):
-        super(ForeverController, self).__init__(*args, **kwargs)
-
-        self.update_time_interval = 60000
 
 class DualController(Controller):
     """ Like Controller above, but use the dual update view.

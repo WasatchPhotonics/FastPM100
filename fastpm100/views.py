@@ -217,7 +217,6 @@ class AllStripWindow(StripWindow):
         range_shifter = 3500
         for item in data_source:
             log.debug("Add: %s ", item)
-            print("Add: %s ", item)
 
             temp_plot = pyqtgraph.ViewBox()
             primary_plot.scene().addItem(temp_plot)

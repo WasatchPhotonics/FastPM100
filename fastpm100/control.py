@@ -276,6 +276,8 @@ class AllController(Controller):
         self.form = views.AllStripWindow(title=self.title)
 
         self.create_data_sources()
+        # Create numpy array for holding second set of data
+        self.second = numpy.empty(0)
 
         # The form was already created in Controller, after it has been
         # recreated as a dual strip window above, re-bind all of the signals.
@@ -290,11 +292,12 @@ class AllController(Controller):
         windows of data.
         """
         data_source = [
-                        {"name":"Laser Temperature", "color": red_pen},
-                        {"name":"Laser Power", "color": green_pen},
-                        {"name":"Yellow Therm", "color": yellow_pen},
-                        {"name":"Blue Therm", "color": blue_pen},
-                        {"name":"Amperes", "color": amps_pen},
+                        {"name":"CCD Temperature"},
+                        {"name":"Laser Temperature"},
+                        {"name":"Laser Power"},
+                        {"name":"Yellow Therm"},
+                        {"name":"Blue Therm"},
+                        {"name":"Amperes"},
                       ]
 
         # Histories of data
@@ -314,15 +317,28 @@ class AllController(Controller):
 
             self.read_frames += 1
             self.reported_frames = result[0]
+            log.debug("Frame: %s", result)
 
-            if len(self.current) >= self.size:
-                self.current = numpy.roll(self.current, -1)
-                self.second = numpy.roll(self.second, -1)
-                self.current[-1] = result[1][1]
-                self.second[-1] = result[1][0]
-            else:
-                self.current = numpy.append(self.current, result[1][1])
-                self.second = numpy.append(self.second, result[1][0])
+            hist_count = 0
+            for sensor_read in result[1]:
+                #log.debug("Add %s to array: %s" % (sensor_read,
+                                                   #hist_count))
+                temp_array = self.hist[hist_count]
+                temp_array = numpy.append(temp_array, sensor_read)
+                self.hist[hist_count] = temp_array
+
+                hist_count += 1
+
+
+            current_array = self.hist[0]
+            if len(current_array) >= self.history_size:
+
+                hist_count = 0
+                for item in self.hist:
+                    roll_item = numpy.roll(item, -1)
+                    self.hist[hist_count] = roll_item
+                    hist_count += 1
+
 
         self.render_graph()
 
@@ -343,16 +359,12 @@ class AllController(Controller):
             curve.setData(item)
             hist_count += 1
 
-        #curve = self.form.plots[0][1]
-        #curve_two = self.form.plots[1][1]
-        #curve.setData(self.current)
-        #curve_two.setData(self.second)
-
-        #if len(self.current) > 0:
-            #min_text = "%0.3f mw" % numpy.min(self.current)
-            #max_text = "%0.3f mw" % numpy.max(self.current)
-            #self.form.ui.labelMinimum.setText(min_text)
-            #self.form.ui.labelMaximum.setText(max_text)
+        current_array = self.hist[2]
+        if len(self.current) > 0:
+            min_text = "%0.3f mw" % numpy.min(current_array)
+            max_text = "%0.3f mw" % numpy.max(current_array)
+            self.form.ui.labelMinimum.setText(min_text)
+            self.form.ui.labelMaximum.setText(max_text)
 
         self.total_rend += 1
 

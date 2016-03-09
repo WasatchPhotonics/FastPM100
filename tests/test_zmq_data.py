@@ -80,3 +80,26 @@ class TestDualZMQReads():
         assert power != 0
 
         applog.explicit_log_close()
+
+@pytest.mark.skipif(not pytest.config.getoption("--network"),
+                    reason="need --network option to run")
+class TestAllZMQReads():
+    def test_zmq_all_reads_has_six_values(self, caplog):
+        """ This requires the publisher exists in a separate process.
+        """
+        device = devices.AllValueZMQ()
+
+        # CCD temp, laser temp, laser power, yellow therm, blue therm,
+        # amps
+        c, lt, lp, yt, bt, amp = device.read()
+
+        assert c != None
+        assert lt != None
+        assert lp != None
+        assert yt != None
+        assert bt != None
+        assert amp != None
+
+
+        print "Full read: %s" % device.read()
+        applog.explicit_log_close()

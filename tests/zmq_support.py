@@ -17,7 +17,7 @@ topic = "temperatures_and_power"
 power_simulate = 1
 ltemp_simulate = 100
 max_iterations = 1000000
-sleep_interval = 0.1
+sleep_interval = 0.01
 
 ccd_temp = 32.00
 laser_temp = 35.00

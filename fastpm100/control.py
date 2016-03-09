@@ -323,21 +323,15 @@ class AllController(Controller):
             for sensor_read in result[1]:
                 #log.debug("Add %s to array: %s" % (sensor_read,
                                                    #hist_count))
+
                 temp_array = self.hist[hist_count]
-                temp_array = numpy.append(temp_array, sensor_read)
+                if len(temp_array) >= self.history_size:
+                    temp_array = numpy.roll(temp_array, -1)
+                else:
+                    temp_array = numpy.append(temp_array, sensor_read)
                 self.hist[hist_count] = temp_array
 
                 hist_count += 1
-
-
-            current_array = self.hist[0]
-            if len(current_array) >= self.history_size:
-
-                hist_count = 0
-                for item in self.hist:
-                    roll_item = numpy.roll(item, -1)
-                    self.hist[hist_count] = roll_item
-                    hist_count += 1
 
 
         self.render_graph()

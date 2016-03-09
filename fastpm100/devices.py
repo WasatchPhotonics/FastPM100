@@ -96,8 +96,6 @@ class TriValueZMQ(object):
     """
     def __init__(self, ip_address="127.0.0.1", port="6545",
                  topic="temperatures_and_power"):
-    #def __init__(self, ip_address="192.168.1.233", port="6545",
-                 #topic="temperatures_and_power"):
         super(TriValueZMQ, self).__init__()
         log.debug("%s setup", self.__class__.__name__)
 
@@ -114,13 +112,17 @@ class TriValueZMQ(object):
         time.sleep(socket_wait)
 
     def read(self):
-        """ Read off the publisher queue, return the result as a string.
+        """ Read off the publisher queue, return just the spectrometer
+        temps and laser power
         """
         string = self.socket.recv()
         values = string.split(" ")[1]
-        power_value = values.split(",")[-1]
 
-        return float(power_value)
+        ccd_temp = values.split(",")[0]
+        laser_temp = values.split(",")[1]
+        laser_power = values.split(",")[2]
+
+        return float(ccd_temp), float(laser_temp), float(laser_power)
 
 class DualTriValueZMQ(TriValueZMQ):
     """ Read three values off a zmq publisher queue with a subscriber

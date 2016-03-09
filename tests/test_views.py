@@ -125,5 +125,5 @@ class TestAllStripWindow:
         assert strip_form.width() >= 900
         assert strip_form.height() >= 318
 
-        qtbot.wait(1000)
+        qtbot.wait(3000)
 

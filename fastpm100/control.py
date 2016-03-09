@@ -102,14 +102,18 @@ class Controller(object):
         result = self.device.read()
         if result is not None:
 
+            log.debug("raw frame: %s", result)
+            log.debug("Full frame: %s", result[1])
+            log.debug("Read frame: %s", result[1][2])
+            log.debug("Read frame: %s", result[1][-1])
             self.read_frames += 1
             self.reported_frames = result[0]
 
             if len(self.current) >= self.size:
                 self.current = numpy.roll(self.current, -1)
-                self.current[-1] = result[1]
+                self.current[-1] = result[1][-1]
             else:
-                self.current = numpy.append(self.current, result[1])
+                self.current = numpy.append(self.current, result[1][-1])
 
         self.render_graph()
 
@@ -317,7 +321,7 @@ class AllController(Controller):
 
             self.read_frames += 1
             self.reported_frames = result[0]
-            log.debug("Frame: %s", result)
+            #log.debug("Frame: %s", result)
 
             hist_count = 0
             for sensor_read in result[1]:

@@ -264,3 +264,72 @@ class DualController(Controller):
 
         self.total_rend += 1
 
+
+class AllController(Controller):
+    """ Like Controller above, but use the all data display view and
+    update the control logic to display all data points.
+    """
+    def __init__(self, *args, **kwargs):
+        super(AllController, self).__init__(*args, **kwargs)
+        log.debug("All Control startup")
+
+        self.form = views.AllStripWindow(title=self.title)
+
+        # Create numpy array for holding second set of data
+        self.second = numpy.empty(0)
+
+        # The form was already created in Controller, after it has been
+        # recreated as a dual strip window above, re-bind all of the signals.
+        self.create_signals()
+
+        self.bind_view_signals()
+
+        self.form.ui.actionContinue.setChecked(True)
+
+    def event_loop(self):
+        """ Process queue events, interface events, then update views.
+        """
+
+        result = self.device.read()
+        # ltemp, power
+        if result is not None:
+            #print "raw result: ", result
+
+            self.read_frames += 1
+            self.reported_frames = result[0]
+
+            if len(self.current) >= self.size:
+                self.current = numpy.roll(self.current, -1)
+                self.second = numpy.roll(self.second, -1)
+                self.current[-1] = result[1][1]
+                self.second[-1] = result[1][0]
+            else:
+                self.current = numpy.append(self.current, result[1][1])
+                self.second = numpy.append(self.second, result[1][0])
+
+        self.render_graph()
+
+        self.update_performance_metrics()
+
+        if self.continue_loop:
+            self.main_timer.start(self.update_time_interval)
+
+    def render_graph(self):
+        """ Update the graph data, indicate minimum and maximum values.
+        """
+        if not self.live_updates:
+            return
+
+        curve = self.form.plots[0][1]
+        curve_two = self.form.plots[1][1]
+        curve.setData(self.current)
+        curve_two.setData(self.second)
+
+        if len(self.current) > 0:
+            min_text = "%0.3f mw" % numpy.min(self.current)
+            max_text = "%0.3f mw" % numpy.max(self.current)
+            self.form.ui.labelMinimum.setText(min_text)
+            self.form.ui.labelMaximum.setText(max_text)
+
+        self.total_rend += 1
+

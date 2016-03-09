@@ -91,7 +91,7 @@ class FastPM100Application(object):
         elif self.args.controller == "AllController":
             cc = control.AllController
             app_control = cc(self.main_logger.log_queue,
-                             device_name="AllTriValueZMQ",
+                             device_name="AllValueZMQ",
                              history_size=self.args.size,
                              title=title,
                              update_time_interval=self.args.update)

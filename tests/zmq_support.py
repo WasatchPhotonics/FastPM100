@@ -41,12 +41,21 @@ while power_simulate < max_iterations:
     power_simulate += 1
     ltemp_simulate += 1
 
-    ccd_temp += random.uniform(0.1, 0.9)
-    laser_temp += random.uniform(0.1, 0.9)
-    laser_power += random.uniform(0.1, 0.9)
-    yellow_t += random.uniform(0.1, 0.9)
-    blue_t += random.uniform(0.1, 0.9)
-    amps += random.uniform(0.1, 0.9)
+    toggle = random.uniform(0.1, 0.9)
+    if toggle >= 0.5:
+        ccd_temp += random.uniform(0.1, 0.9)
+        laser_temp += random.uniform(0.1, 0.9)
+        laser_power += random.uniform(0.1, 0.9)
+        yellow_t += random.uniform(0.1, 0.9)
+        blue_t += random.uniform(0.1, 0.9)
+        amps += random.uniform(0.1, 0.9)
+    else:
+        ccd_temp -= random.uniform(0.1, 0.9)
+        laser_temp -= random.uniform(0.1, 0.9)
+        laser_power -= random.uniform(0.1, 0.9)
+        yellow_t -= random.uniform(0.1, 0.9)
+        blue_t -= random.uniform(0.1, 0.9)
+        amps -= random.uniform(0.1, 0.9)
 
 
     time.sleep(sleep_interval)

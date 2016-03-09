@@ -177,88 +177,66 @@ class AllStripWindow(StripWindow):
         super(AllStripWindow, self).__init__()
 
         self.updateViews()
-        self.plot1.vb.sigResized.connect(self.updateViews)
 
+        primary_plot = self.plots[0][0]
+        primary_plot.vb.sigResized.connect(self.updateViews)
 
-    def oldadd_graph(self):
-        """ Add the pyqtgraph control to the stacked widget and make it
-        viewable.
-        """
-        plot_widget = pyqtgraph.PlotWidget(name="dual")
-        self.ui.plot = plot_widget
-
-        self.plot1 = plot_widget.plotItem
-
-        self.plot1.setLabels(left="Laser Power")
-
-        green_pen = "#1fd11f" # semi light-green
-        red_pen = "#ff0000" # bold red
-        plot_result = self.plot1.plot(range(3000), pen=green_pen)
-
-        self.curve = plot_result
-
-        self.plot2 = pyqtgraph.ViewBox()
-        self.plot1.showAxis("right")
-        self.plot1.scene().addItem(self.plot2)
-        self.plot1.getAxis("right").linkToView(self.plot2)
-        self.plot2.setXLink(self.plot1)
-        self.plot1.getAxis("right").setLabel("Laser Temperature", color=red_pen)
-
-        self.curve_two = pyqtgraph.PlotCurveItem(range(2000), pen=red_pen)
-        self.plot2.addItem(self.curve_two)
-
-        self.ui.stackedWidget.addWidget(self.ui.plot)
-        self.ui.stackedWidget.setCurrentIndex(2)
 
     def add_graph(self):
         """ Create data structure and individual graph elements for
         displaying approximately 6 lines on the same plot.
         """
-        plot_widget = pyqtgraph.PlotWidget(name="All lines")
-        self.ui.plot = plot_widget
-
-
-        self.plot1 = plot_widget.plotItem
-
-        self.plot1.setLabels(left="Laser Power")
-
         green_pen = "#1fd11f" # semi light-green
         red_pen = "#ff0000" # bold red
-        plot_result = self.plot1.plot(range(3000), pen=green_pen)
+        yellow_pen = "#e6e600" # dark yellow
+        blue_pen = "#3366ff" # dark blue
+        amps_pen = "#ff6600" # orange
+        ccd_pen = "#ff33cc" # purple
 
-        self.curve = plot_result
-
-        self.plot2 = pyqtgraph.ViewBox()
-        self.plot1.showAxis("right")
-        self.plot1.scene().addItem(self.plot2)
-        self.plot1.getAxis("right").linkToView(self.plot2)
-        self.plot2.setXLink(self.plot1)
-        self.plot1.getAxis("right").setLabel("Laser Temperature", color=red_pen)
-
-        self.curve_two = pyqtgraph.PlotCurveItem(range(2000), pen=red_pen)
-        self.plot2.addItem(self.curve_two)
-
-        self.ui.stackedWidget.addWidget(self.ui.plot)
-        self.ui.stackedWidget.setCurrentIndex(2)
-        data_source = [
-                        {"name":"Laser Power", "color": green_pen}
-                      ]
         self.plots = []
+        # Create a plot widget, assign it to the pre-created gui
+        plot_widget = pyqtgraph.PlotWidget(name="All lines")
+
+
+        primary_plot = plot_widget.plotItem
+        primary_plot.setLabels(left="CCD Temp")
+
+        primary_curve = primary_plot.plot(range(3000), pen=ccd_pen)
+        
+        primary_plot.showAxis("right")
+
+        self.plots.append((primary_plot, primary_curve))
+
+        data_source = [
+                        {"name":"Laser Temperature", "color": red_pen},
+                        {"name":"Laser Power", "color": green_pen},
+                        {"name":"Yellow Therm", "color": yellow_pen},
+                        {"name":"Blue Therm", "color": blue_pen},
+                        {"name":"Amperes", "color": amps_pen},
+                      ]
+        range_shifter = 3500
         for item in data_source:
             log.debug("Add: %s ", item)
             print("Add: %s ", item)
 
             temp_plot = pyqtgraph.ViewBox()
-            self.plot1.scene().addItem(temp_plot)
-            temp_plot.setXLink(self.plot1)
+            primary_plot.scene().addItem(temp_plot)
+            temp_plot.setXLink(primary_plot)
 
             temp_color = item["color"]
-            temp_curve = pyqtgraph.PlotCurveItem(range(1000), pen=temp_color)
+            temp_curve = pyqtgraph.PlotCurveItem(range(range_shifter), 
+                                                 pen=temp_color)
 
             temp_plot.addItem(temp_curve)
             self.plots.append((temp_plot, temp_curve))
 
+            range_shifter += 500
 
+
+        # Add the plotwidget to the ui stackedWidget, switch to it's
+        # index to hide the placeholder
+        self.ui.stackedWidget.addWidget(plot_widget)
+        self.ui.stackedWidget.setCurrentIndex(2)
 
         #raise NameError
 
@@ -266,20 +244,19 @@ class AllStripWindow(StripWindow):
         """ Update the various plot item geometry according the the
         MultiplePlotAxes example to ensure the various axis line up.
         """
-        self.plot2.setGeometry(self.plot1.vb.sceneBoundingRect())
 
         ## need to re-update linked axes since this was called
         ## incorrectly while views had different shapes.
         ## (probably this should be handled in ViewBox.resizeEvent)
-        #p2.linkedViewChanged(p1.vb, p2.XAxis)
-        self.plot2.linkedViewChanged(self.plot1.vb, self.plot2.XAxis)
 
-        main_plot_rect = self.plot1.vb.sceneBoundingRect()
+        primary_plot = self.plots[0][0]
+        main_plot_rect = primary_plot.vb.sceneBoundingRect()
+        main_plot_vb   = primary_plot.vb
 
-        for plot, curve in self.plots:
+        for plot, curve in self.plots[1:]:
             # Set the geometry to match the main plot
             plot.setGeometry(main_plot_rect)
 
             # Link this plots axis updates to main plot
-            plot.linkedViewChanged(self.plot1.vb, plot.XAxis)
+            plot.linkedViewChanged(main_plot_vb, plot.XAxis)
 

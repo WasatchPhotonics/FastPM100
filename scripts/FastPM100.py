@@ -88,6 +88,13 @@ class FastPM100Application(object):
                              title=title,
                              update_time_interval=self.args.update)
 
+        elif self.args.controller == "AllController":
+            cc = control.AllController
+            app_control = cc(self.main_logger.log_queue,
+                             device_name="AllTriValueZMQ",
+                             history_size=self.args.size,
+                             title=title,
+                             update_time_interval=self.args.update)
         else: 
             cc = control.Controller
             app_control = cc(self.main_logger.log_queue,

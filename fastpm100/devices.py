@@ -146,6 +146,31 @@ class DualTriValueZMQ(TriValueZMQ):
         return float(ltemp_value), float(power_value)
 
 
+class AllValueZMQ(TriValueZMQ):
+    """ Read the entire string off the zmq publisher queue, split the
+    values by a space and return as a tuple. Wrap with the "read"
+    nomenclature for use in the FastPM100 multiprocessing wrapper.
+    """
+    def __init__(self, *args, **kwargs):
+        super(AllValueZMQ, self).__init__(*args, **kwargs)
+
+        log.debug("%s setup", self.__class__.__name__)
+
+    def read(self):
+        """ Like read above, return a tuple in combined_log order of average
+        laser temp, average laser power.
+        """
+
+        string = self.socket.recv()
+        values = string.split(" ")[1]
+
+        float_values = []
+        for item in values.split(","):
+            float_values.append(float(item))
+
+        return float_values
+
+
 class SlapChopDevice(object):
     """ Communicate over a virtual com port on windows, send the
     acquisition command and receive three values comma delimited.

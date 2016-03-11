@@ -230,9 +230,8 @@
    </attribute>
    <addaction name="actionContinue"/>
    <addaction name="actionPause"/>
-   <addaction name="actionCCD_Temp"/>
    <addaction name="actionLaser_Temp"/>
-   <addaction name="actionLaser_Power"/>
+   <addaction name="actionCCD_Temp"/>
    <addaction name="actionYellow_Therm"/>
    <addaction name="actionBlue_Therm"/>
    <addaction name="actionAmps"/>

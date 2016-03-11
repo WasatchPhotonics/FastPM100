@@ -302,20 +302,20 @@ class AllController(Controller):
         """ Toggle the display of graph curve items when the action buttons are
         checked in the action bar.
         """
-        self.form.ui.actionCCD_Temp.triggered[bool].connect(self.ccd_action)
+        self.form.ui.actionCCD_Temp.triggered[bool].connect(self.ccd_temp_action)
         self.form.ui.actionLaser_Temp.triggered[bool].connect(self.laser_temp_action)
         self.form.ui.actionLaser_Power.triggered[bool].connect(self.laser_power_action)
         self.form.ui.actionYellow_Therm.triggered[bool].connect(self.yellow_therm_action)
         self.form.ui.actionBlue_Therm.triggered[bool].connect(self.blue_therm_action)
         self.form.ui.actionAmps.triggered[bool].connect(self.amps_action)
 
-    def ccd_action(self, action):
+    def laser_power_action(self, action):
         self.toggle_curve(index=0, action=action)
 
     def laser_temp_action(self, action):
         self.toggle_curve(index=1, action=action)
 
-    def laser_power_action(self, action):
+    def ccd_temp_action(self, action):
         self.toggle_curve(index=2, action=action)
 
     def yellow_therm_action(self, action):
@@ -396,13 +396,33 @@ class AllController(Controller):
         if not self.live_updates:
             return
 
-        hist_count = 0
-        for item in self.hist:
-            curve = self.form.plots[hist_count][1]
-            curve.setData(item)
-            hist_count += 1
+        # display order is different then recording order
+        # display zero is collection 2 (laser power)
+        curve = self.form.plots[0][1]
+        curve.setData(self.hist[2])
 
-        current_array = self.hist[2]
+        # Display one is collection 1 (laser temperature)
+        curve = self.form.plots[1][1]
+        curve.setData(self.hist[1])
+
+        # Display two is collection 0 (ccd temperature)
+        curve = self.form.plots[2][1]
+        curve.setData(self.hist[0])
+
+        # Display three is collection three (yellow therm)
+        curve = self.form.plots[3][1]
+        curve.setData(self.hist[3])
+
+        # Display four is collection four (blue therm)
+        curve = self.form.plots[4][1]
+        curve.setData(self.hist[4])
+
+        # Display five is collection five (amps)
+        curve = self.form.plots[5][1]
+        curve.setData(self.hist[5])
+
+
+        current_array = self.hist[0]
         if len(current_array) > 0:
             min_text = "%0.3f mw" % numpy.min(current_array)
             max_text = "%0.3f mw" % numpy.max(current_array)

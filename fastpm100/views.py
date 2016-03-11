@@ -199,15 +199,16 @@ class AllStripWindow(StripWindow):
 
 
         primary_plot = plot_widget.plotItem
-        primary_plot.setLabel(axis="left", text="CCD Temp", color=ccd_pen)
+        primary_plot.setLabel(axis="left", text="Laser Power",
+                              color=green_pen)
 
-        primary_curve = primary_plot.plot(range(3000), pen=ccd_pen)
+        primary_curve = primary_plot.plot(range(3000), pen=green_pen)
 
         self.plots.append((primary_plot, primary_curve))
 
         data_source = [
                         {"name":"Laser Temperature", "color": red_pen},
-                        {"name":"Laser Power", "color": green_pen},
+                        {"name":"CCD Temp", "color": ccd_pen},
                         {"name":"Yellow Therm", "color": yellow_pen},
                         {"name":"Blue Therm", "color": blue_pen},
                         {"name":"Amperes", "color": amps_pen},

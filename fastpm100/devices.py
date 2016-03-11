@@ -181,7 +181,7 @@ class SlapChopDevice(object):
 
     def __init__(self):
         log.debug("%s setup", self.__class__.__name__)
-  
+
         self.com_port = "COM3" # As of 2016-03-08 10:06, pip serial
         # expects the com port string as reported by windows
 
@@ -222,15 +222,15 @@ class SlapChopDevice(object):
             self.serial_port.flush()
         except Exception as exc:
             log.critical("Problem writing to port: %s", exc)
-            return result 
+            return result
 
         try:
             result = self.serial_port.read(read_bytes)
             log.debug("Serial read result [%r]" % result)
-                
+
         except Exception as exc:
             log.critical("Problem reading from port: %s", exc)
-            return result 
+            return result
 
         log.debug("command write/read successful")
         return result

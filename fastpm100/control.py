@@ -331,6 +331,8 @@ class AllController(Controller):
                 temp_array = self.hist[hist_count]
                 if len(temp_array) >= self.history_size:
                     temp_array = numpy.roll(temp_array, -1)
+                    temp_array[-1] = sensor_read
+
                 else:
                     temp_array = numpy.append(temp_array, sensor_read)
                 self.hist[hist_count] = temp_array

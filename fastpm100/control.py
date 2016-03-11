@@ -360,7 +360,7 @@ class AllController(Controller):
             hist_count += 1
 
         current_array = self.hist[2]
-        if len(self.current) > 0:
+        if len(current_array) > 0:
             min_text = "%0.3f mw" % numpy.min(current_array)
             max_text = "%0.3f mw" % numpy.max(current_array)
             self.form.ui.labelMinimum.setText(min_text)

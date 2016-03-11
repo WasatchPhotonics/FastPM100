@@ -31,3 +31,7 @@ echo "Rebuilding uic forms"
 $UIC_NAME \
     fastpm100/assets/strip_layout.ui \
     -o fastpm100/assets/strip_layout.py
+
+$UIC_NAME \
+    fastpm100/assets/component_toggle_strip_layout.ui \
+    -o fastpm100/assets/component_toggle_strip_layout.py

@@ -288,8 +288,51 @@ class AllController(Controller):
         self.create_signals()
 
         self.bind_view_signals()
+        self.bind_custom_actions()
 
         self.form.ui.actionContinue.setChecked(True)
+        self.form.ui.actionCCD_Temp.setChecked(True)
+        self.form.ui.actionLaser_Temp.setChecked(True)
+        self.form.ui.actionLaser_Power.setChecked(True)
+        self.form.ui.actionYellow_Therm.setChecked(True)
+        self.form.ui.actionBlue_Therm.setChecked(True)
+        self.form.ui.actionAmps.setChecked(True)
+
+    def bind_custom_actions(self):
+        """ Toggle the display of graph curve items when the action buttons are
+        checked in the action bar.
+        """
+        self.form.ui.actionCCD_Temp.triggered[bool].connect(self.ccd_action)
+        self.form.ui.actionLaser_Temp.triggered[bool].connect(self.laser_temp_action)
+        self.form.ui.actionLaser_Power.triggered[bool].connect(self.laser_power_action)
+        self.form.ui.actionYellow_Therm.triggered[bool].connect(self.yellow_therm_action)
+        self.form.ui.actionBlue_Therm.triggered[bool].connect(self.blue_therm_action)
+        self.form.ui.actionAmps.triggered[bool].connect(self.amps_action)
+
+    def ccd_action(self, action):
+        self.toggle_curve(index=0, action=action)
+
+    def laser_temp_action(self, action):
+        self.toggle_curve(index=1, action=action)
+
+    def laser_power_action(self, action):
+        self.toggle_curve(index=2, action=action)
+
+    def yellow_therm_action(self, action):
+        self.toggle_curve(index=3, action=action)
+
+    def blue_therm_action(self, action):
+        self.toggle_curve(index=4, action=action)
+
+    def amps_action(self, action):
+        self.toggle_curve(index=5, action=action)
+
+    def toggle_curve(self, index, action):
+        log.debug("Action %s, index: %s", action, index)
+        if action == False:
+            self.form.plots[index][1].hide()
+        else:
+            self.form.plots[index][1].show()
 
     def create_data_sources(self):
         """ Pre-populate data structures for use in storing and rolling

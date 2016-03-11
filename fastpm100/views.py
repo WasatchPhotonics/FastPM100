@@ -7,6 +7,7 @@ import pyqtgraph
 from PySide import QtGui, QtCore
 
 from .assets import strip_layout
+from .assets import component_toggle_strip_layout
 
 import logging
 log = logging.getLogger(__name__)
@@ -15,11 +16,11 @@ class StripWindow(QtGui.QMainWindow):
     """ Provide a standard gui control window with pyqtgraph for 3k per second
     visualizations.
     """
-    def __init__(self, title="FastPM100"):
+    def __init__(self, title="FastPM100", layout=strip_layout):
         log.debug("Init")
         super(StripWindow, self).__init__()
 
-        self.ui = strip_layout.Ui_MainWindow()
+        self.ui = layout.Ui_MainWindow()
         self.ui.setupUi(self)
 
         self.add_graph()
@@ -174,7 +175,7 @@ class AllStripWindow(StripWindow):
     """
     def __init__(self, title="FastPM100"):
         log.debug("Init")
-        super(AllStripWindow, self).__init__()
+        super(AllStripWindow, self).__init__(layout=component_toggle_strip_layout)
 
         self.updateViews()
 

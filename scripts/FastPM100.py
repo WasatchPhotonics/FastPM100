@@ -95,7 +95,7 @@ class FastPM100Application(object):
                              history_size=self.args.size,
                              title=title,
                              update_time_interval=self.args.update)
-        else: 
+        else:
             cc = control.Controller
             app_control = cc(self.main_logger.log_queue,
                              device_name=self.args.device,

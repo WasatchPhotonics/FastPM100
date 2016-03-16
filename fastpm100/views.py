@@ -175,7 +175,8 @@ class AllStripWindow(StripWindow):
     """
     def __init__(self, title="FastPM100"):
         log.debug("Init")
-        super(AllStripWindow, self).__init__(layout=component_toggle_strip_layout)
+        super(AllStripWindow, self).__init__(title=title,
+                                             layout=component_toggle_strip_layout)
 
         self.updateViews()
 

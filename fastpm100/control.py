@@ -276,7 +276,7 @@ class AllController(Controller):
     """
     def __init__(self, *args, **kwargs):
         super(AllController, self).__init__(*args, **kwargs)
-        log.debug("All Control startup")
+        log.debug("All Control startup: %s", self.title)
 
         self.form = views.AllStripWindow(title=self.title)
 

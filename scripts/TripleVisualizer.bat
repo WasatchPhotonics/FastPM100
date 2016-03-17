@@ -19,4 +19,4 @@ REM screen
 start "" python -u FastPM100.py ^
     --controller AllController ^
     --update 60000 --size 144000 ^
-    --geometry 0,735,1920,333
+    --geometry 0,740,1920,333

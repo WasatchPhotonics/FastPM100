@@ -19,11 +19,13 @@ class Controller(object):
     """
     def __init__(self, log_queue, device_name="SimulatedPM100",
                  history_size=30, title="FastPM100",
+                 geometry=[200, 200, 600, 600],
                  update_time_interval=0):
         log.debug("Control startup")
 
         self.history_size = history_size
         self.title = title
+        self.geometry = geometry
 
         # A value of zero means update as fast as possible
         self.update_time_interval = update_time_interval
@@ -205,8 +207,6 @@ class Controller(object):
 class DualController(Controller):
     """ Like Controller above, but use the dual update view.
     """
-    #def __init__(self, log_queue, device_name="SimulatedPM100",
-    #             history_size=30, title="FastPM100"):
     def __init__(self, *args, **kwargs):
         super(DualController, self).__init__(*args, **kwargs)
         log.debug("Dual Control startup")
@@ -278,7 +278,8 @@ class AllController(Controller):
         super(AllController, self).__init__(*args, **kwargs)
         log.debug("All Control startup: %s", self.title)
 
-        self.form = views.AllStripWindow(title=self.title)
+        self.form = views.AllStripWindow(title=self.title,
+                                         geometry=self.geometry)
 
         self.create_data_sources()
         # Create numpy array for holding second set of data
@@ -423,7 +424,7 @@ class AllController(Controller):
         curve.setData(self.hist[5])
 
 
-        current_array = self.hist[0]
+        current_array = self.hist[2] # collection 2 is laser power
         if len(current_array) > 0:
             min_text = "%0.3f mw" % numpy.min(current_array)
             max_text = "%0.3f mw" % numpy.max(current_array)

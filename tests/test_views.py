@@ -112,7 +112,9 @@ class TestAllStripWindow:
     def strip_form(self, qtbot, request):
         """ Create the view at every setup, close it on final.
         """
-        new_form = views.AllStripWindow()
+        # x, y, w, h
+        geometry = [100, 100, 920, 433]
+        new_form = views.AllStripWindow(geometry=geometry)
 
         def form_close():
             new_form.close()

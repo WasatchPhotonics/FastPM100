@@ -16,7 +16,8 @@ class StripWindow(QtGui.QMainWindow):
     """ Provide a standard gui control window with pyqtgraph for 3k per second
     visualizations.
     """
-    def __init__(self, title="FastPM100", layout=strip_layout):
+    def __init__(self, title="FastPM100", layout=strip_layout,
+                 geometry=[250, 250, 900, 400]):
         log.debug("Init")
         super(StripWindow, self).__init__()
 
@@ -25,7 +26,8 @@ class StripWindow(QtGui.QMainWindow):
 
         self.add_graph()
         self.create_signals()
-        self.setGeometry(450, 250, 900, 400)
+        # x, y, w, h
+        self.setGeometry(geometry[0], geometry[1], geometry[2], geometry[3])
 
         app_icon = QtGui.QIcon(":ui/images/ApplicationIcon.ico")
         self.setWindowIcon(app_icon)
@@ -173,10 +175,11 @@ class AllStripWindow(StripWindow):
     """ Like StripWindow, but pre-populate multiple other lines that may
     or may not share graph axis.
     """
-    def __init__(self, title="FastPM100"):
+    def __init__(self, title="FastPM100", geometry=[0, 0, 1920, 333]):
         log.debug("Init")
         super(AllStripWindow, self).__init__(title=title,
-                                             layout=component_toggle_strip_layout)
+                                             layout=component_toggle_strip_layout,
+                                             geometry=geometry)
 
         self.updateViews()
 

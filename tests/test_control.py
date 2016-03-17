@@ -230,8 +230,10 @@ class TestAllControl:
         """
         assert applog.delete_log_file_if_exists() == True
 
+        geometry = [100, 100, 800, 500]
         main_logger = applog.MainLogger()
         app_control = control.AllController(main_logger.log_queue,
+                                            geometry=geometry,
                                             device_name="AllValueZMQ")
 
         qtbot.addWidget(app_control.form)

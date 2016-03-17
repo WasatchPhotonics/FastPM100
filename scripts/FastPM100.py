@@ -94,6 +94,7 @@ class FastPM100Application(object):
                              device_name="AllValueZMQ",
                              history_size=self.args.size,
                              title=title,
+                             geometry=self.args.geometry,
                              update_time_interval=self.args.update)
         else:
             cc = control.Controller

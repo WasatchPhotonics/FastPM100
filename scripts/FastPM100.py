@@ -35,6 +35,10 @@ class FastPM100Application(object):
         """
         log.debug("Process args: %s", argv)
         self.args = self.parser.parse_args(argv)
+
+        # transform the geometry arg into a list from a comma separated string
+        parts = self.args.geometry.split(",")
+        self.args.geometry = map(int, parts)
         return self.args
 
     def create_parser(self):
@@ -59,6 +63,10 @@ class FastPM100Application(object):
         history_str = "Specify size of data history collected"
         parser.add_argument("-s", "--size", type=int,
                             default=3000, help=history_str)
+
+        geometry_str = "Specify a window geometry X,Y,Width,Height"
+        parser.add_argument("-g", "--geometry", type=str,
+                            default="100,100,800,600", help=geometry_str)
 
         update_str = "Update interval in ms (0) for as fast as possible"
         parser.add_argument("-u", "--update", type=int,

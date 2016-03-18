@@ -222,7 +222,9 @@ class TestDualControl:
 class TestAllControl:
 
     @pytest.fixture(scope="function")
-    def simulate_all_main(self, qtbot, request, filename=None):
+    def simulate_all_main(self, qtbot, request, filename=None,
+                          update_time_interval=0,
+                          history_size=3000):
         """ Setup the controller the same way the scripts/Application does at
         every setup. Ensure that the teardown is in place regardless of test
         result. Use the All controller to display six lines of data from
@@ -234,6 +236,8 @@ class TestAllControl:
         main_logger = applog.MainLogger()
         app_control = control.AllController(main_logger.log_queue,
                                             geometry=geometry,
+                                            update_time_interval=update_time_interval,
+                                            history_size=history_size,
                                             filename=filename,
                                             device_name="AllValueZMQ")
 
@@ -249,11 +253,13 @@ class TestAllControl:
         return app_control
 
     @pytest.fixture(scope="function")
-    def simulate_reload_main(self, qtbot, request):
+    def simulate_reload_one_day_main(self, qtbot, request):
         """ Like simulat_all_main above, but provide the filename parameter to
         display data collected from the csv.  """
         filename = "tests/combined_log.csv"
-        return self.simulate_all_main(qtbot, request, filename=filename)
+        return self.simulate_all_main(qtbot, request, filename=filename,
+                                      update_time_interval=10000,
+                                      history_size=8640)
 
 
     def test_close_view_emits_control_signal(self, simulate_all_main, caplog, qtbot):
@@ -272,9 +278,10 @@ class TestAllControl:
         time.sleep(1)
         assert "Control level close" in caplog.text()
 
-    def test_reload_parameter_starts_populateed(self, simulate_reload_main, caplog, qtbot):
+    def test_reload_parameter_starts_populateed(self, simulate_reload_one_day_main,
+                                                caplog, qtbot):
         """ Load from a provided csv file, skipping data as appropriate
         """
-        QtTest.QTest.qWaitForWindowShown(simulate_reload_main.form)
-        qtbot.wait(1000)
+        QtTest.QTest.qWaitForWindowShown(simulate_reload_one_day_main.form)
+        qtbot.wait(3000)
 

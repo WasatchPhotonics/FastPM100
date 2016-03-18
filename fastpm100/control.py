@@ -302,9 +302,10 @@ class AllController(Controller):
         self.form.ui.actionAmps.setChecked(True)
 
         if self.filename != None:
-            self.preload_csv(self.filename, self.update_time_interval)
+            self.preload_csv(self.filename, self.update_time_interval,
+                             self.history_size)
 
-    def preload_csv(self, filename, interval):
+    def preload_csv(self, filename, interval, size):
         """ Assumes csv file is update every 10 seconds.
         """
         log.info("Attempting to open: %s", filename)
@@ -312,21 +313,51 @@ class AllController(Controller):
         # if 10 second gaps for 1 day:
         # read every entry, if total size of temp arr is greater than 8640
         # slice off the last 8640, put in current array
-        temp_array = []
+        total_rows = 0
         with open(filename) as csv_file:
             combined_reader = csv.DictReader(csv_file, delimiter=",")
             for row in combined_reader:
-                temp_array.append(row["CCD Average"])
+                self.hist[0] = numpy.append(self.hist[0],
+                                            float(row["CCD Average"]))
+                self.hist[1] = numpy.append(self.hist[1],
+                                            float(row["Laser Temperature Average"]))
+                self.hist[2] = numpy.append(self.hist[2],
+                                            float(row["Laser Power Average"]))
+                self.hist[3] = numpy.append(self.hist[3],
+                                            float(row["Yellow Thermistor Average"]))
+                self.hist[4] = numpy.append(self.hist[4],
+                                            float(row["Blue Thermistor Average"]))
+                self.hist[5] = numpy.append(self.hist[5],
+                                            float(row["Amps Average"]))
 
-        log.info("Read %s rows ", len(temp_array))
-        start = 0
-        end = len(temp_array)
-        if len(temp_array) >= 8640:
-            start = len(temp_array) - 8640
-            end = start + 8640
+                total_rows += 1
 
-        self.hist[0] = map(float, temp_array[start:end])
-        log.info("Assigned %s rows", len(self.hist[0]))
+        # Assumes that if you specify 8640 10 second readings, you want one day
+        # of data
+        log.info("Read %s rows ", total_rows)
+        if interval == 10000 and size == 8640:
+            log.info("Displaying last 8640 readings (one day)")
+            start = 0
+            cease = len(self.hist[0])
+
+            if len(self.hist[0]) > 8640:
+                start = len(self.hist[0]) - 8640
+
+            self.hist[0] = self.hist[0][start:cease]
+            self.hist[1] = self.hist[1][start:cease]
+            self.hist[2] = self.hist[2][start:cease]
+            self.hist[3] = self.hist[3][start:cease]
+            self.hist[4] = self.hist[4][start:cease]
+            self.hist[5] = self.hist[5][start:cease]
+        #start = 0
+        #end = len(temp_array)
+        #if len(temp_array) >= 8640:
+            #start = len(temp_array) - 8640
+            #end = start + 8640
+#
+        #self.hist[0] = map(float, temp_array[start:end])
+        #self.hist[2] = map(float, temp_array[start:end])
+        #log.info("Assigned %s rows", len(self.hist[0]))
         # if 60 seconds gaps for 1000 days
         # read every entry, if counter mod 6, store in array
         # add to main display - which may break if you ever load more than 100

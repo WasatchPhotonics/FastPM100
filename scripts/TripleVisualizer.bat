@@ -12,6 +12,7 @@ REM screen
 start "" python -u FastPM100.py ^
     --controller AllController ^
     --update 10000 --size 8640 ^
+    --filename "../../BoardTester/scripts/combined_log.csv" ^
     --geometry 0,385,1920,333
 
 REM All components visualized, every 60 seconds, for 100 days, bottom of
@@ -19,4 +20,5 @@ REM screen
 start "" python -u FastPM100.py ^
     --controller AllController ^
     --update 60000 --size 144000 ^
+    --filename "../../BoardTester/scripts/combined_log.csv" ^
     --geometry 0,740,1920,333

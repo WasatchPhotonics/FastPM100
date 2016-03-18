@@ -254,12 +254,17 @@ class TestAllControl:
 
     @pytest.fixture(scope="function")
     def simulate_reload_one_day_main(self, qtbot, request):
-        """ Like simulat_all_main above, but provide the filename parameter to
-        display data collected from the csv.  """
         filename = "tests/combined_log.csv"
         return self.simulate_all_main(qtbot, request, filename=filename,
                                       update_time_interval=10000,
                                       history_size=8640)
+
+    @pytest.fixture(scope="function")
+    def simulate_reload_100days_main(self, qtbot, request):
+        filename = "tests/combined_log.csv"
+        return self.simulate_all_main(qtbot, request, filename=filename,
+                                      update_time_interval=60000,
+                                      history_size=144000)
 
 
     def test_close_view_emits_control_signal(self, simulate_all_main, caplog, qtbot):
@@ -283,5 +288,11 @@ class TestAllControl:
         """ Load from a provided csv file, skipping data as appropriate
         """
         QtTest.QTest.qWaitForWindowShown(simulate_reload_one_day_main.form)
+        qtbot.wait(3000)
+
+
+    def test_reload_100days_starts_populateed(self, simulate_reload_100days_main,
+                                                caplog, qtbot):
+        QtTest.QTest.qWaitForWindowShown(simulate_reload_100days_main.form)
         qtbot.wait(3000)
 

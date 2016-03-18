@@ -72,6 +72,10 @@ class FastPM100Application(object):
         parser.add_argument("-u", "--update", type=int,
                             default=0, help=update_str)
 
+        filename_str = "Filename of csv data to pre-load"
+        parser.add_argument("-f", "--filename", type=str,
+                            default=None, help=filename_str)
+
         return parser
 
     def run(self):
@@ -103,6 +107,7 @@ class FastPM100Application(object):
                              history_size=self.args.size,
                              title=title,
                              geometry=self.args.geometry,
+                             filename=self.args.filename,
                              update_time_interval=self.args.update)
         else:
             cc = control.Controller

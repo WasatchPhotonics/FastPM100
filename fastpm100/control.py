@@ -332,36 +332,30 @@ class AllController(Controller):
 
                 total_rows += 1
 
+        log.info("Read %s rows ", total_rows)
+
         # Assumes that if you specify 8640 10 second readings, you want one day
         # of data
-        log.info("Read %s rows ", total_rows)
         if interval == 10000 and size == 8640:
             log.info("Displaying last 8640 readings (one day)")
-            start = 0
-            cease = len(self.hist[0])
 
-            if len(self.hist[0]) > 8640:
-                start = len(self.hist[0]) - 8640
+            self.hist[0] = self.hist[0][-8640:]
+            self.hist[1] = self.hist[1][-8640:]
+            self.hist[2] = self.hist[2][-8640:]
+            self.hist[3] = self.hist[3][-8640:]
+            self.hist[4] = self.hist[4][-8640:]
+            self.hist[5] = self.hist[5][-8640:]
 
-            self.hist[0] = self.hist[0][start:cease]
-            self.hist[1] = self.hist[1][start:cease]
-            self.hist[2] = self.hist[2][start:cease]
-            self.hist[3] = self.hist[3][start:cease]
-            self.hist[4] = self.hist[4][start:cease]
-            self.hist[5] = self.hist[5][start:cease]
-        #start = 0
-        #end = len(temp_array)
-        #if len(temp_array) >= 8640:
-            #start = len(temp_array) - 8640
-            #end = start + 8640
-#
-        #self.hist[0] = map(float, temp_array[start:end])
-        #self.hist[2] = map(float, temp_array[start:end])
-        #log.info("Assigned %s rows", len(self.hist[0]))
-        # if 60 seconds gaps for 1000 days
-        # read every entry, if counter mod 6, store in array
-        # add to main display - which may break if you ever load more than 100
+        # Assumes that if you specify 144000 60 second readings, you want 100
         # days of data
+        if interval == 60000 and size == 144000:
+            log.info("Displaying last 144000 readings (100 days)")
+            self.hist[0] = self.hist[0][0::6]
+            self.hist[1] = self.hist[1][0::6]
+            self.hist[2] = self.hist[2][0::6]
+            self.hist[3] = self.hist[3][0::6]
+            self.hist[4] = self.hist[4][0::6]
+            self.hist[5] = self.hist[5][0::6]
 
 
     def bind_custom_actions(self):

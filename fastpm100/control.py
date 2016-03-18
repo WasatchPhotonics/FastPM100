@@ -1,6 +1,7 @@
 """ Application level controller for demonstration program. Handles data model
 and UI updates with MVC style architecture.
 """
+import csv
 import time
 import numpy
 from PySide import QtCore
@@ -20,12 +21,14 @@ class Controller(object):
     def __init__(self, log_queue, device_name="SimulatedPM100",
                  history_size=30, title="FastPM100",
                  geometry=[200, 200, 600, 600],
+                 filename=None,
                  update_time_interval=0):
         log.debug("Control startup")
 
         self.history_size = history_size
         self.title = title
         self.geometry = geometry
+        self.filename = filename
 
         # A value of zero means update as fast as possible
         self.update_time_interval = update_time_interval
@@ -282,8 +285,6 @@ class AllController(Controller):
                                          geometry=self.geometry)
 
         self.create_data_sources()
-        # Create numpy array for holding second set of data
-        self.second = numpy.empty(0)
 
         # The form was already created in Controller, after it has been
         # recreated as a dual strip window above, re-bind all of the signals.
@@ -299,6 +300,38 @@ class AllController(Controller):
         self.form.ui.actionYellow_Therm.setChecked(True)
         self.form.ui.actionBlue_Therm.setChecked(True)
         self.form.ui.actionAmps.setChecked(True)
+
+        if self.filename != None:
+            self.preload_csv(self.filename, self.update_time_interval)
+
+    def preload_csv(self, filename, interval):
+        """ Assumes csv file is update every 10 seconds.
+        """
+        log.info("Attempting to open: %s", filename)
+
+        # if 10 second gaps for 1 day:
+        # read every entry, if total size of temp arr is greater than 8640
+        # slice off the last 8640, put in current array
+        temp_array = []
+        with open(filename) as csv_file:
+            combined_reader = csv.DictReader(csv_file, delimiter=",")
+            for row in combined_reader:
+                temp_array.append(row["CCD Average"])
+
+        log.info("Read %s rows ", len(temp_array))
+        start = 0
+        end = len(temp_array)
+        if len(temp_array) >= 8640:
+            start = len(temp_array) - 8640
+            end = start + 8640
+
+        self.hist[0] = map(float, temp_array[start:end])
+        log.info("Assigned %s rows", len(self.hist[0]))
+        # if 60 seconds gaps for 1000 days
+        # read every entry, if counter mod 6, store in array
+        # add to main display - which may break if you ever load more than 100
+        # days of data
+
 
     def bind_custom_actions(self):
         """ Toggle the display of graph curve items when the action buttons are

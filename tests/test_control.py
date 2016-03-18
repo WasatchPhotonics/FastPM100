@@ -222,7 +222,7 @@ class TestDualControl:
 class TestAllControl:
 
     @pytest.fixture(scope="function")
-    def simulate_all_main(self, qtbot, request):
+    def simulate_all_main(self, qtbot, request, filename=None):
         """ Setup the controller the same way the scripts/Application does at
         every setup. Ensure that the teardown is in place regardless of test
         result. Use the All controller to display six lines of data from
@@ -234,6 +234,7 @@ class TestAllControl:
         main_logger = applog.MainLogger()
         app_control = control.AllController(main_logger.log_queue,
                                             geometry=geometry,
+                                            filename=filename,
                                             device_name="AllValueZMQ")
 
         qtbot.addWidget(app_control.form)
@@ -246,6 +247,13 @@ class TestAllControl:
         request.addfinalizer(control_close)
 
         return app_control
+
+    @pytest.fixture(scope="function")
+    def simulate_reload_main(self, qtbot, request):
+        """ Like simulat_all_main above, but provide the filename parameter to
+        display data collected from the csv.  """
+        filename = "tests/combined_log.csv"
+        return self.simulate_all_main(qtbot, request, filename=filename)
 
 
     def test_close_view_emits_control_signal(self, simulate_all_main, caplog, qtbot):
@@ -263,4 +271,10 @@ class TestAllControl:
 
         time.sleep(1)
         assert "Control level close" in caplog.text()
+
+    def test_reload_parameter_starts_populateed(self, simulate_reload_main, caplog, qtbot):
+        """ Load from a provided csv file, skipping data as appropriate
+        """
+        QtTest.QTest.qWaitForWindowShown(simulate_reload_main.form)
+        qtbot.wait(1000)
 

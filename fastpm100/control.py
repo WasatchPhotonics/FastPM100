@@ -4,6 +4,7 @@ and UI updates with MVC style architecture.
 import csv
 import time
 import numpy
+import random
 from PySide import QtCore
 
 from collections import deque
@@ -317,18 +318,13 @@ class AllController(Controller):
         with open(filename) as csv_file:
             combined_reader = csv.DictReader(csv_file, delimiter=",")
             for row in combined_reader:
-                self.hist[0] = numpy.append(self.hist[0],
-                                            float(row["CCD Average"]))
-                self.hist[1] = numpy.append(self.hist[1],
-                                            float(row["Laser Temperature Average"]))
-                self.hist[2] = numpy.append(self.hist[2],
-                                            float(row["Laser Power Average"]))
-                self.hist[3] = numpy.append(self.hist[3],
-                                            float(row["Yellow Thermistor Average"]))
-                self.hist[4] = numpy.append(self.hist[4],
-                                            float(row["Blue Thermistor Average"]))
-                self.hist[5] = numpy.append(self.hist[5],
-                                            float(row["Amps Average"]))
+
+                # Smooth graphs with average
+                #self.hist_assign(row, name="Average")
+                # Noise approximation by selecting the max only
+                #self.hist_assign(row, name="Max")
+                # randomly choose min or max for more noise
+                self.hist_assign_random(row)
 
                 total_rows += 1
 
@@ -357,6 +353,73 @@ class AllController(Controller):
             self.hist[4] = self.hist[4][0::6]
             self.hist[5] = self.hist[5][0::6]
 
+
+    def hist_assign_random(self, row):
+        """ Randomly assign the min or max value to add more noise to the
+        visualization load. This is to match the zmq-grabbed live entries, which
+        are not averaged or smooth, just the raw values.
+        """
+        name = "Min"
+        if random.uniform(0.1, 0.9) > 0.5:
+            name = "Max"
+
+        name = "Average"
+
+        self.hist_assign(row, name)
+        #self.diff_assign(row)
+
+    def diff_assign(self, row):
+        """ Max-min value for narrowing range of loaded data.
+        """
+        self.hist[0] = numpy.append(self.hist[0],
+                                    float(row["CCD Min"]) +\
+                                    float(row["CCD Max"]) - float(row["CCD Min"]))
+
+        self.hist[1] = numpy.append(self.hist[1],
+                                    float(row["Laser Temperature Min"]) +\
+                                    float(row["Laser Temperature Max"]) - float(row["Laser Temperature Min"]))
+        self.hist[2] = numpy.append(self.hist[2],
+                                    float(row["Laser Power Min"]) +\
+                                    float(row["Laser Power Max"]) - float(row["Laser Power Min"]))
+        self.hist[3] = numpy.append(self.hist[3],
+                                    float(row["Yellow thermistor min"]) +\
+                                    float(row["Yellow Thermistor Max"]) - float(row["Yellow thermistor min"]))
+        self.hist[4] = numpy.append(self.hist[4],
+                                    float(row["Blue thermistor min"]) +\
+                                    float(row["Blue Thermistor Max"]) - float(row["Blue thermistor min"]))
+        self.hist[5] = numpy.append(self.hist[5],
+                                    float(row["Amps Min"]) +\
+                                    float(row["Amps Max"]) - float(row["Amps Min"]))
+
+    def hist_assign(self, row, name="Max"):
+        """ Assign the various min, max, or average values
+        """
+        self.hist[0] = numpy.append(self.hist[0],
+                                    float(row["CCD %s" % name]))
+
+        self.hist[1] = numpy.append(self.hist[1],
+                                    float(row["Laser Temperature %s" % name]))
+
+        self.hist[2] = numpy.append(self.hist[2],
+                                    float(row["Laser Power %s" % name]))
+
+        if name == "Min":
+            # CSV file header has lower case thermistor for min
+            self.hist[3] = numpy.append(self.hist[3],
+                                        float(row["Yellow thermistor min"]))
+
+            self.hist[4] = numpy.append(self.hist[4],
+                                        float(row["Blue thermistor min"]))
+
+        else:
+            self.hist[3] = numpy.append(self.hist[3],
+                                        float(row["Yellow Thermistor %s" % name]))
+
+            self.hist[4] = numpy.append(self.hist[4],
+                                        float(row["Blue Thermistor %s" % name]))
+
+        self.hist[5] = numpy.append(self.hist[5],
+                                    float(row["Amps %s" % name]))
 
     def bind_custom_actions(self):
         """ Toggle the display of graph curve items when the action buttons are
@@ -424,7 +487,7 @@ class AllController(Controller):
 
             self.read_frames += 1
             self.reported_frames = result[0]
-            #log.debug("Frame: %s", result)
+            log.debug("Frame: %s", result)
 
             hist_count = 0
             for sensor_read in result[1]:
@@ -449,6 +512,8 @@ class AllController(Controller):
 
         if self.continue_loop:
             self.main_timer.start(self.update_time_interval)
+            #log.warn("Force instant update")
+            #self.main_timer.start(0)
 
     def render_graph(self):
         """ Update the graph data, indicate minimum and maximum values.

@@ -29,6 +29,14 @@ electrical and reflective power interactions.
 ![FastPM100 comparison screenshot](/fastpm100/assets/images/application_screenshot.png "Comparison screenshot")
 
 
+
+Experimental visualizations include the "AllController" mode, which will
+display multiple sets of data from the SlapChop. 
+https://github.com/WasatchPhotonics/FastPM100/blob/master/fastpm100/devices.py
+
+
+
+
 Running tests:
 
     First, install the python package in development mode:

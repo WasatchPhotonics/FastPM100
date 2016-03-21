@@ -99,9 +99,11 @@ class TestAllStripWindow:
         return new_form
 
     def test_form_has_default_setup(self, strip_form, qtbot):
+        QtTest.QTest.qWaitForWindowShown(strip_form)
+
         assert strip_form.ui.labelMinimum.text() == "0.0"
         assert strip_form.width() >= 900
         assert strip_form.height() >= 318
 
-        qtbot.wait(3000)
+        qtbot.wait(30000)
 

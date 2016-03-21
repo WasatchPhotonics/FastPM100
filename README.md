@@ -24,7 +24,7 @@ FastPM100 provides two different modes of visualization:
 Experimental visualizations include the "AllController" mode, which will
 display multiple sets of data from the [SlapChop](https://github.com/WasatchPhotonics/FastPM100/blob/master/fastpm100/devices.py):
 
-![SlapChop Long Term screenshot](/fastpm100/assets/images/long_term.png "Long Term")
+![Simulated graph](/fastpm100/assets/images/simulated_graphs.gif "Simulated Graphs")
 
 
 You can also use the [TripleVisualizer.bat](/scripts/TripleVisualizer.bat) file on windows to preposition the display windows:
@@ -57,6 +57,8 @@ To view all data on the local host:
 
     cd FastPM100
     python -u scripts/FastPM100.py --controller AllController
+
+![SlapChop Long Term screenshot](/fastpm100/assets/images/long_term.png "Long Term")
 
 To view one day of data, updating every ten seconds:
 

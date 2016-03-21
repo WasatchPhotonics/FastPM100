@@ -306,6 +306,17 @@ class AllController(Controller):
             self.preload_csv(self.filename, self.update_time_interval,
                              self.history_size)
 
+            log.debug("Setup interface update timer")
+            self.update_history_timer = QtCore.QTimer()
+            self.update_history_timer.setSingleShot(True)
+            self.update_history_timer.timeout.connect(self.update_history)
+
+            log.info("Update interface with averages over %s",
+                     self.update_time_interval)
+            self.update_history_timer.start(self.update_time_interval)
+
+        self.render_graph()
+
     def preload_csv(self, filename, interval, size):
         """ Assumes csv file is update every 10 seconds.
         """
@@ -320,12 +331,7 @@ class AllController(Controller):
             for row in combined_reader:
 
                 # Smooth graphs with average
-                #self.hist_assign(row, name="Average")
-                # Noise approximation by selecting the max only
-                #self.hist_assign(row, name="Max")
-                # randomly choose min or max for more noise
-                self.hist_assign_random(row)
-
+                self.hist_assign(row, name="Average")
                 total_rows += 1
 
         log.info("Read %s rows ", total_rows)
@@ -354,44 +360,9 @@ class AllController(Controller):
             self.hist[5] = self.hist[5][0::6]
 
 
-    def hist_assign_random(self, row):
-        """ Randomly assign the min or max value to add more noise to the
-        visualization load. This is to match the zmq-grabbed live entries, which
-        are not averaged or smooth, just the raw values.
-        """
-        name = "Min"
-        if random.uniform(0.1, 0.9) > 0.5:
-            name = "Max"
+        self.render_graph()
 
-        name = "Average"
-
-        self.hist_assign(row, name)
-        #self.diff_assign(row)
-
-    def diff_assign(self, row):
-        """ Max-min value for narrowing range of loaded data.
-        """
-        self.hist[0] = numpy.append(self.hist[0],
-                                    float(row["CCD Min"]) +\
-                                    float(row["CCD Max"]) - float(row["CCD Min"]))
-
-        self.hist[1] = numpy.append(self.hist[1],
-                                    float(row["Laser Temperature Min"]) +\
-                                    float(row["Laser Temperature Max"]) - float(row["Laser Temperature Min"]))
-        self.hist[2] = numpy.append(self.hist[2],
-                                    float(row["Laser Power Min"]) +\
-                                    float(row["Laser Power Max"]) - float(row["Laser Power Min"]))
-        self.hist[3] = numpy.append(self.hist[3],
-                                    float(row["Yellow thermistor min"]) +\
-                                    float(row["Yellow Thermistor Max"]) - float(row["Yellow thermistor min"]))
-        self.hist[4] = numpy.append(self.hist[4],
-                                    float(row["Blue thermistor min"]) +\
-                                    float(row["Blue Thermistor Max"]) - float(row["Blue thermistor min"]))
-        self.hist[5] = numpy.append(self.hist[5],
-                                    float(row["Amps Min"]) +\
-                                    float(row["Amps Max"]) - float(row["Amps Min"]))
-
-    def hist_assign(self, row, name="Max"):
+    def hist_assign(self, row, name="Average"):
         """ Assign the various min, max, or average values
         """
         self.hist[0] = numpy.append(self.hist[0],
@@ -476,6 +447,12 @@ class AllController(Controller):
         for item in data_source:
             self.hist.append(numpy.empty(0))
 
+        # Local histories of data points to average
+        self.local = []
+        for item in data_source:
+            self.local.append(numpy.empty(0))
+
+
     def event_loop(self):
         """ Process queue events, interface events, then update views.
         """
@@ -487,33 +464,77 @@ class AllController(Controller):
 
             self.read_frames += 1
             self.reported_frames = result[0]
-            log.debug("Frame: %s", result)
+            #log.debug("Frame: %s", result)
 
             hist_count = 0
             for sensor_read in result[1]:
-                #log.debug("Add %s to array: %s" % (sensor_read,
-                                                   #hist_count))
-
-                temp_array = self.hist[hist_count]
-                if len(temp_array) >= self.history_size:
-                    temp_array = numpy.roll(temp_array, -1)
-                    temp_array[-1] = sensor_read
-
-                else:
-                    temp_array = numpy.append(temp_array, sensor_read)
-                self.hist[hist_count] = temp_array
+                #log.info("Append to local %s, value %s", hist_count, sensor_read)
+                temp_array = self.local[hist_count]
+                temp_array = numpy.append(temp_array, sensor_read)
+                self.local[hist_count] = temp_array
 
                 hist_count += 1
 
+            # When in realtime mode, reassign the locally collected data to the
+            # history
+            if self.update_time_interval == 0:
+                self.update_realtime()
+
+        # Always restart this data collection procedure. A separate time for the
+        # historical append copies the average of self.local to the appropriate
+        # history when loaded from file
+        self.main_timer.start(0)
+
+    def update_realtime(self):
+        """ Copy the most recently collected local datapoint to the history,
+        display on screen.  """
+
+        hist_count = 0
+        for item in self.hist:
+            local_val = self.local[hist_count][-1]
+
+            temp_array = self.hist[hist_count]
+            if len(temp_array) >= self.history_size:
+                temp_array = numpy.roll(temp_array, -1)
+                temp_array[-1] = local_val
+
+            else:
+                temp_array = numpy.append(temp_array, local_val)
+
+            self.hist[hist_count] = temp_array
+            hist_count += 1
 
         self.render_graph()
-
         self.update_performance_metrics()
 
-        if self.continue_loop:
-            self.main_timer.start(self.update_time_interval)
-            #log.warn("Force instant update")
-            #self.main_timer.start(0)
+
+    def update_history(self):
+        """ Every update time interval, collate the local averages read off the
+        network on to the full device histories.
+        """
+
+        log.info("update history")
+        hist_count = 0
+        for item in self.hist:
+            local_avg = numpy.average(self.local[hist_count])
+
+            temp_array = self.hist[hist_count]
+            if len(temp_array) >= self.history_size:
+                temp_array = numpy.roll(temp_array, -1)
+                temp_array[-1] = local_avg
+
+            else:
+                temp_array = numpy.append(temp_array, local_avg)
+            self.hist[hist_count] = temp_array
+
+            self.local[hist_count] = numpy.empty(0)
+
+            hist_count += 1
+
+        self.render_graph()
+        self.update_performance_metrics()
+        self.update_history_timer.start(self.update_time_interval)
+
 
     def render_graph(self):
         """ Update the graph data, indicate minimum and maximum values.

@@ -31,8 +31,14 @@ electrical and reflective power interactions.
 
 
 Experimental visualizations include the "AllController" mode, which will
-display multiple sets of data from the SlapChop. 
-https://github.com/WasatchPhotonics/FastPM100/blob/master/fastpm100/devices.py
+display multiple sets of data from the [SlapChop](https://github.com/WasatchPhotonics/FastPM100/blob/master/fastpm100/devices.py):
+
+![SlapChop Long Term screenshot](/docs/long_term.png "Long Term")
+
+
+You can also use the TripleVisualizer.bat file on windows to preposition the display windows:
+
+![SlapChop Full screen screenshot](/docs/fullscreen.png "Full Screen")
 
 
 

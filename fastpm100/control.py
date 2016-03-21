@@ -108,11 +108,7 @@ class Controller(object):
         result = self.device.read()
         if result is not None:
 
-            log.debug("raw frame: %s", result)
-            #print("raw frame: %s", result)
-            #log.debug("Full frame: %s", result[1])
-            #log.debug("Read frame: %s", result[1][2])
-            #log.debug("Read frame: %s", result[1][-1])
+            #log.debug("raw frame: %s", result)
             self.read_frames += 1
             self.reported_frames = result[0]
 

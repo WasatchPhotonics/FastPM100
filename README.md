@@ -7,8 +7,8 @@ readings.
 [![Coverage Status](https://coveralls.io/repos/WasatchPhotonics/FastPM100/badge.svg?branch=master&service=github)](https://coveralls.io/github/WasatchPhotonics/FastPM100?branch=master)
 
 Specifications for the Thorlabs PM100 class laser power meters include
-> 300 acquisitions per second. This project is designed to show all
-readings the user for low pulse width laser power measurements.
+greater than 300 acquisitions per second. This project is designed to
+show all readings the user for low pulse width laser power measurements.
 
 FastPM100 provides two different modes of visualization:
 

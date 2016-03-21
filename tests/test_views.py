@@ -82,28 +82,3 @@ class TestBlueGraphSkin:
         assert widget.width() >= 24
         assert widget.height() >= 24
 
-class TestAllStripWindow:
-
-    @pytest.fixture(scope="function")
-    def strip_form(self, qtbot, request):
-        """ Create the view at every setup, close it on final.
-        """
-        # x, y, w, h
-        geometry = [100, 100, 920, 433]
-        new_form = views.AllStripWindow(geometry=geometry)
-
-        def form_close():
-            new_form.close()
-        request.addfinalizer(form_close)
-
-        return new_form
-
-    def test_form_has_default_setup(self, strip_form, qtbot):
-        QtTest.QTest.qWaitForWindowShown(strip_form)
-
-        assert strip_form.ui.labelMinimum.text() == "0.0"
-        assert strip_form.width() >= 900
-        assert strip_form.height() >= 318
-
-        qtbot.wait(30000)
-

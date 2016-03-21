@@ -290,9 +290,3 @@ class TestAllControl:
         QtTest.QTest.qWaitForWindowShown(simulate_reload_one_day_main.form)
         qtbot.wait(3000)
 
-
-    def test_reload_100days_starts_populateed(self, simulate_reload_100days_main,
-                                                caplog, qtbot):
-        QtTest.QTest.qWaitForWindowShown(simulate_reload_100days_main.form)
-        qtbot.wait(3000)
-

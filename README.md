@@ -27,7 +27,7 @@ display multiple sets of data from the [SlapChop](https://github.com/WasatchPhot
 ![SlapChop Long Term screenshot](/fastpm100/assets/images/long_term.png "Long Term")
 
 
-You can also use the TripleVisualizer.bat file on windows to preposition the display windows:
+You can also use the [TripleVisualizer.bat](/scripts/TripleVisualizer.bat) file on windows to preposition the display windows:
 
 ![SlapChop Full screen screenshot](/fastpm100/assets/images/fullscreen.png "Full Screen")
 
@@ -42,6 +42,47 @@ sampling can prove invaluable when diagnosing complicated thermal,
 electrical and reflective power interactions.
 
 ![FastPM100 comparison screenshot](/fastpm100/assets/images/application_screenshot.png "Comparison screenshot")
+
+
+# Example use cases:
+
+Temperature logging using the SlapChop:
+
+First, setup the temperature recording script from BoardTester
+in BoardTester/scripts/:
+
+    python TemperatureLogger.py
+
+To view all data on the local host:
+
+    cd FastPM100
+    python -u scripts/FastPM100.py --controller AllController
+
+To view one day of data, updating every ten seconds:
+
+    python -u scripts/FastPM100.py 
+        --controller AllController 
+        --update 10000 
+        --size 8640
+
+Preload from a csv file, update every ten seconds:
+
+    python -u scripts/FastPM100.py 
+        --controller AllController 
+        --file ../../BoardTester/scripts/combined_log.csv
+        --update 10000
+        --size 8640
+
+
+Thorlabs PM100USB fast visualization:
+configure the device as per the specifications below, then run:
+
+    python -u scripts/FastPM100.py 
+
+Run showing just the last 300 readings:
+
+    python -u scripts/FastPM100.py --size 300
+
 
 
 

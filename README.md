@@ -73,7 +73,15 @@ Preload from a csv file, update every ten seconds:
         --update 10000
         --size 8640
 
+Pre-position the window in the center of the screen, full width:
 
+    python -u scripts/FastPM100.py 
+        --controller AllController 
+        --file ../../BoardTester/scripts/combined_log.csv
+        --update 10000
+        --size 8640
+        --geometry 0,385,1920,333
+        
 Thorlabs PM100USB fast visualization:
 configure the device as per the specifications below, then run:
 

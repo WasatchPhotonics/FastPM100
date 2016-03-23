@@ -509,7 +509,7 @@ class AllController(Controller):
         network on to the full device histories.
         """
 
-        log.info("update history")
+        #log.info("update history")
         hist_count = 0
         for item in self.hist:
             local_avg = numpy.average(self.local[hist_count])
